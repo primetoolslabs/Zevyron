@@ -1,0 +1,234 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap")
+layer(base);
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@theme {
+  --color-zevyron-old-primary: #01e5ff;
+  --color-zevyron-primary: var(--color-primary);
+  --color-zevyron-text: var(--color-text);
+  --color-zevyron-text-secondary: var(--color-text-secondary);
+  --color-zevyron-text-muted: var(--color-text-muted);
+  --color-zevyron-bg: var(--color-bg);
+  --color-zevyron-card: var(--color-card);
+  --color-zevyron-border: var(--color-border);
+  --color-zevyron-secondary: var(--color-secondary);
+  --color-zevyron-accent: var(--color-accent);
+  --color-zevyron-border-secondary: var(--color-border-secondary);
+  --color-zevyron-old-secondary: #005fff;
+  --animate-border-spin: border-spin 3s linear infinite;
+
+  @keyframes border-spin {
+    from {
+      --angle: 0deg;
+    }
+    to {
+      --angle: 360deg;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  /* ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-zevyron-text-muted);
+    border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-zevyron-primary);
+    border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-zevyron-secondary);
+  } */
+  .light {
+    --color-zevyron-bg: #f0f0f0;
+    --color-zevyron-text: #1e293b;
+    --color-zevyron-text-dark: #334155;
+    --color-zevyron-text-darker: #475569;
+    --color-zevyron-text-secondary: #64748b;
+    --color-zevyron-text-muted: #94a3b8;
+    --color-zevyron-card: #ffffff;
+    --color-zevyron-border: #d5dae2;
+    --color-zevyron-border-secondary: #cbd5e1;
+    --color-zevyron-primary: #087fd1;
+    --color-zevyron-secondary: #00b8d9;
+    --color-zevyron-accent: #f1f5f9;
+  }
+
+  :root {
+    --color-zevyron-bg: #050a14;
+    --color-zevyron-text: #eef7ff;
+    --color-zevyron-text-dark: #d8e9f8;
+    --color-zevyron-text-darker: #a8c5df;
+    --color-zevyron-text-secondary: #7fa4c4;
+    --color-zevyron-text-muted: #45647f;
+    --color-zevyron-card: #091525;
+    --color-zevyron-border: #12314e;
+    --color-zevyron-border-secondary: #16436a;
+    --color-zevyron-primary: #00aaff;
+    --color-zevyron-secondary: #00e5ff;
+    --color-zevyron-accent: #0b2944;
+  }
+
+  .purple {
+    --color-zevyron-bg: #120f1c;
+    --color-zevyron-text: #e3d8ff;
+    --color-zevyron-text-dark: #cbb8ff;
+    --color-zevyron-text-darker: #b199ff;
+    --color-zevyron-text-secondary: #9a85e8;
+    --color-zevyron-text-muted: #4a3a6b;
+    --color-zevyron-card: #1a1430;
+    --color-zevyron-border: #2f1b60;
+    --color-zevyron-border-secondary: #3a2178;
+    --color-zevyron-primary: #8e44ff;
+    --color-zevyron-secondary: #3463ff;
+    --color-zevyron-accent: #3b1673;
+  }
+
+  .gray {
+    --color-zevyron-bg: #111214;
+    --color-zevyron-text: #f5f6fa;
+    --color-zevyron-text-dark: #e0e2e6;
+    --color-zevyron-text-darker: #c8ccd2;
+    --color-zevyron-text-secondary: #aeb3bb;
+    --color-zevyron-text-muted: #7a7f87;
+    --color-zevyron-card: #18191b;
+    --color-zevyron-border: #26272b;
+    --color-zevyron-border-secondary: #232426;
+    --color-zevyron-primary: #6366f1;
+    --color-zevyron-secondary: #b981f8;
+    --color-zevyron-accent: #232324;
+  }
+
+  .classic {
+    --color-zevyron-bg: #0f172a;
+    --color-zevyron-text: #ffffff;
+    --color-zevyron-text-dark: #e6e6e6;
+    --color-zevyron-text-darker: #cccccc;
+    --color-zevyron-text-secondary: #94a3b8;
+    --color-zevyron-text-muted: #475569;
+    --color-zevyron-card: #162033;
+    --color-zevyron-border: #253144;
+    --color-zevyron-border-secondary: #1e293b;
+    --color-zevyron-primary: #3b82f6;
+    --color-zevyron-secondary: #2dac7d;
+    --color-zevyron-accent: #2e394b;
+  }
+  .Toastify__toast {
+    background-color: var(--color-zevyron-card) !important;
+    border: 1px solid var(--color-zevyron-border) !important;
+    color: var(--color-zevyron-text) !important;
+    --toastify-icon-color-success: var(--color-zevyron-secondary) !important;
+  }
+  .Toastify__close-button {
+    color: var(--color-zevyron-text-secondary) !important;
+  }
+}
+
+@layer base {
+  html {
+    font-family: "Poppins", "Noto Sans", sans-serif;
+    font-synthesis: none;
+  }
+}
+@layer utilities {
+  * {
+    user-select: none;
+  }
+}
+
+.recharts-line path {
+  stroke: var(--color-zevyron-primary);
+}
+
+button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+body {
+  scrollbar-color: var(--color-zevyron-primary) var(--color-zevyron-bg);
+}
+
+
+/* Zevyron visual identity */
+.zevyron-hero {
+  background:
+    radial-gradient(circle at 78% 0%, rgba(0, 174, 255, 0.18), transparent 38%),
+    linear-gradient(110deg, rgba(8, 24, 43, 0.96), rgba(4, 10, 20, 0.98));
+  box-shadow: inset 0 1px 0 rgba(148, 220, 255, 0.08), 0 12px 36px rgba(0, 0, 0, 0.18);
+}
+.zevyron-grid {
+  background-image:
+    linear-gradient(rgba(0, 170, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 170, 255, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to right, black, transparent 82%);
+}
+
+.zevyron-splash-grid {
+  background-image:
+    linear-gradient(rgba(0, 170, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 170, 255, 0.05) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+.zevyron-splash-logo {
+  animation: zevyron-logo-in 700ms cubic-bezier(.2,.8,.2,1) both;
+  filter: drop-shadow(0 0 28px rgba(0, 174, 255, 0.18));
+}
+.zevyron-splash-progress {
+  animation: zevyron-progress 1s ease-out both;
+}
+@keyframes zevyron-logo-in {
+  from { opacity: 0; transform: scale(.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes zevyron-progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}

@@ -1,0 +1,1437 @@
+{
+  "apps": [
+    {
+      "name": "Firefox",
+      "id": "Mozilla.Firefox",
+      "chocolatey": "firefox",
+      "category": "browsers",
+      "info": "A fast, private and secure web browsers.",
+      "link": "https://www.mozilla.org/en-US/firefox/new/",
+      "icon": "https://www.firefox.com/favicon.ico"
+    },
+    {
+      "name": "Firefox Nightly",
+      "id": "Mozilla.Firefox.MSIX.Nightly",
+      "chocolatey": "firefox-nightly --pre",
+      "category": "browsers",
+      "info": "A fast, private and secure web browsers. Nightly build.",
+      "link": "https://www.firefox.com/en-US/channel/desktop/",
+      "icon": "https://play-lh.googleusercontent.com/RTGC3Q_G-JzhwJDjqJzBQyi1J41LyAnvOFzzU9aYqld3F9Ad26-RFwcFCH6xUat3HITV"
+    },
+    {
+      "name": "Google Chrome",
+      "id": "Google.Chrome",
+      "chocolatey": "googlechrome",
+      "category": "browsers",
+      "info": "The most popular web browsers.",
+      "link": "https://www.google.com/chrome/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Google_Chrome_icon_%28February_2022%29.svg/3840px-Google_Chrome_icon_%28February_2022%29.svg.png"
+    },
+    {
+      "name": "Discord",
+      "id": "Discord.Discord",
+      "chocolatey": "discord",
+      "category": "communication",
+      "info": "Discord is a communication app that lets you chat with your friends.",
+      "link": "https://discord.com/",
+      "icon": "https://support.discord.com/hc/user_images/bbW4u80g7yIVxsphv9diNw.png"
+    },
+    {
+      "name": "Spotify (may not work)",
+      "id": "Spotify.Spotify",
+      "chocolatey": "spotify",
+      "warning": "This app may install properly as Zevyron runs as administrator. However Uninstalling will continue to work as normal.",
+      "category": "multimedia",
+      "info": "Listen to music and podcasts.",
+      "link": "https://www.spotify.com/",
+      "icon": "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png"
+    },
+    {
+      "name": "Steam",
+      "id": "Valve.Steam",
+      "chocolatey": "steam",
+      "category": "games",
+      "info": "A digital distribution platform for video games.",
+      "link": "https://store.steampowered.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/960px-Steam_icon_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20220611141426"
+    },
+    {
+      "name": "Epic Games Launcher",
+      "id": "EpicGames.EpicGamesLauncher",
+      "chocolatey": "epicgameslauncher",
+      "category": "games",
+      "info": "A Games Store",
+      "link": "https://www.epicgames.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Epic_Games_logo.svg/960px-Epic_Games_logo.svg.png"
+    },
+    {
+      "name": "EA App",
+      "id": "ElectronicArts.EADesktop",
+      "chocolatey": "ea-app",
+      "category": "games",
+      "info": "A Games Store",
+      "link": "https://www.ea.com/",
+      "icon": "https://cdn2.steamgriddb.com/logo_thumb/a208b894ffe062914d0192bb4f663114.png"
+    },
+    {
+      "name": "BattleNet",
+      "id": "Blizzard.BattleNet",
+      "category": "games",
+      "info": "A Games Store",
+      "link": "https://us.shop.battle.net/",
+      "icon": "https://cdn2.steamgriddb.com/icon/937ea3f7714dc0d01475da7bff33b596/32/128x128.png"
+    },
+    {
+      "name": "Minecraft Launcher",
+      "id": "Mojang.MinecraftLauncher",
+      "chocolatey": "minecraft-launcher",
+      "category": "games",
+      "info": "Minecraft game launcher.",
+      "link": "https://www.minecraft.net/en-us/download/",
+      "icon": "https://static.wikia.nocookie.net/logopedia/images/e/e3/Minecraft_Launcher.svg/revision/latest/scale-to-width-down/200?cb=20230616222246"
+    },
+    {
+      "name": "Modrinth",
+      "id": "Modrinth.ModrinthApp",
+      "chocolatey": "modrinth-app",
+      "category": "games",
+      "info": "Minecraft Modding Launcher",
+      "link": "https://modrinth.com/",
+      "icon": "https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/publication/logo/a49f8e1b-3835-4ea1-a85b-118c6425ebc3/Modrinth_Dark_Logo.png"
+    },
+    {
+      "name": "Visual Studio Code",
+      "id": "Microsoft.VisualStudioCode",
+      "chocolatey": "vscode",
+      "category": "development",
+      "info": "A code editor that runs on your computer.",
+      "link": "https://code.visualstudio.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/500px-Visual_Studio_Code_1.35_icon.svg.png"
+    },
+    {
+      "name": "Visual Studio Code Insiders",
+      "id": "Microsoft.VisualStudioCode.Insiders",
+      "chocolatey": "vscode-insiders",
+      "category": "development",
+      "info": "A code editor that runs on your computer.",
+      "link": "https://code.visualstudio.com/insiders/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Visual_Studio_Code_Insiders_1.36_icon.svg/250px-Visual_Studio_Code_Insiders_1.36_icon.svg.png"
+    },
+    {
+      "name": "Visual Studio",
+      "id": "Microsoft.VisualStudio.2022",
+      "category": "development",
+      "info": "A code editor that runs on your computer.",
+      "link": "https://visualstudio.microsoft.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Visual_Studio_Icon_2022.svg/500px-Visual_Studio_Icon_2022.svg.png"
+    },
+    {
+      "name": "Visual Studio Installer",
+      "chocolatey": "visualstudio-installer",
+      "category": "development",
+      "info": "A code editor that runs on your computer.",
+      "link": "https://visualstudio.microsoft.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Visual_Studio_Icon_2022.svg/960px-Visual_Studio_Icon_2022.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail"
+    },
+    {
+      "name": "Arduino IDE",
+      "id": "ArduinoSA.IDE.stable",
+      "chocolatey": "arduino",
+      "category": "development",
+      "info": "Code Editor for Arduino Microcontrollers.",
+      "link": "https://www.arduino.cc/en/software/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Arduino_IDE_logo.svg/960px-Arduino_IDE_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail"
+    },
+    {
+      "name": "Notepad++",
+      "id": "Notepad++.Notepad++",
+      "chocolatey": "notepadplusplus.install",
+      "category": "development",
+      "info": "A code editor that runs on your computer.",
+      "link": "https://notepad-plus-plus.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Notepad%2B%2B_Logo.svg/250px-Notepad%2B%2B_Logo.svg.png"
+    },
+    {
+      "name": "Sublime Text",
+      "id": "Sublime.Text",
+      "chocolatey": "sublimetext3",
+      "category": "development",
+      "info": "A code editor that runs on your computer.",
+      "link": "https://www.sublimetext.com/",
+      "icon": "https://www.sublimehq.com/images/sublime_text.png"
+    },
+    {
+      "name": "Brave",
+      "id": "Brave.Brave",
+      "chocolatey": "brave",
+      "category": "browsers",
+      "info": "A fast, private and secure web browsers.",
+      "link": "https://brave.com/",
+      "icon": "https://brave.com/static-assets/images/brave-logo-sans-text.svg"
+    },
+    {
+      "name": "Brave Nightly",
+      "id": "Brave.Brave.Nightly",
+      "chocolatey": "brave-nightly --pre",
+      "category": "browsers",
+      "info": "A fast, private and secure web browsers.",
+      "link": "https://brave.com/",
+      "icon": "https://brave.com/static-assets/images/brave-nightly-badge.png"
+    },
+    {
+      "name": "Opera",
+      "id": "Opera.Opera",
+      "chocolatey": "opera",
+      "category": "browsers",
+      "info": "A fast, private and secure web browsers.",
+      "link": "https://www.opera.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Opera_2015_icon.svg/960px-Opera_2015_icon.svg.png"
+    },
+    {
+      "name": "Opera GX",
+      "id": "Opera.OperaGX",
+      "chocolatey": "opera-gx",
+      "category": "browsers",
+      "info": "A fast, private and secure web browser for gamers.",
+      "link": "https://www.opera.com/gx",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Opera_GX_Icon.svg/960px-Opera_GX_Icon.svg.png"
+    },
+    {
+      "name": "Vivaldi",
+      "id": "Vivaldi.Vivaldi",
+      "chocolatey": "vivaldi",
+      "category": "browsers",
+      "info": "A fast, private and secure web browsers.",
+      "link": "https://vivaldi.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Vivaldi_web_browser_logo.svg"
+    },
+    {
+      "name": "Zoom",
+      "id": "Zoom.Zoom",
+      "chocolatey": "zoom",
+      "category": "communication",
+      "info": "A video conferencing app.",
+      "link": "https://zoom.us/",
+      "icon": "https://static.vecteezy.com/system/resources/previews/012/871/376/non_2x/zoom-logo-in-blue-colors-meetings-app-logotype-illustration-free-png.png"
+    },
+    {
+      "name": "Mircosoft Teams",
+      "id": "Microsoft.Teams",
+      "category": "communication",
+      "info": "A Microsoft video conferencing app.",
+      "link": "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software",
+      "icon": "https://winstall.app/assets/apps/teams.webp"
+    },
+    {
+      "name": "Telegram Desktop",
+      "id": "Telegram.TelegramDesktop",
+      "chocolatey": "telegram.install",
+      "category": "communication",
+      "info": "A messaging app.",
+      "link": "https://telegram.org/",
+      "icon": "https://cdn.worldvectorlogo.com/logos/telegram-2019-logo.svg"
+    },
+    {
+      "name": "7-Zip",
+      "id": "7Zip.7Zip",
+      "chocolatey": "7zip.install",
+      "category": "utilities",
+      "info": "A file archiver.",
+      "link": "https://www.7-zip.org/",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjzfUrl9Bf9AbiHFNM7v4lp7iGHKRTPL8Sdw&s"
+    },
+    {
+      "name": "Git",
+      "id": "Git.Git",
+      "chocolatey": "git.install",
+      "category": "development",
+      "info": "A version control system.",
+      "link": "https://git-scm.com/",
+      "icon": "https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png"
+    },
+    {
+      "name": "GitHub Desktop",
+      "id": "GitHub.GitHubDesktop",
+      "chocolatey": "github-desktop",
+      "category": "development",
+      "info": "A code editor that runs on your computer.",
+      "link": "https://desktop.github.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Github-desktop-logo-symbol.svg/1280px-Github-desktop-logo-symbol.svg.png"
+    },
+    {
+      "name": "Logitech GHUB",
+      "id": "Logitech.GHUB",
+      "category": "peripherals",
+      "info": "App to Manage your logitech peripherals.",
+      "link": "https://www.logitechg.com/en-us/software/ghub",
+      "icon": "https://i.namu.wiki/i/Ir-1SJ90LXrO3e-1HxA91jVVUbU7LSStrb62bfwdndtnHwzENnyVNvJU2z8d8WYqPLcdA2f8zG-SHwHnzA9IrQ.webp"
+    },
+    {
+      "name": "Razer Synapse 4",
+      "id": "RazerInc.RazerInstaller.Synapse4",
+      "chocolatey": "razer-synapse-4",
+      "category": "peripherals",
+      "info": "App to Manage your Razer peripherals.",
+      "link": "https://www.razer.com/synapse-4",
+      "icon": "https://dl.razerzone.com/src2/13814/13814-1-en-v3.png"
+    },
+    {
+      "name": "SteelSeries GG",
+      "id": "SteelSeries.GG",
+      "category": "peripherals",
+      "info": "App to Manage your SteelSeries peripherals.",
+      "link": "https://steelseries.com/gg/",
+      "icon": "https://upload.wikimedia.org/wikipedia/en/7/7f/Steelseries-logo.png"
+    },
+    {
+      "name": "Node.js",
+      "id": "OpenJS.NodeJS",
+      "chocolatey": "nodejs.install",
+      "category": "development",
+      "info": "JavaScript runtime built on Chrome's V8 JavaScript engine.",
+      "link": "https://nodejs.org/",
+      "icon": "https://nodejs.org/static/images/favicons/favicon.png"
+    },
+    {
+      "name": "Postman",
+      "id": "Postman.Postman",
+      "chocolatey": "postman",
+      "category": "development",
+      "info": "API development environment.",
+      "link": "https://www.postman.com/",
+      "icon": "https://cdn.worldvectorlogo.com/logos/postman.svg"
+    },
+    {
+      "name": "Docker Desktop",
+      "id": "Docker.DockerDesktop",
+      "chocolatey": "docker-desktop",
+      "category": "development",
+      "info": "Containerized application development.",
+      "link": "https://www.docker.com/products/docker-desktop",
+      "icon": "https://www.docker.com/wp-content/uploads/2022/03/vertical-logo-monochromatic.png"
+    },
+    {
+      "name": "Slack",
+      "id": "SlackTechnologies.Slack",
+      "chocolatey": "slack",
+      "category": "communication",
+      "info": "Collaboration hub that connects your work with the people you work with.",
+      "link": "https://slack.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/1280px-Slack_icon_2019.svg.png"
+    },
+    {
+      "name": "RustDesk",
+      "id": "RustDesk.RustDesk",
+      "chocolatey": "rustdesk.install",
+      "category": "utilities",
+      "info": "A remote desktop app.",
+      "link": "https://rustdesk.com/",
+      "icon": "https://avatars.githubusercontent.com/u/71636191?v=4"
+    },
+    {
+      "name": "Rufus",
+      "id": "Rufus.Rufus",
+      "chocolatey": "rufus",
+      "category": "utilities",
+      "info": "A utility to create bootable USB drives.",
+      "link": "https://rufus.ie/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/d/de/Rufus-logo.png"
+    },
+    {
+      "name": "Everything Search",
+      "id": "voidtools.Everything",
+      "chocolatey": "everything",
+      "category": "utilities",
+      "info": "A file search engine.",
+      "icon": "https://images.dwncdn.net/images/t_app-icon-l/p/518883d1-148e-46b6-9935-3f300ee5eb94/2700159425/2379_4-10890746-imgingest-1136771509381280571.png"
+    },
+    {
+      "name": "VLC",
+      "id": "VideoLAN.VLC",
+      "chocolatey": "vlc",
+      "category": "multimedia",
+      "info": "A free and open source media player.",
+      "link": "https://vlc.media/",
+      "icon": "https://images.videolan.org/images/VLC-IconSmall.png"
+    },
+    {
+      "name": "Medal",
+      "id": "MedalB.V.Medal",
+      "category": "multimedia",
+      "info": "A modern clipping software to capture moments in your videogames.",
+      "link": "https://medal.tv",
+      "icon": "https://imgs.search.brave.com/lBnbkGrpvZWX0qezDMkyaRQkqTLWLUqtthGE7Bye6bk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5wb2NrZXRnYW1l/ci5iaXovaW1hZ2Vz/Lzk1NjU2L3N0ZC9t/ZWRhbHR2XzMyMC5q/cGc"
+    },
+    {
+      "name": "Audacity",
+      "id": "Audacity.Audacity",
+      "chocolatey": "audacity",
+      "category": "multimedia",
+      "info": "An audio editor.",
+      "link": "https://www.audacityteam.org/",
+      "icon": "https://www.audacityteam.org/apple-touch-icon.png"
+    },
+    {
+      "name": "OBS Studio",
+      "id": "OBSProject.OBSStudio",
+      "chocolatey": "obs-studio.install",
+      "category": "multimedia",
+      "info": "A free and open source software for video recording and live streaming.",
+      "link": "https://obsproject.com/",
+      "icon": "https://obsproject.com/assets/images/new_icon_small-r.png"
+    },
+    {
+      "name": "MSI Afterburner",
+      "id": "Guru3D.Afterburner",
+      "chocolatey": "msiafterburner",
+      "category": "utilities",
+      "info": "A graphics card overclocking utility.",
+      "link": "https://www.msi.com/Landing/afterburner",
+      "icon": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/b1997507-606b-44bc-a6c8-dd0740cb1f88/d377tuc-d46dc60f-72a1-4389-8212-e212ec80b527.png/v1/fill/w_900,h_900/msi_afterburner_icon_2048_best_by_vuvuzelahero_d377tuc-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTAwIiwicGF0aCI6IlwvZlwvYjE5OTc1MDctNjA2Yi00NGJjLWE2YzgtZGQwNzQwY2IxZjg4XC9kMzc3dHVjLWQ0NmRjNjBmLTcyYTEtNDM4OS04MjEyLWUyMTJlYzgwYjUyNy5wbmciLCJ3aWR0aCI6Ijw9OTAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.ZG2StC-nHNdqju23CIkYfDYs2lx3cFbqUI4dgwhd05w"
+    },
+    {
+      "name": "Fan Control",
+      "id": "Rem0o.FanControl",
+      "category": "utilities",
+      "info": "A fan control utility.",
+      "link": "https://getfancontrol.com/",
+      "icon": "https://www.fileeagle.com/data/2023/03/Fan-Control.png"
+    },
+    {
+      "name": "WinRAR",
+      "id": "RARLab.WinRAR",
+      "chocolatey": "winrar",
+      "category": "utilities",
+      "info": "A file archiver.",
+      "link": "https://www.win-rar.com/",
+      "icon": "https://keyoriginal.com/wp-content/uploads/2023/12/winrar-min.png"
+    },
+    {
+      "name": "Tabby",
+      "id": "Eugeny.Tabby",
+      "chocolatey": "tabby",
+      "category": "utilities",
+      "info": "A terminal for a more modern age.",
+      "link": "https://tabby.sh/",
+      "icon": "https://cdn.terminaltrove.com/m/79b6fbf6-67f8-4f01-94a9-aa20bbf19ebd.png"
+    },
+    {
+      "name": "Parsec",
+      "id": "Parsec.Parsec",
+      "chocolatey": "parsec",
+      "category": "utilities",
+      "info": "A remote desktop app.",
+      "link": "https://parsec.app/",
+      "icon": "https://parsec.app/favicon.ico"
+    },
+    {
+      "name": "OpenRGB",
+      "id": "OpenRGB.OpenRGB",
+      "chocolatey": "openrgb",
+      "category": "utilities",
+      "info": "An open source RGB lighting control software.",
+      "link": "https://openrgb.org/",
+      "icon": "https://openrgb.org/apple-touch-icon.5819aa8b.png"
+    },
+    {
+      "name": "Rust",
+      "id": "Rustlang.Rust.MSVC",
+      "chocolatey": "rust",
+      "category": "development",
+      "info": "A FAST programming language.",
+      "link": "https://www.rust-lang.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Rust_programming_language_black_logo.svg/960px-Rust_programming_language_black_logo.svg.png"
+    },
+    {
+      "name": "Notion",
+      "id": "Notion.Notion",
+      "chocolatey": "notion",
+      "category": "productivity",
+      "info": "All-in-one workspace for your notes, tasks, wikis, and databases.",
+      "link": "https://www.notion.so/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/3840px-Notion-logo.svg.png"
+    },
+    {
+      "name": "Dropbox",
+      "id": "Dropbox.Dropbox",
+      "chocolatey": "dropbox",
+      "category": "productivity",
+      "info": "Organize all your team's content, tune out distractions, and get everyone coordinated with the world's first smart workspace.",
+      "link": "https://www.dropbox.com/",
+      "icon": "https://static.wikia.nocookie.net/logopedia/images/2/29/Dropbox_Icon_%282021-%29.svg/revision/latest/scale-to-width-down/250?cb=20240425013049"
+    },
+    {
+      "name": "Microsoft Office",
+      "id": "Microsoft.Office",
+      "chocolatey": "office365business",
+      "category": "productivity",
+      "info": "All-in-one workspace for your notes, tasks, wikis, and databases.",
+      "link": "https://www.office.com/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Microsoft_Office_logo_%282013%E2%80%932019%29.svg/1200px-Microsoft_Office_logo_%282013%E2%80%932019%29.svg.png"
+    },
+    {
+      "name": "Surfshark VPN",
+      "id": "Surfshark.Surfshark",
+      "category": "Privacy & Security",
+      "info": "A Great VPN service.",
+      "link": "https://surfshark.com/",
+      "icon": "https://static.wikia.nocookie.net/logopedia/images/a/a8/Surfshark_%28Icon%29_2023.svg"
+    },
+    {
+      "name": "Open VPN",
+      "id": "OpenVPNTechnologies.OpenVPN",
+      "chocolatey": "openvpn",
+      "category": "Privacy & Security",
+      "info": "Free Open-Source VPN Client",
+      "link": "https://openvpn.net",
+      "icon": "https://www-strapi.s3.us-west-1.amazonaws.com/openvpn_logo_feaa0a35e6.png"
+    },
+    {
+      "name": "Tailscale",
+      "id": "Tailscale.Tailscale",
+      "chocolatey": "tailscale",
+      "category": "Privacy & Security",
+      "info": "Tailscale is a WireGuard based mesh VPN",
+      "link": "https://tailscale.com/download",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG0Ne-7-zjmnVlX5gAHpQFznHi5FKk1vyliA&s"
+    },
+    {
+      "name": "Windscribe",
+      "id": "Windscribe.Windscribe",
+      "chocolatey": "windscribe",
+      "category": "Privacy & Security",
+      "info": "A Free VPN service.",
+      "link": "https://windscribe.com/",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaKUVSGAUBm-WHTejyLTAj5knDQtAuPrwMBw&s"
+    },
+    {
+      "name": "Proton VPN",
+      "id": "Proton.ProtonVPN",
+      "chocolatey": "protonvpn",
+      "category": "Privacy & Security",
+      "info": "A Free VPN service.",
+      "link": "https://protonvpn.com/",
+      "icon": "https://m.media-amazon.com/images/I/51gvJaXQh4L.png"
+    },
+    {
+      "name": "Express VPN",
+      "id": "ExpressVPN.ExpressVPN",
+      "chocolatey": "expressvpn",
+      "category": "Privacy & Security",
+      "info": "A VPN service.",
+      "link": "https://www.expressvpn.com/",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjwaKqGXfkKnwU7wHh8FgobPoEictiwTQ9tQ&s"
+    },
+    {
+      "name": "Private Internet Access",
+      "id": "PrivateInternetAccess.PrivateInternetAccess",
+      "chocolatey": "pia",
+      "category": "Privacy & Security",
+      "info": "A VPN service.",
+      "link": "https://www.privateinternetaccess.com/",
+      "icon": "https://img.utdstc.com/icon/af1/606/af160626a38c9a3a2de814a31bc6ef98cabc30ba806949a9ddfb3a39e941bfc0:200"
+    },
+    {
+      "name": "NordVPN",
+      "id": "NordSecurity.NordVPN",
+      "chocolatey": "nordvpn",
+      "category": "Privacy & Security",
+      "info": "A VPN service.",
+      "link": "https://nordvpn.com/cybersecurity-site/",
+      "icon": "https://m.media-amazon.com/images/I/31o0QB0R0sL.png"
+    },
+    {
+      "name": "IPVanish",
+      "id": "IPVanish.IPVanish",
+      "chocolatey": "ipvanish",
+      "category": "Privacy & Security",
+      "info": "A VPN service.",
+      "link": "https://www.ipvanish.com/",
+      "icon": "https://www.ipvanish.com/wp-content/uploads/2021/10/ipvanish-full-logo-white.jpg"
+    },
+    {
+      "name": "Mullvad VPN",
+      "id": "MullvadVPN.MullvadVPN",
+      "chocolatey": "mullvad-app",
+      "category": "Privacy & Security",
+      "info": "A Great Private VPN service.",
+      "link": "https://mullvad.net/",
+      "icon": "https://play-lh.googleusercontent.com/X3V8MJMnYasSOTLeFAN-EX8vKrckT2kxnPSeKRyGEU77pa-PVOjvKSvMdcOhnHX9aEg"
+    },
+    {
+      "name": "Malwarebytes",
+      "id": "Malwarebytes.Malwarebytes",
+      "chocolatey": "malwarebytes",
+      "category": "Privacy & Security",
+      "info": "A malware protection service.",
+      "link": "https://www.malwarebytes.com/mwb-download",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/4/47/Malwarebytes_Logo_Symbol.png "
+    },
+    {
+      "name": "GPU-Z",
+      "id": "TechPowerUp.GPU-Z",
+      "chocolatey": "gpu-z",
+      "category": "utilities",
+      "info": "A GPU performance monitor.",
+      "link": "https://www.techpowerup.com/gpuz/",
+      "icon": "https://upload.wikimedia.org/wikipedia/en/8/82/GPU-Z_icon.png"
+    },
+    {
+      "name": "HWMonitor",
+      "id": "CPUID.HWMonitor",
+      "chocolatey": "hwmonitor",
+      "category": "utilities",
+      "info": "A Hardware monitor.",
+      "link": "https://www.cpuid.com/softwares/hwmonitor.html",
+      "icon": "https://www.cpuid.com/medias/images/softwares/hwmonitor.svg"
+    },
+    {
+      "name": "Vim",
+      "id": "vim.vim.nightly",
+      "chocolatey": "vim",
+      "category": "development",
+      "info": "highly configurable text editor built to make creating and changing any kind of text very efficient.",
+      "link": "https://www.vim.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Vimlogo.svg"
+    },
+    {
+      "name": "Neovim",
+      "id": "Neovim.Neovim",
+      "chocolatey": "neovim",
+      "category": "development",
+      "info": "A Vim-fork focused on extensibility and agility.",
+      "link": "https://neovim.io/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Neovim-mark.svg/1280px-Neovim-mark.svg.png"
+    },
+    {
+      "name": "PowerToys",
+      "id": "Microsoft.PowerToys",
+      "chocolatey": "powertoys",
+      "category": "utilities",
+      "info": "A set of utilities for power users to tune and streamline their Windows experience.",
+      "link": "https://learn.microsoft.com/en-us/windows/powertoys/",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzPf7vMthKRCgjSxB6bxmJTypARbHiPoFgFg&s"
+    },
+    {
+      "name": "PuTTY",
+      "id": "PuTTY.PuTTY",
+      "chocolatey": "putty.install",
+      "category": "utilities",
+      "info": "A free implementation of SSH and Telnet for Windows and Unix platforms.",
+      "link": "https://www.putty.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/PuTTY_Icon.svg/1280px-PuTTY_Icon.svg.png"
+    },
+    {
+      "name": "Virtual Desktop Streamer",
+      "id": "VirtualDesktop.Streamer",
+      "category": "games",
+      "info": "Streams Your PC Games to Your Oculus Quest.",
+      "link": "https://www.vrdesktop.net/",
+      "icon": "https://cdn2.steamgriddb.com/icon/acac6e55a8890cb2666e7352729b18f1.ico"
+    },
+    {
+      "name": "Cemu",
+      "id": "Cemu.Cemu",
+      "chocolatey": "cemu",
+      "category": "games",
+      "info": "A Wii U emulator.",
+      "link": "https://cemu.info/",
+      "icon": "https://external-preview.redd.it/770b9ca5I7WcAmAl8nE9hYWVbLgGqfrO9qaBKD_8h8M.jpg?auto=webp&s=32184e918495d73cc58bf8971c979314e6a8c3d6"
+    },
+    {
+      "name": "Tor Browser",
+      "id": "TorProject.TorBrowser",
+      "chocolatey": "tor-browser",
+      "category": "browsers",
+      "info": "A web browser that protects your privacy.",
+      "link": "https://www.torproject.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Tor_Browser_icon.svg/1280px-Tor_Browser_icon.svg.png"
+    },
+    {
+      "name": "Display Driver Uninstaller",
+      "id": "Wagnardsoft.DisplayDriverUninstaller",
+      "chocolatey": "ddu",
+      "category": "utilities",
+      "info": "A driver uninstaller.",
+      "link": "https://www.guru3d.com/download/display-driver-uninstaller-download/",
+      "icon": "https://img.utdstc.com/icon/d9b/bb3/d9bbb3fecc888b09380d5d01e21b615dc5844e92236c90d6fd852116d294d944:200"
+    },
+    {
+      "name": "SignalRgb",
+      "id": "WhirlwindFX.SignalRgb",
+      "category": "utilities",
+      "info": "A RGB lighting control software.",
+      "link": "https://signalrgb.com/",
+      "icon": "https://mp-cdn.elgato.com/media/ab8fd021-8038-4b26-8192-191cce9c9e6b/3c114a0a-d42a-4a5a-8ca4-840f7ef07879/SignalRGB-Deck-app-icon-optimized-ba4f4aa2-85b6-4cc2-b448-eb20786ef85a.png"
+    },
+    {
+      "name": "Flow Launcher",
+      "id": "Flow-Launcher.Flow-Launcher",
+      "chocolatey": "flow-launcher",
+      "category": "utilities",
+      "info": "Keystroke launcher for Windows to search, and much more.",
+      "link": "https://www.flowlauncher.com/",
+      "icon": "https://styles.redditmedia.com/t5_5fx8y0/styles/communityIcon_lbbwa21m92w81.png"
+    },
+    {
+      "name": "AnyDesk",
+      "id": "AnyDesk.AnyDesk",
+      "chocolatey": "anydesk",
+      "category": "utilities",
+      "info": "A remote desktop app.",
+      "link": "https://anydesk.com/en",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcidJhdaea8NW7PRqSElcdHhKtm8ftgffMvw&s"
+    },
+    {
+      "name": "WizTree",
+      "id": "AntibodySoftware.WizTree",
+      "chocolatey": "wiztree",
+      "category": "utilities",
+      "info": "A disk space analyzer.",
+      "link": "https://diskanalyzer.com/",
+      "icon": "https://antibodysoftware-17031.kxcdn.com/images/wiztree445x.png"
+    },
+    {
+      "name": "qBittorrent",
+      "id": "qBittorrent.qBittorrent",
+      "chocolatey": "qbittorrent",
+      "category": "utilities",
+      "info": "A torrent client.",
+      "link": "https://www.qbittorrent.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/New_qBittorrent_Logo.svg/3840px-New_qBittorrent_Logo.svg.png"
+    },
+    {
+      "name": "Bitwarden",
+      "id": "Bitwarden.Bitwarden",
+      "chocolatey": "bitwarden",
+      "category": "Privacy & Security",
+      "info": "A password manager.",
+      "link": "https://bitwarden.com/",
+      "icon": "https://assets.wheelhouse.com/media/_solution_logo_11062023_5027381.png"
+    },
+    {
+      "name": "Wireshark",
+      "id": "WiresharkFoundation.Wireshark",
+      "chocolatey": "wireshark",
+      "category": "utilities",
+      "info": "A network protocol analyzer.",
+      "link": "https://www.wireshark.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Wireshark_icon_new.png"
+    },
+    {
+      "name": "Sunshine",
+      "id": "LizardByte.Sunshine",
+      "chocolatey": "sunshine",
+      "category": "games",
+      "info": "A self-hosted game streaming server.",
+      "link": "https://app.lizardbyte.dev/Sunshine/",
+      "icon": "https://github.com/LizardByte/Sunshine/raw/master/sunshine.png"
+    },
+    {
+      "name": "Moonlight",
+      "id": "MoonlightGameStreamingProject.Moonlight",
+      "chocolatey": "moonlight-qt.install",
+      "category": "games",
+      "info": "A game streaming client.",
+      "link": "https://moonlight-stream.org/",
+      "icon": "https://play-lh.googleusercontent.com/QGBq_X2ewz_3HUR9AUI3NXcOjfVJd-Mf1l66-3D6zMzF-HN81f_KeZ-shqxRE633I3M"
+    },
+    {
+      "name": "Playnite",
+      "id": "Playnite.Playnite",
+      "chocolatey": "playnite",
+      "category": "games",
+      "info": "A video game library manager and launcher with support for 3rd party libraries.",
+      "link": "https://playnite.link/",
+      "icon": "https://cdn2.steamgriddb.com/icon_thumb/f9ab9a0f7c56435e35dc4dadf0eb6945.png"
+    },
+    {
+      "name": "Bloxstrap",
+      "id": "pizzaboxer.Bloxstrap",
+      "category": "games",
+      "info": "A Alternative Roblox launcher.",
+      "link": "https://bloxstraplabs.com/",
+      "icon": "https://avatars.githubusercontent.com/u/147950331?s=48&v=4"
+    },
+    {
+      "name": "Go",
+      "id": "GoLang.Go",
+      "chocolatey": "golang",
+      "category": "development",
+      "info": "A Fast programming language.",
+      "link": "https://go.dev/",
+      "icon": "https://go.dev/blog/go-brand/Go-Logo/PNG/Go-Logo_Blue.png"
+    },
+    {
+      "name": "Bulk Crap Uninstaller",
+      "id": "Klocman.BulkCrapUninstaller",
+      "chocolatey": "bulk-crap-uninstaller",
+      "category": "utilities",
+      "info": "A powerful uninstaller for Windows.",
+      "link": "https://www.bcuninstaller.com/",
+      "icon": "https://a.fsdn.com/allura/p/bulk-crap-uninstaller/icon?1772837084?&w=90"
+    },
+    {
+      "name": "MiniTool Partition Wizard",
+      "chocolatey": "partitionwizard",
+      "category": "utilities",
+      "info": "A powerful partition manager for Windows.",
+      "link": "https://www.partitionwizard.com/",
+      "icon": "https://www.partitionwizard.com/images/logo.png"
+    },
+    {
+      "name": "Windhawk",
+      "id": "RamenSoftware.Windhawk",
+      "chocolatey": "windhawk",
+      "category": "utilities",
+      "info": "A powerful tool to customize Windows.",
+      "link": "https://windhawk.net/",
+      "icon": "https://windhawk.net/favicon.ico"
+    },
+    {
+      "name": "Bulk Rename Utility",
+      "id": "TGRMNSoftware.BulkRenameUtility",
+      "chocolatey": "bulkrenameutility",
+      "category": "utilities",
+      "info": "A powerful file renaming tool.",
+      "link": "https://www.bulkrenameutility.co.uk/",
+      "icon": "https://www.bulkrenameutility.co.uk/favicon.ico"
+    },
+    {
+      "name": "GIMP",
+      "id": "GIMP.GIMP.2",
+      "chocolatey": "gimp",
+      "category": "utilities",
+      "info": "A free and open source image editor.",
+      "link": "https://www.gimp.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/The_GIMP_icon_-_gnome.svg/1280px-The_GIMP_icon_-_gnome.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail"
+    },
+    {
+      "name": "Guilded",
+      "id": "Guilded.Guilded",
+      "category": "communication",
+      "info": "A communication app for gamers.",
+      "link": "https://www.guilded.gg/",
+      "icon": "https://play-lh.googleusercontent.com/6So1NGvRZ1xLq5Y7gjth5jLv9yP_bMkeT4BYYaglZ9tM_oIgoDyEx79PenhceXLwBKpc"
+    },
+    {
+      "name": "Zen Browser",
+      "id": "Zen-Team.Zen-Browser",
+      "chocolatey": "zen-browser --pre",
+      "category": "browsers",
+      "info": "A fast, private and secure web browser.",
+      "link": "https://zen-browser.app/",
+      "icon": "https://avatars.githubusercontent.com/u/165225155"
+    },
+    {
+      "name": "Lively Wallpaper",
+      "id": "rocksdanister.LivelyWallpaper",
+      "chocolatey": "lively",
+      "category": "utilities",
+      "info": "A free and open source animated wallpaper app.",
+      "link": "https://rocksdanister.github.io/lively/",
+      "icon": "https://www.rocksdanister.com/lively/assets/logo.webp"
+    },
+    {
+      "name": "File-Converter",
+      "id": "AdrienAllard.FileConverter",
+      "chocolatey": "file-converter",
+      "category": "utilities",
+      "info": "A simple file converter app.",
+      "link": "https://file-converter.io/",
+      "icon": "https://file-converter.io/images/application-icon.png"
+    },
+    {
+      "name": "JDownloader 2",
+      "id": "AppWork.JDownloader",
+      "chocolatey": "jdownloader",
+      "category": "utilities",
+      "info": "A download manager.",
+      "link": "https://jdownloader.org/jdownloader2",
+      "icon": "https://jdownloader.org/_media/knowledge/wiki/jdownloader.png?w=150"
+    },
+    {
+      "name": "Files",
+      "id": "FilesCommunity.Files",
+      "chocolatey": "files",
+      "category": "utilities",
+      "info": "A modern file manager for Windows.",
+      "link": "https://files.community/",
+      "icon": "https://files.community/branding/logo-dark.svg"
+    },
+    {
+      "name": "FxSound",
+      "id": "FxSound.FxSound",
+      "chocolatey": "fxsound",
+      "category": "multimedia",
+      "info": "An audio enhancer for Windows.",
+      "link": "https://www.fxsound.com/",
+      "icon": "https://avatars.githubusercontent.com/u/103012411?v=4"
+    },
+    {
+      "name": "Blender",
+      "id": "BlenderFoundation.Blender",
+      "chocolatey": "blender",
+      "category": "productivity",
+      "info": "A free and open source 3D creation suite.",
+      "link": "https://www.blender.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Blender_logo_no_text.svg"
+    },
+    {
+      "name": "GeForce NOW",
+      "id": "NVIDIA.GeForceNOW",
+      "chocolatey": "nvidia-geforce-now",
+      "category": "games",
+      "info": "A cloud gaming service.",
+      "link": "https://www.nvidia.com/en-us/geforce-now/",
+      "icon": "https://cdn-1.webcatalog.io/catalog/nvidia-geforce-now/nvidia-geforce-now-icon-filled-256.png?v=1714775303603"
+    },
+    {
+      "name": "Nvidia App",
+      "chocolatey": "nvidia-app",
+      "category": "games",
+      "info": "The place to install drivers, tweak gpu settings",
+      "link": "https://www.nvidia.com/en-eu/software/nvidia-app/",
+      "icon": "https://img.utdstc.com/icon/8d6/734/8d673466f097adae8077bd21f9b46956317d8e561af712e5927f1dcd1193b26e:200"
+    },
+    {
+      "name": "Twinkle Tray",
+      "id": "xanderfrangos.twinkletray",
+      "chocolatey": "twinkle-tray",
+      "category": "utilities",
+      "info": "A monitor brightness control app.",
+      "link": "https://twinkletray.com/",
+      "icon": "https://raw.githubusercontent.com/xanderfrangos/twinkle-tray/master/src/assets/logo.png"
+    },
+    {
+      "name": "Bambu Studio",
+      "id": "Bambulab.Bambustudio",
+      "chocolatey": "bambustudio",
+      "category": "utilities",
+      "info": "A Slicer for Bambu Labs 3D Printers.",
+      "link": "https://bambulab.com//download/studio/",
+      "icon": "https://user-images.githubusercontent.com/106916061/179006347-497d24c0-9bd6-45b7-8c49-d5cc8ecfe5d7.png"
+    },
+    {
+      "name": "PursaSlicer",
+      "id": "Pursa3D.PursaSlicer",
+      "chocolatey": "prusaslicer",
+      "category": "utilities",
+      "info": "An Open Source 3D model slicer",
+      "link": "https://www.prusa3d.com/prusaslicer/",
+      "icon": "https://cdn.help.prusa3d.com/wp-content/uploads/PSlogo-1.jpg"
+    },
+    {
+      "name": "Creality Print",
+      "id": "Creality.CrealityPrint",
+      "chocolatey": "creality-print",
+      "category": "utilities",
+      "info": "A 3D printing software for Creality printers.",
+      "link": "https://www.creality.com/download",
+      "icon": "https://cdn.creality.com/blogs/fc05e3d3e33b67a2ec43f3926dfbad55.jpg"
+    },
+    {
+      "name": "OrcaSlicer",
+      "id": "SoftFever.OrcaSlicer",
+      "chocolatey": "orcaslicer",
+      "category": "utilities",
+      "info": "A 3D printing slicer software.",
+      "link": "https://orcaslicer.com/",
+      "icon": "https://orcaslicers.org/wp-content/uploads/2025/05/Orca-Slicer.png"
+    },
+    {
+      "name": "Ultimaker Cura",
+      "id": "Ultimaker.Cura",
+      "chocolatey": "cura-new",
+      "category": "utilities",
+      "info": "A 3D printing slicer software.",
+      "link": "https://ultimaker.com/software/ultimaker-cura",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Logo_for_Cura_Software.png"
+    },
+    {
+      "name": "SuperF4",
+      "id": "StefanSundin.Superf4",
+      "chocolatey": "superf4",
+      "category": "utilities",
+      "info": "A utility to force close applications with a keyboard shortcut.",
+      "link": "https://stefansundin.github.io/superf4/",
+      "icon": "https://stefansundin.github.io/superf4/img/icon128.png"
+    },
+    {
+      "name": "Revo Uninstaller",
+      "id": "RevoUninstaller.RevoUninstaller",
+      "chocolatey": "revo-uninstaller",
+      "category": "utilities",
+      "info": "A powerful uninstaller for Windows. (paid)",
+      "link": "https://www.revouninstaller.com/products/revo-uninstaller-free/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/8/83/Revouninstallerpro_icon.png"
+    },
+    {
+      "name": "Unity Hub",
+      "id": "Unity.UnityHub",
+      "chocolatey": "unity-hub",
+      "category": "development",
+      "info": "A hub for managing Unity projects and installations.",
+      "link": "https://unity.com/products/unity-hub",
+      "icon": "https://i.redd.it/tu3gt6ysfxq71.png"
+    },
+    {
+      "name": "Oh My Posh",
+      "id": "JanDeDobbeleer.OhMyPosh",
+      "chocolatey": "oh-my-posh",
+      "category": "development",
+      "info": "A prompt theme engine for any shell.",
+      "link": "https://ohmyposh.dev/",
+      "icon": "https://ohmyposh.dev/img/logo-light.svg"
+    },
+    {
+      "name": "Vesktop",
+      "id": "Vencord.Vesktop",
+      "category": "communication",
+      "info": "A Modded Discord client for Windows.",
+      "link": "https://vencord.dev/",
+      "icon": "https://avatars.githubusercontent.com/u/113042587?s=300&v=4"
+    },
+    {
+      "name": "Prism Launcher",
+      "id": "PrismLauncher.PrismLauncher",
+      "chocolatey": "prismlauncher",
+      "category": "games",
+      "info": "A Minecraft launcher that supports multiple accounts and modpacks.",
+      "link": "https://prismlauncher.org/",
+      "icon": "https://raw.githubusercontent.com/PrismLauncher/PrismLauncher/refs/heads/develop/program_info/org.prismlauncher.PrismLauncher.svg"
+    },
+    {
+      "name": "Free Download Manager",
+      "id": "SoftDeluxe.FreeDownloadManager",
+      "chocolatey": "freedownloadmanager",
+      "category": "utilities",
+      "info": "An app to manage all of your downloads in one place",
+      "link": "https://www.freedownloadmanager.org/",
+      "icon": "https://user-images.githubusercontent.com/35652061/78561726-0c6b0d00-783a-11ea-9952-7be8b0858a73.png"
+    },
+    {
+      "name": "Oracle VirtualBox",
+      "id": "Oracle.VirtualBox",
+      "chocolatey": "virtualbox",
+      "category": "utilities",
+      "info": "A Virtual machine manager",
+      "link": "https://www.virtualbox.org/",
+      "icon": "https://www.virtualbox.org/favicon.ico"
+    },
+    {
+      "name": "TeamViewer",
+      "id": "TeamViewer.TeamViewer",
+      "chocolatey": "teamviewer",
+      "category": "utilities",
+      "info": "A remote desktop app.",
+      "link": "https://www.teamviewer.com/en-ca/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/3/31/TeamViewer_Logo_Icon_Only.svg"
+    },
+    {
+      "name": "Ungoogled Chromium",
+      "id": "eloston.ungoogled-chromium",
+      "chocolatey": "ungoogled-chromium",
+      "category": "browsers",
+      "info": "A Chromium web browser with out google features",
+      "link": "https://github.com/ungoogled-software/ungoogled-chromium",
+      "icon": "https://imgproxy.flathub.org/insecure/dpr:1/f:avif/q:100/rs:fit:128:128/aHR0cHM6Ly9kbC5mbGF0aHViLm9yZy9tZWRpYS9pby9naXRodWIvdW5nb29nbGVkX3NvZnR3YXJlLnVuZ29vZ2xlZF9jaHJvbWl1bS9kNmMwYjU0OTQwZGExNzI0OTIxNDFhYjFiYmVmZjEwYy9pY29ucy8xMjh4MTI4L2lvLmdpdGh1Yi51bmdvb2dsZWRfc29mdHdhcmUudW5nb29nbGVkX2Nocm9taXVtLnBuZw"
+    },
+    {
+      "name": "LibreWolf",
+      "id": "LibreWolf.LibreWolf",
+      "chocolatey": "librewolf",
+      "category": "browsers",
+      "info": "A privacy focused firefox fork",
+      "link": "https://librewolf.net/",
+      "icon": "https://librewolf.net/icon.svg"
+    },
+    {
+      "name": "ShareX",
+      "id": "ShareX.ShareX",
+      "chocolatey": "sharex",
+      "category": "multimedia",
+      "info": "Advanced Screenshot Tool",
+      "link": "https://github.com/ShareX/ShareX",
+      "icon": "https://getsharex.com/img/ShareX_Logo_512.png"
+    },
+    {
+      "name": "Fastfetch",
+      "id": "Fastfetch-cli.Fastfetch",
+      "chocolatey": "fastfetch",
+      "category": "utilities",
+      "info": "System Info Tool",
+      "link": "https://github.com/fastfetch-cli/fastfetch",
+      "icon": "https://avatars.githubusercontent.com/u/136235211?s=200&v=4"
+    },
+    {
+      "name": "ZeroTier One",
+      "id": "ZeroTier.ZeroTierOne",
+      "chocolatey": "zerotier-one",
+      "category": "utilities",
+      "info": "A softwarethat allows you to virtual networks.",
+      "link": "https://www.zerotier.com/",
+      "icon": "https://avatars.githubusercontent.com/u/4173285?v=4"
+    },
+    {
+      "name": "WinMerge",
+      "id": "WinMerge.WinMerge",
+      "chocolatey": "winmerge",
+      "category": "utilities",
+      "info": "A software that allows you to compare and merge files.",
+      "link": "https://winmerge.org/",
+      "icon": "https://winmerge.org/apple-touch-icon-precomposed.png"
+    },
+    {
+      "name": "AIMP",
+      "id": "AIMP.AIMP",
+      "chocolatey": "aimp",
+      "category": "multimedia",
+      "info": "A music player for Windows",
+      "link": "https://www.aimp.ru/",
+      "icon": "https://www.aimp.ru/favicon.ico"
+    },
+    {
+      "name": "CopyQ",
+      "id": "hluk.copyq",
+      "chocolatey": "copyq",
+      "category": "utilities",
+      "info": "A clipboard manager with advanced features.",
+      "link": "https://hluk.github.io/CopyQ/",
+      "icon": "https://hluk.github.io/CopyQ/images/logo.png"
+    },
+    {
+      "name": "Krita",
+      "id": "KDE.Krita",
+      "chocolatey": "krita",
+      "category": "multimedia",
+      "info": "A free and open source digital painting application.",
+      "link": "https://krita.org/en/",
+      "icon": "https://krita.org/images/favicon.ico"
+    },
+    {
+      "name": "Kate",
+      "id": "KDE.Kate",
+      "chocolatey": "kate",
+      "category": "multimedia",
+      "info": "A free and open source text editor.",
+      "link": "https://kate-editor.org/",
+      "icon": "https://kate-editor.org/images/kate.svg"
+    },
+    {
+      "name": "Paint.NET",
+      "id": "dotPDN.PaintDotNet",
+      "chocolatey": "paint.net",
+      "category": "multimedia",
+      "info": "A free image and photo editing software for Windows.",
+      "link": "https://www.getpaint.net/",
+      "icon": "https://www.getpaint.net/favicon.ico"
+    },
+    {
+      "name": "IrfanView",
+      "id": "IrfanSkiljan.IrfanView",
+      "chocolatey": "irfanview",
+      "category": "multimedia",
+      "info": "A fast and compact image viewer/converter.",
+      "link": "https://www.irfanview.com/",
+      "icon": "https://www.irfanview.com/favicon.ico"
+    },
+    {
+      "name": "AB Download Manager",
+      "id": "ABDownloadManager.ABDownloadManager",
+      "chocolatey": "ab-download-manager",
+      "category": "utilities",
+      "info": "A powerful download manager for Windows.",
+      "link": "https://abdownloadmanager.com/",
+      "icon": "https://abdownloadmanager.com/assets/app_icon_simple-DyQVbx7O.svg"
+    },
+    {
+      "name": "Total Commander",
+      "id": "Ghisler.TotalCommander",
+      "chocolatey": "totalcommander",
+      "category": "utilities",
+      "info": "A file manager for Windows.",
+      "link": "https://www.ghisler.com/",
+      "icon": "https://www.ghisler.com/favicon.ico"
+    },
+    {
+      "name": "Python 3",
+      "chocolatey": "python3",
+      "category": "python",
+      "info": "Python 3 programming language. on Chocolatey.",
+      "link": "https://www.python.org",
+      "icon": "https://www.python.org/favicon.ico"
+    },
+    {
+      "name": "Python 3.8",
+      "id": "Python.Python.3.8",
+      "chocolatey": "python38",
+      "category": "python",
+      "info": "Programming language",
+      "link": "https://www.python.org",
+      "icon": "https://www.python.org/favicon.ico"
+    },
+    {
+      "name": "Python 3.9",
+      "id": "Python.Python.3.9",
+      "chocolatey": "python39",
+      "category": "python",
+      "info": "Programming language",
+      "link": "https://www.python.org",
+      "icon": "https://www.python.org/favicon.ico"
+    },
+    {
+      "name": "Python 3.10",
+      "id": "Python.Python.3.10",
+      "chocolatey": "python310",
+      "category": "python",
+      "info": "Python 3.10 programming language.",
+      "link": "https://www.python.org",
+      "icon": "https://www.python.org/favicon.ico"
+    },
+    {
+      "name": "Python 3.11",
+      "id": "Python.Python.3.11",
+      "chocolatey": "python311",
+      "category": "python",
+      "info": "Python 3.11 programming language.",
+      "link": "https://www.python.org",
+      "icon": "https://www.python.org/favicon.ico"
+    },
+    {
+      "name": "Python 3.12",
+      "id": "Python.Python.3.12",
+      "chocolatey": "python312",
+      "category": "python",
+      "info": "Python 3.12 programming language.",
+      "link": "https://www.python.org",
+      "icon": "https://www.python.org/favicon.ico"
+    },
+    {
+      "name": "Python 3.13",
+      "id": "Python.Python.3.13",
+      "chocolatey": "python313",
+      "category": "python",
+      "info": "Python 3.13 programming language.",
+      "link": "https://www.python.org",
+      "icon": "https://www.python.org/favicon.ico"
+    },
+    {
+      "name": "Filezilla",
+      "chocolatey": "filezilla",
+      "category": "utilities",
+      "info": "A free FTP client.",
+      "link": "https://filezilla-project.org/",
+      "icon": "https://filezilla-project.org/favicon.ico"
+    },
+    {
+      "name": "Chromium",
+      "id": "Hibbiki.Chromium",
+      "chocolatey": "chromium",
+      "category": "browsers",
+      "info": "A free and open source web browser.",
+      "link": "https://www.chromium.org/",
+      "icon": "https://www.chromium.org/_assets/icon-chromium-96.png"
+    },
+    {
+      "name": "CMake",
+      "id": "Kitware.CMake",
+      "chocolatey": "cmake",
+      "category": "development",
+      "info": "A cross-platform build system.",
+      "link": "https://cmake.org/",
+      "icon": "https://cmake.org/favicon.ico"
+    },
+    {
+      "name": "Autoruns",
+      "id": "Microsoft.Sysinternals.Autoruns",
+      "chocolatey": "autoruns",
+      "category": "utilities",
+      "info": "A utility that shows you what programs are configured to run during system startup.",
+      "link": "https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns",
+      "icon": "https://cdn2.portableapps.com/AutorunsPortable_128.png"
+    },
+    {
+      "name": "Signal",
+      "id": "OpenWhisperSystems.Signal",
+      "chocolatey": "signal",
+      "category": "communication",
+      "info": "A secure messaging app.",
+      "link": "https://signal.org/",
+      "icon": "https://signal.org/assets/images/favicon/favicon.svg"
+    },
+    {
+      "name": "Inkscape",
+      "id": "Inkscape.Inkscape",
+      "chocolatey": "inkscape",
+      "category": "utilities",
+      "info": "A vector graphics editor.",
+      "link": "https://inkscape.org/",
+      "icon": "https://media.inkscape.org/static/images/inkscape-logo.svg"
+    },
+    {
+      "name": "Nilesoft Shell",
+      "id": "Nilesoft.Shell",
+      "category": "utilities",
+      "info": "A shell extension for Windows that adds useful features to the context menu.",
+      "link": "https://nilesoft.org/",
+      "icon": "https://nilesoft.org/images/favicon.svg"
+    },
+    {
+      "name": "Warp Terminal",
+      "id": "Warp.Warp",
+      "category": "utilities",
+      "info": "A modern terminal emulator for Windows.",
+      "link": "https://www.warp.dev/",
+      "icon": "https://avatars.githubusercontent.com/u/71840468?s=200&v=4"
+    },
+    {
+      "name": "NanaZip",
+      "id": "M2Team.NanaZip",
+      "chocolatey": "nanazip",
+      "category": "utilities",
+      "info": "A free and open source file archiver.",
+      "link": "https://nanazip.org/",
+      "icon": "https://raw.githubusercontent.com/M2Team/NanaZip/main/Assets/NanaZip.png"
+    },
+    {
+      "name": "Fishstrap",
+      "id": "Fishstrap.Fishstrap",
+      "category": "games",
+      "info": "A Modded Roblox client for Windows.",
+      "link": "https://fishstrap.app/",
+      "icon": "https://tr.rbxcdn.com/180DAY-474f0d60254aded6fa01c33ec46ab385/420/420/Image/Webp/noFilter"
+    },
+    {
+      "name": "Balena Etcher",
+      "id": "Balena.Etcher",
+      "chocolatey": "balenaetcher",
+      "category": "utilities",
+      "info": "A powerful tool to flash OS images to SD cards and USB drives.",
+      "link": "https://www.balena.io/etcher/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Etcher-icon.png"
+    },
+    {
+      "name": "Bun",
+      "id": "Oven-sh.Bun",
+      "chocolatey": "bun",
+      "category": "development",
+      "info": "A fast all-in-one JavaScript runtime.",
+      "link": "https://bun.sh/",
+      "icon": "https://bun.sh/logo.svg"
+    },
+    {
+      "name": "Rainmeter",
+      "id": "Rainmeter.Rainmeter",
+      "chocolatey": "rainmeter",
+      "category": "utilities",
+      "info": "A powerful desktop customization tool.",
+      "link": "https://www.rainmeter.net/",
+      "icon": "https://www.rainmeter.net/favicon.ico"
+    },
+    {
+      "name": "Geek Uninstaller",
+      "id": "GeekUninstaller.GeekUninstaller",
+      "chocolatey": "geekuninstaller",
+      "category": "utilities",
+      "info": "A powerful uninstaller for Windows.",
+      "link": "https://www.geekuninstaller.com/",
+      "icon": "https://www.geekuninstaller.com/favicon.ico"
+    },
+    {
+      "name": "uv",
+      "id": "astral-sh.uv",
+      "chocolatey": "uv",
+      "category": "development",
+      "info": "A fast and modern package manager for Python.",
+      "link": "https://docs.astral.sh/uv/getting-started/installation/",
+      "icon": "https://docs.astral.sh/uv/assets/logo-letter.svg"
+    },
+    {
+      "name": "YASB",
+      "id": "AmN.yasb",
+      "category": "utilities",
+      "info": "Yet Another Status Bar, a simple and customizable status bar for Windows.",
+      "link": "https://yasb.dev/",
+      "icon": "https://cdn.yasb.dev/favicons/favicon.ico"
+    },
+    {
+      "name": "TortoiseGit",
+      "id": "TortoiseGit.TortoiseGit",
+      "chocolatey": "tortoisegit",
+      "category": "development",
+      "info": "A Git client for Windows that integrates with the File Explorer.",
+      "link": "https://tortoisegit.org/",
+      "icon": "https://tortoisegit.org/images/apple-touch-icon.png"
+    },
+    {
+      "name": "foobar2000",
+      "id": "PeterPawlowski.foobar2000",
+      "chocolatey": "foobar2000",
+      "category": "multimedia",
+      "info": "A free and open source audio player for Windows.",
+      "link": "https://www.foobar2000.org/",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Foobar2000_logo_white.png"
+    },
+    {
+      "name": "Localsend",
+      "id": "localsend",
+      "chocolatey": "localsend",
+      "category": "utilities",
+      "info": "A simple and private file sharing app for Windows.",
+      "link": "https://localsend.org/",
+      "icon": "https://avatars.githubusercontent.com/u/120677616?s=200&v=4"
+    },
+    {
+      "name": "Itch.io",
+      "id": "ItchIo.Itch",
+      "chocolatey": "itch.io",
+      "category": "games",
+      "info": "A platform for indie games and game development.",
+      "link": "https://itch.io/",
+      "icon": "https://itch.io/static/images/itchio-square-144.png"
+    },
+    {
+      "name": "Cursor",
+      "chocolatey": "cursoride",
+      "category": "development",
+      "info": "A AI Powered code editor.",
+      "link": "https://cursor.sh/",
+      "icon": "https://cursor.sh/favicon.ico"
+    },
+    {
+      "name": "Claude Desktop",
+      "chocolatey": "claude",
+      "category": "development",
+      "info": "Chat with claude AI on your desktop.",
+      "link": "https://claude.com/download",
+      "icon": "https://claude.com/favicon.ico"
+    },
+    {
+      "name": "Claude Code",
+      "chocolatey": "claudecode",
+      "category": "development",
+      "info": "Chat with claude AI on your desktop.",
+      "link": "https://claude.com/download",
+      "icon": "https://claude.com/favicon.ico"
+    },
+    {
+      "name": "VSCodium",
+      "id": "VSCodium.VSCodium",
+      "chocolatey": "vscodium",
+      "category": "development",
+      "info": "A free and open-source code editor.",
+      "link": "https://vscodium.com/",
+      "icon": "https://vscodium.com/img/codium_cnl.svg"
+    },
+    {
+      "name": "UniGetUI",
+      "id": "Devolutions.UniGetUI",
+      "chocolatey": "unigetui",
+      "category": "utilities",
+      "info": "A simple and lightweight GUI package manager for Winget.",
+      "link": "https://devolutions.net/unigetui/",
+      "icon": "https://devolutions.net/favicon-32x32.png"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+ZEVYRON — AVISO DE LICENCIA E INSTALACIÓN
+
+Versión 2.23.3 — 17 de agosto de 2026
+
+Zevyron se distribuye gratuitamente y como software de código abierto bajo GNU General Public License versión 3 (GPLv3), sujeto a los avisos y licencias aplicables de terceros.
+
+Esta distribución contiene modificaciones respecto a su base original. GPLv3 concede derechos para ejecutar, estudiar, modificar y redistribuir el software conforme a la licencia. El hecho de que Zevyron sea gratuito no reduce esos derechos.
+
+Cuando se distribuyan binarios de Zevyron, el código fuente correspondiente de esa versión debe estar disponible de forma compatible con GPLv3. SOURCE_CODE.md se incluye para registrar la ubicación oficial del código antes de la distribución pública.
+
+Zevyron puede modificar ajustes de Windows, servicios, registro, red y aplicaciones. Se recomienda crear un punto de restauración y copias de seguridad antes de cambios importantes.
+
+Los componentes de terceros permanecen sujetos a sus respectivas licencias. Consulte LICENSE, NOTICE.md y THIRD_PARTY_NOTICES.md.
+
+Al continuar, reconoce este aviso y los términos GNU GPLv3 aplicables al software.

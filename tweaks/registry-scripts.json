@@ -1,0 +1,726 @@
+{
+  "version": "2026-08-16T00:18:49.219Z",
+  "tweaks": [
+    {
+      "id": "24-hour-clock",
+      "title": "Set 24-Hour Clock",
+      "description": "Changes clock to display 24-hour format.",
+      "category": [
+        "General",
+        "Appearance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/24-hour-clock",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path \"HKCU:\\Control Panel\\International\" -Name \"sShortTime\" -Value \"HH:mm\"\r\nSet-ItemProperty -Path \"HKCU:\\Control Panel\\International\" -Name \"sTimeFormat\" -Value \"HH:mm:ss\"\r\nStop-Process -Name explorer -Force\r\n\r\n",
+        "unapply": "Set-ItemProperty -Path \"HKCU:\\Control Panel\\International\" -Name \"sShortTime\" -Value \"h:mm tt\"\r\nSet-ItemProperty -Path \"HKCU:\\Control Panel\\International\" -Name \"sTimeFormat\" -Value \"h:mm:ss tt\"\r\nStop-Process -Name explorer -Force\r\n"
+      }
+    },
+    {
+      "id": "align-taskbar-left",
+      "title": "Align Taskbar Left",
+      "description": "Aligns the taskbar to the left side of the screen.",
+      "category": [
+        "General",
+        "Appearance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/align-taskbar-left",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" -Name \"TaskbarAl\" -Type DWord -Value 0\r\n",
+        "unapply": "Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" -Name \"TaskbarAl\" -Type DWord -Value 1\r\n"
+      }
+    },
+    {
+      "id": "debloat-windows",
+      "title": "Debloat Windows",
+      "description": "Choose between Zevyron Debloat script or Raphire's Win11Debloat script to remove built-in Windows apps and bloatware.",
+      "category": [
+        "Performance",
+        "Privacy"
+      ],
+      "recommended": true,
+      "reversible": false,
+      "updatedversion": "2.14.0",
+      "docsurl": "/tweaks/debloat-windows",
+      "source": "",
+      "scripts": {
+        "apply": "# Zevyron Debloat Script\r\n# This script provides options for different debloat methods\r\n# Made by Parcoil\r\n# Credits to Raphire for his debloat script: https://github.com/Raphire\r\n\r\nparam(\r\n    [string]$ScriptChoice = \"\",\r\n    [string[]]$AppsToRemove = @()\r\n)\r\n\r\n$version = \"1.2.0\"\r\n\r\nfunction Test-IsAdmin {\r\n    $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()\r\n    $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)\r\n    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)\r\n}\r\n\r\nif (-not (Test-IsAdmin)) {\r\n    Write-Host \"[Zevyron Debloat] This script must be run as Administrator.\" -ForegroundColor Red\r\n    Read-Host \"Press Enter to exit\"\r\n    exit 1\r\n}\r\nAdd-Type -AssemblyName PresentationFramework\r\nAdd-Type -AssemblyName PresentationCore\r\nAdd-Type -AssemblyName WindowsBase\r\n\r\n# list of apps to remove\r\n$appDefinitions = @(\r\n    @{ Package = \"Clipchamp.Clipchamp\"; FriendlyName = \"Clipchamp Video Editor\" },\r\n    @{ Package = \"Microsoft.3DBuilder\"; FriendlyName = \"3D Builder\" },\r\n    @{ Package = \"Microsoft.549981C3F5F10\"; FriendlyName = \"Cortana\" },\r\n    @{ Package = \"Microsoft.BingFinance\"; FriendlyName = \"Bing Finance\" },\r\n    @{ Package = \"Microsoft.BingFoodAndDrink\"; FriendlyName = \"Bing Food & Drink\" },\r\n    @{ Package = \"Microsoft.BingHealthAndFitness\"; FriendlyName = \"Bing Health & Fitness\" },\r\n    @{ Package = \"Microsoft.BingNews\"; FriendlyName = \"Bing News\" },\r\n    @{ Package = \"Microsoft.BingSports\"; FriendlyName = \"Bing Sports\" },\r\n    @{ Package = \"Microsoft.BingTranslator\"; FriendlyName = \"Bing Translator\" },\r\n    @{ Package = \"Microsoft.BingTravel\"; FriendlyName = \"Bing Travel\" },\r\n    @{ Package = \"Microsoft.BingWeather\"; FriendlyName = \"Bing Weather\" },\r\n    @{ Package = \"Microsoft.Windows.DevHome\"; FriendlyName = \"Dev Home\" },\r\n    @{ Package = \"Microsoft.Copilot\"; FriendlyName = \"Microsoft Copilot\" },\r\n    @{ Package = \"Microsoft.Getstarted\"; FriendlyName = \"Get Started (Tips)\" },\r\n    @{ Package = \"Microsoft.Messaging\"; FriendlyName = \"Microsoft Messaging\" },\r\n    @{ Package = \"Microsoft.Microsoft3DViewer\"; FriendlyName = \"3D Viewer\" },\r\n    @{ Package = \"Microsoft.MicrosoftJournal\"; FriendlyName = \"Microsoft Journal\" },\r\n    @{ Package = \"Microsoft.MicrosoftOfficeHub\"; FriendlyName = \"Office Hub\" },\r\n    @{ Package = \"Microsoft.MicrosoftPowerBIForWindows\"; FriendlyName = \"Power BI\" },\r\n    @{ Package = \"Microsoft.PowerAutomateDesktop\"; FriendlyName = \"Power Automate\" },\r\n    @{ Package = \"Microsoft.MicrosoftSolitaireCollection\"; FriendlyName = \"Solitaire Collection\" },\r\n    @{ Package = \"Microsoft.MicrosoftStickyNotes\"; FriendlyName = \"Sticky Notes\" },\r\n    @{ Package = \"Microsoft.MixedReality.Portal\"; FriendlyName = \"Mixed Reality Portal\" },\r\n    @{ Package = \"Microsoft.News\"; FriendlyName = \"Microsoft News\" },\r\n    @{ Package = \"Microsoft.Office.OneNote\"; FriendlyName = \"OneNote\" },\r\n    @{ Package = \"Microsoft.Office.Sway\"; FriendlyName = \"Office Sway\" },\r\n    @{ Package = \"Microsoft.OneConnect\"; FriendlyName = \"OneConnect\" },\r\n    @{ Package = \"Microsoft.Paint\"; FriendlyName = \"Paint\" },\r\n    @{ Package = \"Microsoft.Print3D\"; FriendlyName = \"Print 3D\" },\r\n    @{ Package = \"Microsoft.SkypeApp\"; FriendlyName = \"Skype\" },\r\n    @{ Package = \"Microsoft.Todos\"; FriendlyName = \"Microsoft To Do\" },\r\n    @{ Package = \"Microsoft.WindowsAlarms\"; FriendlyName = \"Alarms & Clock\" },\r\n    @{ Package = \"Microsoft.WindowsCamera\"; FriendlyName = \"Camera\" },\r\n    @{ Package = \"Microsoft.WindowsFeedbackHub\"; FriendlyName = \"Feedback Hub\" },\r\n    @{ Package = \"Microsoft.WindowsMaps\"; FriendlyName = \"Maps\" },\r\n    @{ Package = \"Microsoft.WindowsNotepad\"; FriendlyName = \"Notepad\" },\r\n    @{ Package = \"Microsoft.WindowsSoundRecorder\"; FriendlyName = \"Sound Recorder\" },\r\n    @{ Package = \"Microsoft.XboxApp\"; FriendlyName = \"Xbox Console Companion\" },\r\n    @{ Package = \"Microsoft.ZuneVideo\"; FriendlyName = \"Movies & TV\" },\r\n    @{ Package = \"MicrosoftCorporationII.MicrosoftFamily\"; FriendlyName = \"Microsoft Family\" },\r\n    @{ Package = \"MicrosoftTeams\"; FriendlyName = \"Microsoft Teams\" },\r\n    @{ Package = \"MSTeams\"; FriendlyName = \"Teams\" },\r\n    @{ Package = \"Microsoft.WindowsCalculator\"; FriendlyName = \"Calculator\" },\r\n    @{ Package = \"Microsoft.Windows.Photos\"; FriendlyName = \"Photos\" },\r\n    @{ Package = \"microsoft.windowscommunicationsapps\"; FriendlyName = \"Mail & Calendar\" },\r\n    @{ Package = \"Microsoft.XboxGamingOverlay\"; FriendlyName = \"Xbox Game Bar\" },\r\n    @{ Package = \"Microsoft.XboxIdentityProvider\"; FriendlyName = \"Xbox Identity Provider\" },\r\n    @{ Package = \"Microsoft.XboxSpeechToTextOverlay\"; FriendlyName = \"Xbox Speech to Text\" },\r\n    @{ Package = \"Microsoft.OneDrive\"; FriendlyName = \"OneDrive\" },\r\n    @{ Package = \"Amazon.com.Amazon\"; FriendlyName = \"Amazon\" },\r\n    @{ Package = \"9P1J8S7CCWWT\"; FriendlyName = \"Clipchamp (Store)\" },\r\n    @{ Package = \"AmazonVideo.PrimeVideo\"; FriendlyName = \"Prime Video\" },\r\n    @{ Package = \"Disney\"; FriendlyName = \"Disney+\" },\r\n    @{ Package = \"Duolingo-LearnLanguagesforFree\"; FriendlyName = \"Duolingo\" },\r\n    @{ Package = \"Facebook\"; FriendlyName = \"Facebook\" },\r\n    @{ Package = \"FarmVille2CountryEscape\"; FriendlyName = \"FarmVille 2\" },\r\n    @{ Package = \"Instagram\"; FriendlyName = \"Instagram\" },\r\n    @{ Package = \"Netflix\"; FriendlyName = \"Netflix\" },\r\n    @{ Package = \"PandoraMediaInc.Pandora\"; FriendlyName = \"Pandora\" },\r\n    @{ Package = \"Spotify\"; FriendlyName = \"Spotify\" },\r\n    @{ Package = \"Twitter\"; FriendlyName = \"Twitter\" },\r\n    @{ Package = \"TwitterUniversal\"; FriendlyName = \"Twitter (Universal)\" },\r\n    @{ Package = \"YouTube\"; FriendlyName = \"YouTube\" },\r\n    @{ Package = \"Plex\"; FriendlyName = \"Plex\" },\r\n    @{ Package = \"TikTok\"; FriendlyName = \"TikTok\" },\r\n    @{ Package = \"TuneInRadio\"; FriendlyName = \"TuneIn Radio\" },\r\n    @{ Package = \"king.com.BubbleWitch3Saga\"; FriendlyName = \"Bubble Witch 3 Saga\" },\r\n    @{ Package = \"king.com.CandyCrushSaga\"; FriendlyName = \"Candy Crush Saga\" },\r\n    @{ Package = \"king.com.CandyCrushSodaSaga\"; FriendlyName = \"Candy Crush Soda Saga\" },\r\n    @{ Package = \"9NBLGGH4QGHW\"; FriendlyName = \"Microsoft Sticky Notes\" },\r\n    @{ Package = \"Phone Link\"; FriendlyName = \"Phone Link\" }   \r\n)\r\n\r\n$recommendedApps = @(\r\n    \"Microsoft.3DBuilder\",\r\n    \"Microsoft.549981C3F5F10\",\r\n    \"Microsoft.BingFinance\",\r\n    \"Microsoft.BingFoodAndDrink\",\r\n    \"Microsoft.BingHealthAndFitness\",\r\n    \"Microsoft.BingNews\",\r\n    \"Microsoft.BingSports\",\r\n    \"Microsoft.BingTranslator\",\r\n    \"Microsoft.BingTravel\",\r\n    \"Microsoft.BingWeather\",\r\n    \"Microsoft.Windows.DevHome\",\r\n    \"Microsoft.Copilot\",\r\n    \"Microsoft.Getstarted\",\r\n    \"Microsoft.Messaging\",\r\n    \"Microsoft.Microsoft3DViewer\",\r\n    \"Microsoft.MicrosoftJournal\",\r\n    \"Microsoft.MicrosoftOfficeHub\",\r\n    \"Microsoft.MicrosoftPowerBIForWindows\",\r\n    \"Microsoft.PowerAutomateDesktop\",\r\n    \"Microsoft.MicrosoftSolitaireCollection\",\r\n    \"Microsoft.MixedReality.Portal\",\r\n    \"Microsoft.News\",\r\n    \"Microsoft.Office.OneNote\",\r\n    \"Microsoft.Office.Sway\",\r\n    \"Microsoft.OneConnect\",\r\n    \"Microsoft.Print3D\",\r\n    \"Microsoft.SkypeApp\",\r\n    \"Microsoft.Todos\",\r\n    \"Microsoft.WindowsFeedbackHub\",\r\n    \"Microsoft.WindowsMaps\",\r\n    \"Microsoft.WindowsSoundRecorder\",\r\n    \"Microsoft.XboxApp\",\r\n    \"Microsoft.ZuneVideo\",\r\n    \"MicrosoftTeams\",\r\n    \"MSTeams\",\r\n    \"MicrosoftCorporationII.MicrosoftFamily\",\r\n    \"Clipchamp.Clipchamp\",\r\n    \"9P1J8S7CCWWT\",\r\n    \"Amazon.com.Amazon\",\r\n    \"AmazonVideo.PrimeVideo\",\r\n    \"Disney\",\r\n    \"Duolingo-LearnLanguagesforFree\",\r\n    \"Facebook\",\r\n    \"FarmVille2CountryEscape\",\r\n    \"Instagram\",\r\n    \"Netflix\",\r\n    \"PandoraMediaInc.Pandora\",\r\n    \"Spotify\",\r\n    \"Twitter\",\r\n    \"TwitterUniversal\",\r\n    \"YouTube\",\r\n    \"Plex\",\r\n    \"TikTok\",\r\n    \"TuneInRadio\",\r\n    \"king.com.BubbleWitch3Saga\",\r\n    \"king.com.CandyCrushSaga\",\r\n    \"king.com.CandyCrushSodaSaga\",\r\n    \"Phone Link\"\r\n)\r\n\r\nfunction Get-FriendlyName {\r\n    param([string]$PackageName)\r\n    \r\n    $def = $appDefinitions | Where-Object { $_.Package -eq $PackageName }\r\n    if ($def) {\r\n        return $def.FriendlyName\r\n    }\r\n    \r\n    # fallback to auto-generated name\r\n    return $PackageName -replace \"MicrosoftCorporationII\\.\", \"\" -replace \"Microsoft\\.\", \"\" -replace \"\\.\", \" \"\r\n}\r\n\r\nfunction Show-ScriptSelectionDialog {\r\n    [xml]$xaml = @\"\r\n<Window xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"\r\n        xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\r\n        Title=\"Zevyron Debloat v$version\" \r\n        Height=\"300\" Width=\"650\" \r\n        WindowStartupLocation=\"CenterScreen\"\r\n        Topmost=\"True\"\r\n        ResizeMode=\"NoResize\"\r\n        Background=\"#0c121f\">\r\n    <Window.Resources>\r\n        <Style TargetType=\"RadioButton\">\r\n            <Setter Property=\"Foreground\" Value=\"#f0f4f8\"/>\r\n            <Setter Property=\"FontSize\" Value=\"13\"/>\r\n            <Setter Property=\"Padding\" Value=\"8,6\"/>\r\n            <Setter Property=\"Cursor\" Value=\"Hand\"/>\r\n            <Style.Triggers>\r\n                <Trigger Property=\"IsMouseOver\" Value=\"True\">\r\n                    <Setter Property=\"Foreground\" Value=\"#4f90e6\"/>\r\n                </Trigger>\r\n            </Style.Triggers>\r\n        </Style>\r\n        <Style TargetType=\"Button\">\r\n            <Setter Property=\"Background\" Value=\"#243144\"/>\r\n            <Setter Property=\"Foreground\" Value=\"#f0f4f8\"/>\r\n            <Setter Property=\"BorderBrush\" Value=\"#1f2a3d\"/>\r\n            <Setter Property=\"BorderThickness\" Value=\"1\"/>\r\n            <Setter Property=\"Padding\" Value=\"18,8\"/>\r\n            <Setter Property=\"FontSize\" Value=\"13\"/>\r\n            <Setter Property=\"Cursor\" Value=\"Hand\"/>\r\n            <Setter Property=\"Template\">\r\n                <Setter.Value>\r\n                    <ControlTemplate TargetType=\"Button\">\r\n                        <Border Background=\"{TemplateBinding Background}\" \r\n                                BorderBrush=\"{TemplateBinding BorderBrush}\"\r\n                                BorderThickness=\"{TemplateBinding BorderThickness}\"\r\n                                CornerRadius=\"6\"\r\n                                Padding=\"{TemplateBinding Padding}\">\r\n                            <ContentPresenter HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\"/>\r\n                        </Border>\r\n                        <ControlTemplate.Triggers>\r\n                            <Trigger Property=\"IsMouseOver\" Value=\"True\">\r\n                                <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n                                <Setter Property=\"Foreground\" Value=\"#ffffff\"/>\r\n                            </Trigger>\r\n                            <Trigger Property=\"IsPressed\" Value=\"True\">\r\n                                <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n                                <Setter Property=\"Foreground\" Value=\"#ffffff\"/>\r\n                            </Trigger>\r\n                        </ControlTemplate.Triggers>\r\n                    </ControlTemplate>\r\n                </Setter.Value>\r\n            </Setter>\r\n        </Style>\r\n    </Window.Resources>\r\n    \r\n    <Grid Margin=\"24\">\r\n        <Grid.RowDefinitions>\r\n            <RowDefinition Height=\"Auto\"/>\r\n            <RowDefinition Height=\"*\"/>\r\n            <RowDefinition Height=\"Auto\"/>\r\n        </Grid.RowDefinitions>\r\n        \r\n        <TextBlock Grid.Row=\"0\" \r\n                   Text=\"Choose your debloat approach:\" \r\n                   FontSize=\"16\" \r\n                   FontWeight=\"SemiBold\" \r\n                   Foreground=\"#f0f4f8\"\r\n                   Margin=\"0,0,0,20\"/>\r\n        \r\n        <Border Grid.Row=\"1\" \r\n                Background=\"#131c2c\" \r\n                BorderBrush=\"#1f2a3d\" \r\n                BorderThickness=\"1\" \r\n                CornerRadius=\"8\"\r\n                Padding=\"20\"\r\n                Margin=\"0,0,0,20\">\r\n            <StackPanel>\r\n                <RadioButton x:Name=\"RadioZevyron\" \r\n                            Content=\"Zevyron Debloat (Choose which apps to remove) - Recommended\" \r\n                            Margin=\"0,0,0,16\" \r\n                            IsChecked=\"True\"/>\r\n                <RadioButton x:Name=\"RadioRaphire\" \r\n                            Content=\"Raphire's Win11Debloat (Comprehensive - read docs for details)\"/>\r\n            </StackPanel>\r\n        </Border>\r\n        \r\n        <StackPanel Grid.Row=\"2\" \r\n                    Orientation=\"Horizontal\" \r\n                    HorizontalAlignment=\"Right\" \r\n                    Margin=\"0,20,0,0\">\r\n            <Button x:Name=\"BtnOK\" Content=\"Continue\" Width=\"100\" Margin=\"0,0,12,0\" IsDefault=\"True\"/>\r\n            <Button x:Name=\"BtnCancel\" Content=\"Cancel\" Width=\"100\" IsCancel=\"True\"/>\r\n        </StackPanel>\r\n    </Grid>\r\n</Window>\r\n\"@\r\n\r\n    $reader = New-Object System.Xml.XmlNodeReader $xaml\r\n    $window = [Windows.Markup.XamlReader]::Load($reader)\r\n    \r\n    $radioRaphire = $window.FindName(\"RadioRaphire\")\r\n    $btnOK = $window.FindName(\"BtnOK\")\r\n    $btnCancel = $window.FindName(\"BtnCancel\")\r\n    \r\n    $script:dialogResult = $null\r\n    \r\n    $btnOK.Add_Click({\r\n            if ($radioRaphire.IsChecked) {\r\n                $script:dialogResult = \"raphire\"\r\n            }\r\n            else {\r\n                $script:dialogResult = \"custom\"\r\n            }\r\n            $window.Close()\r\n        })\r\n    \r\n    $btnCancel.Add_Click({\r\n            $script:dialogResult = \"cancel\"\r\n            $window.Close()\r\n        })\r\n    \r\n    $window.ShowDialog() | Out-Null\r\n    return $script:dialogResult\r\n}\r\n\r\nfunction Show-BehaviorChangeWarning {\r\n    [xml]$xaml = @\"\r\n<Window xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"\r\n        xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\r\n        Title=\"Zevyron Debloat - Important Change\" \r\n        Height=\"420\" Width=\"550\" \r\n        WindowStartupLocation=\"CenterScreen\"\r\n        Topmost=\"True\"\r\n        ResizeMode=\"NoResize\"\r\n        Background=\"#0c121f\">\r\n    <Window.Resources>\r\n        <Style TargetType=\"Button\">\r\n            <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n            <Setter Property=\"Foreground\" Value=\"#ffffff\"/>\r\n            <Setter Property=\"BorderThickness\" Value=\"0\"/>\r\n            <Setter Property=\"Padding\" Value=\"24,10\"/>\r\n            <Setter Property=\"FontSize\" Value=\"14\"/>\r\n            <Setter Property=\"Cursor\" Value=\"Hand\"/>\r\n            <Setter Property=\"Template\">\r\n                <Setter.Value>\r\n                    <ControlTemplate TargetType=\"Button\">\r\n                        <Border Background=\"{TemplateBinding Background}\" \r\n                                BorderBrush=\"{TemplateBinding BorderBrush}\"\r\n                                BorderThickness=\"{TemplateBinding BorderThickness}\"\r\n                                CornerRadius=\"6\"\r\n                                Padding=\"{TemplateBinding Padding}\">\r\n                            <ContentPresenter HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\"/>\r\n                        </Border>\r\n                        <ControlTemplate.Triggers>\r\n                            <Trigger Property=\"IsMouseOver\" Value=\"True\">\r\n                                <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n                            </Trigger>\r\n                            <Trigger Property=\"IsPressed\" Value=\"True\">\r\n                                <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n                            </Trigger>\r\n                        </ControlTemplate.Triggers>\r\n                    </ControlTemplate>\r\n                </Setter.Value>\r\n            </Setter>\r\n        </Style>\r\n    </Window.Resources>\r\n    \r\n    <Grid Margin=\"28\">\r\n        <Grid.RowDefinitions>\r\n            <RowDefinition Height=\"Auto\"/>\r\n            <RowDefinition Height=\"*\"/>\r\n            <RowDefinition Height=\"Auto\"/>\r\n        </Grid.RowDefinitions>\r\n        \r\n        <StackPanel Grid.Row=\"0\" Orientation=\"Horizontal\" Margin=\"0,0,0,16\">\r\n            <TextBlock Text=\"!\" FontSize=\"24\" FontWeight=\"Bold\" Foreground=\"#f59e0b\" Margin=\"0,0,10,0\" VerticalAlignment=\"Center\"/>\r\n            <TextBlock Text=\"Behavior Has Changed!\"\r\n                       FontSize=\"18\" \r\n                       FontWeight=\"SemiBold\" \r\n                       Foreground=\"#f0f4f8\"\r\n                       VerticalAlignment=\"Center\"/>\r\n        </StackPanel>\r\n        \r\n        <Border Grid.Row=\"1\" \r\n                Background=\"#131c2c\" \r\n                BorderBrush=\"#f59e0b\" \r\n                BorderThickness=\"1\" \r\n                CornerRadius=\"8\"\r\n                Padding=\"16\"\r\n                Margin=\"0,0,0,20\">\r\n            <StackPanel>\r\n                <TextBlock Text=\"The app selection has been inverted:\" \r\n                           FontSize=\"14\" \r\n                           FontWeight=\"SemiBold\" \r\n                           Foreground=\"#aab4c3\"\r\n                           Margin=\"0,0,0,10\"/>\r\n                <TextBlock Text=\"- Previously: You selected apps to KEEP\"\r\n                           FontSize=\"13\" \r\n                           Foreground=\"#aab4c3\"\r\n                           Margin=\"0,0,0,4\"/>\r\n                <TextBlock Text=\"- Now: Select apps to REMOVE\"\r\n                           FontSize=\"13\" \r\n                           FontWeight=\"SemiBold\"\r\n                           Foreground=\"#b91c1c\"\r\n                           Margin=\"0,0,0,10\"/>\r\n                <TextBlock Text=\"This change gives you more direct control over what gets removed from your system, and allows us to set recommended defaults for removal. It also lets us add more features to this script in the future.\"\r\n                           FontSize=\"13\" \r\n                           Foreground=\"#aab4c3\"\r\n                           TextWrapping=\"Wrap\"/>\r\n            </StackPanel>\r\n        </Border>\r\n        \r\n        <StackPanel Grid.Row=\"2\" \r\n                    Orientation=\"Horizontal\" \r\n                    HorizontalAlignment=\"Right\">\r\n            <Button x:Name=\"BtnCancel\" Content=\"Cancel\" Width=\"100\" Margin=\"0,0,12,0\" IsCancel=\"True\"/>\r\n            <Button x:Name=\"BtnUnderstand\" Content=\"I Understand, Continue\" Width=\"195\"/>\r\n        </StackPanel>\r\n    </Grid>\r\n</Window>\r\n\"@\r\n\r\n    $reader = New-Object System.Xml.XmlNodeReader $xaml\r\n    $window = [Windows.Markup.XamlReader]::Load($reader)\r\n    \r\n    $btnUnderstand = $window.FindName(\"BtnUnderstand\")\r\n    $btnCancel = $window.FindName(\"BtnCancel\")\r\n    \r\n    $script:dialogResult = $true\r\n    \r\n    $btnUnderstand.Add_Click({\r\n        $script:dialogResult = $true\r\n        $window.Close()\r\n    })\r\n    \r\n    $btnCancel.Add_Click({\r\n        $script:dialogResult = $false\r\n        $window.Close()\r\n    })\r\n    \r\n    $window.ShowDialog() | Out-Null\r\n    return $script:dialogResult\r\n}\r\n\r\nfunction Show-AppSelectionDialog {\r\n    # generate apps list with friendly names\r\n    # apps are unchecked by default (meaning they won't be removed)\r\n    # users check apps they want to remove\r\n    $apps = @()\r\n    foreach ($appDef in $appDefinitions) {\r\n        $apps += @{ \r\n            Name      = $appDef.FriendlyName\r\n            Package   = $appDef.Package\r\n            IsChecked = $false\r\n        }\r\n    }\r\n    \r\n    # sort by friendly name for better UX\r\n    $apps = $apps | Sort-Object { $_.Name }\r\n    \r\n    [xml]$xaml = @\"\r\n<Window xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"\r\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\r\n    Title=\"Zevyron Debloat v$version\" \r\n    Height=\"750\" Width=\"650\" \r\n    WindowStartupLocation=\"CenterScreen\"\r\n    ResizeMode=\"NoResize\"\r\n    Background=\"#0c121f\">\r\n    <Window.Resources>\r\n        <Style TargetType=\"CheckBox\">\r\n            <Setter Property=\"Foreground\" Value=\"#f0f4f8\"/>\r\n            <Setter Property=\"FontSize\" Value=\"13\"/>\r\n            <Setter Property=\"Padding\" Value=\"8,5\"/>\r\n            <Setter Property=\"Cursor\" Value=\"Hand\"/>\r\n            <Style.Triggers>\r\n                <Trigger Property=\"IsMouseOver\" Value=\"True\">\r\n                    <Setter Property=\"Foreground\" Value=\"#f0f4f8\"/>\r\n                </Trigger>\r\n            </Style.Triggers>\r\n        </Style>\r\n        <Style TargetType=\"Button\">\r\n            <Setter Property=\"Background\" Value=\"#243144\"/>\r\n            <Setter Property=\"Foreground\" Value=\"#f0f4f8\"/>\r\n            <Setter Property=\"BorderBrush\" Value=\"#1f2a3d\"/>\r\n            <Setter Property=\"BorderThickness\" Value=\"1\"/>\r\n            <Setter Property=\"Padding\" Value=\"16,8\"/>\r\n            <Setter Property=\"FontSize\" Value=\"13\"/>\r\n            <Setter Property=\"Cursor\" Value=\"Hand\"/>\r\n            <Setter Property=\"Template\">\r\n                <Setter.Value>\r\n                    <ControlTemplate TargetType=\"Button\">\r\n                        <Border Background=\"{TemplateBinding Background}\" \r\n                                BorderBrush=\"{TemplateBinding BorderBrush}\"\r\n                                BorderThickness=\"{TemplateBinding BorderThickness}\"\r\n                                CornerRadius=\"6\"\r\n                                Padding=\"{TemplateBinding Padding}\">\r\n                            <ContentPresenter HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\"/>\r\n                        </Border>\r\n                        <ControlTemplate.Triggers>\r\n                            <Trigger Property=\"IsMouseOver\" Value=\"True\">\r\n                                <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n                                <Setter Property=\"Foreground\" Value=\"#ffffff\"/>\r\n                            </Trigger>\r\n                            <Trigger Property=\"IsPressed\" Value=\"True\">\r\n                                <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n                                <Setter Property=\"Foreground\" Value=\"#ffffff\"/>\r\n                            </Trigger>\r\n                        </ControlTemplate.Triggers>\r\n                    </ControlTemplate>\r\n                </Setter.Value>\r\n            </Setter>\r\n        </Style>\r\n        <Style x:Key=\"SecondaryButton\" TargetType=\"Button\" BasedOn=\"{StaticResource {x:Type Button}}\">\r\n            <Setter Property=\"Background\" Value=\"#131c2c\"/>\r\n        </Style>\r\n    </Window.Resources>\r\n    \r\n    <Grid Margin=\"24\">\r\n        <Grid.RowDefinitions>\r\n            <RowDefinition Height=\"Auto\"/>\r\n            <RowDefinition Height=\"Auto\"/>\r\n            <RowDefinition Height=\"*\"/>\r\n            <RowDefinition Height=\"Auto\"/>\r\n            <RowDefinition Height=\"Auto\"/>\r\n        </Grid.RowDefinitions>\r\n        \r\n        <TextBlock Grid.Row=\"0\" \r\n                   Text=\"Select apps to remove\" \r\n                   FontSize=\"18\" \r\n                   FontWeight=\"SemiBold\" \r\n                   Foreground=\"#f0f4f8\"\r\n                   Margin=\"0,0,0,6\"/>\r\n        \r\n        <TextBlock Grid.Row=\"1\" \r\n                   Text=\"Check the apps you want to remove. Unchecked apps will remain installed.\" \r\n                   FontSize=\"13\" \r\n                   Foreground=\"#7e92a9\"\r\n                   TextWrapping=\"Wrap\"\r\n                   Margin=\"0,0,0,12\"/>\r\n\r\n        <Border Grid.Row=\"2\" \r\n                Background=\"#131c2c\" \r\n                BorderBrush=\"#1f2a3d\" \r\n                BorderThickness=\"1\" \r\n                CornerRadius=\"8\"\r\n                Margin=\"0,0,0,12\">\r\n            <ScrollViewer VerticalScrollBarVisibility=\"Auto\">\r\n                <ItemsControl x:Name=\"AppsList\" Margin=\"12\">\r\n                    <ItemsControl.ItemTemplate>\r\n                        <DataTemplate>\r\n                            <CheckBox Content=\"{Binding Name}\" \r\n                                     IsChecked=\"{Binding IsChecked}\" \r\n                                     Margin=\"4,3\"/>\r\n                        </DataTemplate>\r\n                    </ItemsControl.ItemTemplate>\r\n                </ItemsControl>\r\n            </ScrollViewer>\r\n        </Border>\r\n        \r\n        <StackPanel Grid.Row=\"3\" \r\n                    Orientation=\"Horizontal\" \r\n                    Margin=\"0,0,0,12\">\r\n            <Button x:Name=\"BtnSelectAll\" \r\n                    Content=\"Select All\" \r\n                    Width=\"110\" \r\n                    Margin=\"0,0,12,0\"\r\n                    Style=\"{StaticResource SecondaryButton}\"/>\r\n            <Button x:Name=\"BtnDeselectAll\" \r\n                    Content=\"Deselect All\" \r\n                    Width=\"110\"\r\n                    Margin=\"0,0,12,0\"\r\n                    Style=\"{StaticResource SecondaryButton}\"/>\r\n            <Button x:Name=\"BtnSelectRecommended\" \r\n                    Content=\"Select Recommended\" \r\n                    Width=\"165\"\r\n                    Background=\"#243144\"\r\n                    Foreground=\"#f0f4f8\"/>\r\n        </StackPanel>\r\n        \r\n        <StackPanel Grid.Row=\"4\" \r\n                    Orientation=\"Horizontal\" \r\n                    HorizontalAlignment=\"Right\">\r\n            <Button x:Name=\"BtnOK\" Content=\"Start Debloat\" Width=\"120\" Margin=\"0,0,12,0\" IsDefault=\"True\"/>\r\n            <Button x:Name=\"BtnCancel\" Content=\"Cancel\" Width=\"100\" IsCancel=\"True\"/>\r\n        </StackPanel>\r\n    </Grid>\r\n</Window>\r\n\"@\r\n\r\n    $reader = New-Object System.Xml.XmlNodeReader $xaml\r\n    $window = [Windows.Markup.XamlReader]::Load($reader)\r\n    \r\n    $appsList = $window.FindName(\"AppsList\")\r\n    $btnSelectAll = $window.FindName(\"BtnSelectAll\")\r\n    $btnDeselectAll = $window.FindName(\"BtnDeselectAll\")\r\n    $btnSelectRecommended = $window.FindName(\"BtnSelectRecommended\")\r\n    $btnOK = $window.FindName(\"BtnOK\")\r\n    $btnCancel = $window.FindName(\"BtnCancel\")\r\n    \r\n    # create observable collection for data binding\r\n    $observableApps = New-Object System.Collections.ObjectModel.ObservableCollection[Object]\r\n    foreach ($app in $apps) {\r\n        $observableApps.Add((New-Object PSObject -Property $app))\r\n    }\r\n    $appsList.ItemsSource = $observableApps\r\n    \r\n    $script:dialogResult = $null\r\n    \r\n    $btnSelectAll.Add_Click({\r\n            foreach ($item in $observableApps) {\r\n                $item.IsChecked = $true\r\n            }\r\n            $appsList.Items.Refresh()\r\n        })\r\n    \r\n    $btnDeselectAll.Add_Click({\r\n            foreach ($item in $observableApps) {\r\n                $item.IsChecked = $false\r\n            }\r\n            $appsList.Items.Refresh()\r\n        })\r\n    \r\n    $btnSelectRecommended.Add_Click({\r\n            foreach ($item in $observableApps) {\r\n                if ($recommendedApps -contains $item.Package) {\r\n                    $item.IsChecked = $true\r\n                }\r\n            }\r\n            $appsList.Items.Refresh()\r\n        })\r\n    \r\n    $btnOK.Add_Click({\r\n            $script:dialogResult = @()\r\n            foreach ($item in $observableApps) {\r\n                if ($item.IsChecked) {\r\n                    $script:dialogResult += $item.Package\r\n                }\r\n            }\r\n            $window.DialogResult = $true\r\n            $window.Close()\r\n        })\r\n    \r\n    $btnCancel.Add_Click({\r\n            $script:dialogResult = $null\r\n            $window.DialogResult = $false\r\n            $window.Close()\r\n        })\r\n    \r\n    $window.Add_Closing({\r\n            if ($null -eq $script:dialogResult) {\r\n                $script:dialogResult = $null\r\n            }\r\n        })\r\n    \r\n    $result = $window.ShowDialog()\r\n    if ($result -eq $false) {\r\n        return $null\r\n    }\r\n    return $script:dialogResult\r\n}\r\n\r\nfunction Remove-SelectedApps {\r\n    param([string[]]$AppsToRemove)\r\n\r\n    Write-Host \"Starting Zevyron debloat...\" -ForegroundColor Green\r\n\r\n    # display friendly names in console output\r\n    $removeNames = $AppsToRemove | ForEach-Object { Get-FriendlyName $_ }\r\n    Write-Host \"Apps that will be removed: $($removeNames -join ', ')\" -ForegroundColor Yellow\r\n    Write-Host \"Number of apps to remove: $($AppsToRemove.Count)\" -ForegroundColor Red\r\n    \r\n    foreach ($app in $AppsToRemove) {\r\n        try {\r\n            $friendlyName = Get-FriendlyName $app\r\n            Write-Host \"Checking for $friendlyName ($app)...\" -ForegroundColor Yellow\r\n\r\n            $pkg = Get-AppxPackage -Name *$app* -ErrorAction SilentlyContinue\r\n            if ($pkg) {\r\n                $pkg | ForEach-Object {\r\n                    Write-Host \"Removing Appx package $($_.Name)...\" -ForegroundColor Yellow\r\n                    Remove-AppxPackage -Package $_.PackageFullName -ErrorAction SilentlyContinue\r\n                }\r\n                Write-Host \"Removed $friendlyName\" -ForegroundColor Green\r\n            }\r\n            else {\r\n                Write-Host \"$friendlyName is not installed\" -ForegroundColor Gray\r\n            }\r\n\r\n            $prov = Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like \"*$app*\"\r\n            if ($prov) {\r\n                $prov | ForEach-Object {\r\n                    Write-Host \"Removing provisioned package $($_.DisplayName)...\" -ForegroundColor Yellow\r\n                    Remove-AppxProvisionedPackage -Online -PackageName $_.PackageName -ErrorAction SilentlyContinue\r\n                }\r\n            }\r\n        }\r\n        catch {\r\n            Write-Host \"Could not remove $friendlyName : $_\" -ForegroundColor Red\r\n        }\r\n    }\r\n\r\n    Write-Host \"Zevyron debloat completed!\" -ForegroundColor Green\r\n}\r\n\r\ntry {\r\n    $script:appsWereRemoved = $false\r\n    \r\n    Write-Host \"Starting Zevyron Debloat script...\" -ForegroundColor Green\r\n    Write-Host \"Script Choice: '$ScriptChoice'\" -ForegroundColor Yellow\r\n    Write-Host \"Apps to Remove Count: $($AppsToRemove.Count)\" -ForegroundColor Yellow\r\n    \r\n    # get the ui params \r\n    if ($ScriptChoice -eq \"raphire\") {\r\n        Write-Host \"Running Raphire's Win11Debloat script...\" -ForegroundColor Green\r\n        & ([scriptblock]::Create((Invoke-RestMethod 'https://debloat.raphi.re/'))) -Silent -RemoveApps\r\n        Write-Host \"Raphire's script completed!\" -ForegroundColor Green\r\n        $script:appsWereRemoved = $true\r\n    }\r\n    elseif ($ScriptChoice -eq \"custom\") {\r\n        if ($AppsToRemove.Count -gt 0) {\r\n            Write-Host \"Running Zevyron debloat to remove $($AppsToRemove.Count) apps...\" -ForegroundColor Green\r\n            Remove-SelectedApps -AppsToRemove $AppsToRemove\r\n            $script:appsWereRemoved = $true\r\n        }\r\n        else {\r\n            Write-Host \"Custom debloat selected but no apps specified. Showing dialog...\" -ForegroundColor Yellow\r\n            $warningResult = Show-BehaviorChangeWarning\r\n            if (-not $warningResult) {\r\n                Write-Host \"Operation cancelled by user.\" -ForegroundColor Yellow\r\n                exit 0\r\n            }\r\n            $appsToRemove = Show-AppSelectionDialog\r\n            \r\n            if ($null -eq $appsToRemove -or $appsToRemove.Count -eq 0) {\r\n                Write-Host \"No apps selected for removal. Operation cancelled.\" -ForegroundColor Yellow\r\n                exit 0\r\n            }\r\n            \r\n            Remove-SelectedApps -AppsToRemove $appsToRemove\r\n            $script:appsWereRemoved = $true\r\n        }\r\n    }\r\n    elseif ($ScriptChoice -eq \"\" -or $null -eq $ScriptChoice) {\r\n        Write-Host \"No script choice provided, entering interactive mode...\" -ForegroundColor Yellow\r\n        \r\n        try {\r\n            $choice = Show-ScriptSelectionDialog\r\n            \r\n            if ($choice -eq \"cancel\") {\r\n                Write-Host \"Operation cancelled by user.\" -ForegroundColor Yellow\r\n                exit 0\r\n            }\r\n            \r\n            if ($choice -eq \"raphire\") {\r\n                Write-Host \"Running Raphire's Win11Debloat script...\" -ForegroundColor Green\r\n                & ([scriptblock]::Create((Invoke-RestMethod 'https://debloat.raphi.re/'))) -Silent -RemoveApps\r\n                Write-Host \"Debloat completed!\" -ForegroundColor Green\r\n                $script:appsWereRemoved = $true\r\n            }\r\n            elseif ($choice -eq \"custom\") {\r\n                $warningResult = Show-BehaviorChangeWarning\r\n                if (-not $warningResult) {\r\n                    Write-Host \"Operation cancelled by user.\" -ForegroundColor Yellow\r\n                    exit 0\r\n                }\r\n                $appsToRemove = Show-AppSelectionDialog\r\n                \r\n                if ($null -eq $appsToRemove -or $appsToRemove.Count -eq 0) {\r\n                    Write-Host \"No apps selected for removal. Operation cancelled.\" -ForegroundColor Yellow\r\n                    exit 0\r\n                }\r\n                \r\n                Remove-SelectedApps -AppsToRemove $appsToRemove\r\n                $script:appsWereRemoved = $true\r\n            }\r\n        }\r\n        catch {\r\n            Write-Host \"Interactive mode failed, falling back to Raphire's script: $_\" -ForegroundColor Yellow\r\n            & ([scriptblock]::Create((Invoke-RestMethod 'https://debloat.raphi.re/'))) -Silent -RemoveApps\r\n        }\r\n    }\r\n    else {\r\n        Write-Host \"Unknown script choice '$ScriptChoice', defaulting to Raphire's script...\" -ForegroundColor Yellow\r\n        & ([scriptblock]::Create((Invoke-RestMethod 'https://debloat.raphi.re/'))) -Silent -RemoveApps\r\n    }\r\n    Write-Host \"Debloat Script From https://getzevyron.net\" -ForegroundColor Cyan\r\n\r\n    if ($script:appsWereRemoved -and -not (Get-Process -Name \"Zevyron\" -ErrorAction SilentlyContinue)) {\r\n        [xml]$xaml = @\"\r\n<Window \r\n    xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"\r\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\r\n    Title=\"Zevyron Debloat\" \r\n    Height=\"200\" \r\n    Width=\"480\"\r\n    WindowStartupLocation=\"CenterScreen\"\r\n    Background=\"#0c121f\"\r\n    ResizeMode=\"NoResize\">\r\n    <Window.Resources>\r\n        <Style TargetType=\"Button\">\r\n            <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n            <Setter Property=\"Foreground\" Value=\"#ffffff\"/>\r\n            <Setter Property=\"BorderThickness\" Value=\"0\"/>\n            <Setter Property=\"Padding\" Value=\"24,10\"/>\r\n            <Setter Property=\"FontSize\" Value=\"14\"/>\r\n            <Setter Property=\"Cursor\" Value=\"Hand\"/>\r\n            <Setter Property=\"Template\">\r\n                <Setter.Value>\r\n                    <ControlTemplate TargetType=\"Button\">\r\n                        <Border Background=\"{TemplateBinding Background}\" \r\n                                BorderThickness=\"{TemplateBinding BorderThickness}\"\r\n                                CornerRadius=\"6\"\r\n                                Padding=\"{TemplateBinding Padding}\">\r\n                            <ContentPresenter HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\"/>\r\n                        </Border>\r\n                        <ControlTemplate.Triggers>\r\n                            <Trigger Property=\"IsMouseOver\" Value=\"True\">\r\n                                <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n                            </Trigger>\r\n                            <Trigger Property=\"IsPressed\" Value=\"True\">\r\n                                <Setter Property=\"Background\" Value=\"#4f90e6\"/>\r\n                            </Trigger>\r\n                        </ControlTemplate.Triggers>\r\n                    </ControlTemplate>\r\n                </Setter.Value>\r\n            </Setter>\r\n        </Style>\r\n    </Window.Resources>\r\n    \r\n    <Grid Margin=\"30\">\r\n        <Grid.RowDefinitions>\r\n            <RowDefinition Height=\"*\"/>\r\n            <RowDefinition Height=\"Auto\"/>\r\n        </Grid.RowDefinitions>\r\n        \r\n        <StackPanel Grid.Row=\"0\" VerticalAlignment=\"Center\">\r\n            <TextBlock Text=\"Debloat Complete\" \r\n                      FontSize=\"20\"\r\n                      FontWeight=\"SemiBold\"\r\n                      Foreground=\"#3db58a\"\r\n                      HorizontalAlignment=\"Center\"\r\n                      Margin=\"0,0,0,10\"/>\r\n            <TextBlock Text=\"Your system has been successfully optimized.\" \r\n                      FontSize=\"14\"\r\n                      Foreground=\"#7e92a9\"\r\n                      HorizontalAlignment=\"Center\"\r\n                      TextAlignment=\"Center\"\r\n                      TextWrapping=\"Wrap\"\r\n                      Margin=\"0,0,0,5\"/>\r\n        </StackPanel>\r\n                  \r\n        <Button Grid.Row=\"1\" \r\n               x:Name=\"BtnOK\" \r\n               Content=\"Done\" \r\n               Width=\"100\"\r\n               HorizontalAlignment=\"Center\"/>\r\n    </Grid>\r\n</Window>\r\n\"@\r\n\r\n        $reader = New-Object System.Xml.XmlNodeReader $xaml\r\n        $window = [Windows.Markup.XamlReader]::Load($reader)\r\n        \r\n        $btnOK = $window.FindName(\"BtnOK\")\r\n        $btnOK.Add_Click({ $window.Close() })\r\n        \r\n        $window.ShowDialog() | Out-Null\r\n    }\r\n\r\n}\r\ncatch {\r\n    Write-Host \"Error during debloat process: $_\" -ForegroundColor Red\r\n    Write-Host \"Stack trace: $($_.ScriptStackTrace)\" -ForegroundColor Red\r\n    exit 1\r\n}",
+        "unapply": null
+      }
+    },
+    {
+      "id": "detailed-bsod",
+      "title": "Detailed BSOD",
+      "description": "Adds detailed information to the Blue Screen of Death (BSOD) screen",
+      "category": [
+        "General"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "updatedversion": "2.21.1",
+      "docsurl": "/tweaks/detailed-bsod",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path \"HKLM:\\System\\CurrentControlSet\\Control\\CrashControl\" -Name \"DisplayParameters\" -Type DWord -Value 1\r\nSet-ItemProperty -Path \"HKLM:\\System\\CurrentControlSet\\Control\\CrashControl\" -Name \"DisableEmoticon\" -Type DWord -Value 1\r\n",
+        "unapply": "Set-ItemProperty -Path \"HKLM:\\System\\CurrentControlSet\\Control\\CrashControl\" -Name \"DisplayParameters\" -Type DWord -Value 0\r\nSet-ItemProperty -Path \"HKLM:\\System\\CurrentControlSet\\Control\\CrashControl\" -Name \"DisableEmoticon\" -Type DWord -Value 0\r\n"
+      }
+    },
+    {
+      "id": "disable-background-ms-store-apps",
+      "title": "Disable Background MS Store apps",
+      "description": "Disables Microsoft Store apps from running in the background",
+      "category": [
+        "Performance",
+        "Privacy"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-background-ms-store-apps",
+      "source": "",
+      "scripts": {
+        "apply": "$path = \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\"\r\n$name = \"GlobalUserDisabled\"\r\n$newValue = 1\r\n  \r\n# Ensure the key exists\r\nIf (-Not (Test-Path $path)) {\r\n  New-Item -Path $path -Force | Out-Null\r\n}\r\n  \r\n# Set the value\r\nSet-ItemProperty -Path $path -Name $name -Type DWord -Value $newValue\r\n  \r\nWrite-Host \"$name set to $newValue (Background Access Disabled)\"",
+        "unapply": " $path = \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\"\r\n  $name = \"GlobalUserDisabled\"\r\n  $originalValue = 0\r\n  \r\n  # Ensure the key exists\r\n  If (-Not (Test-Path $path)) {\r\n      New-Item -Path $path -Force | Out-Null\r\n  }\r\n  \r\n  # Revert the value\r\n  Set-ItemProperty -Path $path -Name $name -Type DWord -Value $originalValue\r\n  \r\n  Write-Host \"$name reverted to $originalValue (Background Access Restored)\" -ForegroundColor Yellow"
+      }
+    },
+    {
+      "id": "consumer-features",
+      "title": "Disable Consumer Features",
+      "description": "Prevents Windows from automatically installing games, third-party apps, or app links from the Microsoft Store.",
+      "category": [
+        "Privacy"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "addedversion": "2.14.1",
+      "docsurl": "/tweaks/disable-consumer-features",
+      "source": "",
+      "scripts": {
+        "apply": "# Credit to Chris Titus Tech\r\n\r\n$regPath = \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\"\r\n$regName = \"DisableWindowsConsumerFeatures\"\r\n$applyValue = 1\r\n\r\nif (-not (Test-Path $regPath)) {\r\n    New-Item -Path $regPath -Force | Out-Null\r\n}\r\n\r\nSet-ItemProperty -Path $regPath -Name $regName -Value $applyValue -Type DWord\r\n\r\nWrite-Host \"Consumer Features disabled.\"",
+        "unapply": "# Credit to Chris Titus Tech\r\n\r\n$regPath = \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\"\r\n$regName = \"DisableWindowsConsumerFeatures\"\r\n\r\nif (Test-Path $regPath) {\r\n    if (Get-ItemProperty -Path $regPath -Name $regName -ErrorAction SilentlyContinue) {\r\n        Remove-ItemProperty -Path $regPath -Name $regName\r\n        Write-Host \"Consumer Features restored to default.\"\r\n    } else {\r\n        Write-Host \"Tweak was not applied.\"\r\n    }\r\n} else {\r\n    Write-Host \"Registry path does not exist, nothing to unapply.\"\r\n}"
+      }
+    },
+    {
+      "id": "disable-copilot",
+      "title": "Disable Copilot",
+      "description": "Removes Microsoft's Copilot feature. (will fail if copilot is not installed)",
+      "category": [
+        "Performance",
+        "Privacy"
+      ],
+      "recommended": true,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-copilot",
+      "source": "",
+      "scripts": {
+        "apply": "Get-AppxPackage -AllUsers | Where-Object {$_.Name -Like '*Microsoft.Copilot*'} | Remove-AppxPackage -ErrorAction Continue",
+        "unapply": "winget install 9NHT9RB2F4HD --source msstore --accept-source-agreements --accept-package-agreements"
+      }
+    },
+    {
+      "id": "disable-core-isolation",
+      "title": "Disable Core Isolation",
+      "description": "Disables Core Isolation Memory Integrity to improve system performance",
+      "category": [
+        "Performance",
+        "Gaming"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-core-isolation",
+      "source": "",
+      "scripts": {
+        "apply": "New-Item -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" -Force | Out-Null\r\n\r\nSet-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" `\r\n    -Name \"Enabled\" -Value 0 -Type DWord\r\n",
+        "unapply": "New-Item -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" -Force | Out-Null\r\n\r\nSet-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" `\r\n    -Name \"Enabled\" -Value 1 -Type DWord\r\n"
+      }
+    },
+    {
+      "id": "disable-defender-rtp",
+      "title": "Disable Defender RTP",
+      "description": "Disables Defender Real-time Protection",
+      "category": [
+        "Performance",
+        "General"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-defender-rtp",
+      "source": "",
+      "scripts": {
+        "apply": "Set-MpPreference -DisableRealtimeMonitoring $true",
+        "unapply": "Set-MpPreference -DisableRealtimeMonitoring $false"
+      }
+    },
+    {
+      "id": "disable-dynamic-ticking",
+      "title": "Disable Dynamic Ticking",
+      "description": "Improves system responsiveness and reduces latency by disabling dynamic timer ticks.",
+      "category": [
+        "Performance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-dynamic-ticking",
+      "source": "",
+      "scripts": {
+        "apply": "try {\r\n    bcdedit /set disabledynamictick yes\r\n    Write-Host \"Dynamic Ticking disabled successfully\"\r\n  } catch {\r\n    Write-Host \"Failed to apply Dynamic Ticking tweak\"\r\n  }",
+        "unapply": "try {\r\n    bcdedit /set disabledynamictick no\r\n    Write-Host \"Dynamic Ticking settings restored\"\r\n  } catch {\r\n    Write-Host \"Failed to revert Dynamic Ticking tweak\"\r\n  }"
+      }
+    },
+    {
+      "id": "disable-fast-startup",
+      "title": "Disable Fast Startup",
+      "description": "Disables Windows Fast Startup to improve system stability",
+      "category": [
+        "Performance",
+        "General"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-fast-startup",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path 'HKLM:\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\Session Manager\\\\Power' -Name HiberbootEnabled -Value 0",
+        "unapply": "Set-ItemProperty -Path 'HKLM:\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\Session Manager\\\\Power' -Name HiberbootEnabled -Value 1"
+      }
+    },
+    {
+      "id": "disable-gamebar",
+      "title": "Disable Gamebar",
+      "description": "Disables The Xbox gamebar ",
+      "category": [
+        "Performance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-gamebar",
+      "source": "",
+      "scripts": {
+        "apply": "try {\r\n    winget uninstall 9nzkpstsnw4p --silent --accept-source-agreements \r\n        Get-AppxPackage Microsoft.XboxGamingOverlay | Remove-AppxPackage -ErrorAction Stop\r\n      \r\n        Write-Output 'Successfully removed Xbox Gaming Overlay via AppxPackage'\r\n    }\r\n    catch {\r\n        Write-Output 'AppxPackage removal failed, trying to remove via winget'\r\n        try {\r\n            winget uninstall 9nzkpstsnw4p --silent --accept-source-agreements \r\n            Write-Output 'Successfully removed Xbox Gaming Overlay via winget'\r\n        }\r\n        catch {\r\n            Write-Output 'Winget uninstall failed'\r\n        }\r\n    }",
+        "unapply": "winget install 9NZKPSTSNW4P --source msstore --accept-source-agreements --accept-package-agreements"
+      }
+    },
+    {
+      "id": "disable-hibernation",
+      "title": "Disable Hibernation",
+      "description": "Disables the hibernation feature to free up disk space and improve shutdown speed",
+      "category": [
+        "Performance",
+        "General"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-hibernation",
+      "source": "",
+      "scripts": {
+        "apply": "powercfg.exe /hibernate off",
+        "unapply": "powercfg.exe /hibernate on"
+      }
+    },
+    {
+      "id": "disable-location-tracking",
+      "title": "Disable Location Tracking",
+      "description": "Disables Windows location tracking.",
+      "category": [
+        "Privacy"
+      ],
+      "recommended": true,
+      "reversible": true,
+      "updatedversion": "2.21.1",
+      "docsurl": "/tweaks/disable-location-tracking",
+      "source": "",
+      "scripts": {
+        "apply": "$path = \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\"\r\nif (-not (Test-Path $path)) { New-Item -Path $path -Force | Out-Null }\r\nSet-ItemProperty -Path $path -Name \"AllowTelemetry\" -Value 0 -Type DWord -Force\r\n\r\nStop-Service -Name \"DiagTrack\" -Force -ErrorAction SilentlyContinue\r\nSet-Service -Name \"DiagTrack\" -StartupType Disabled -ErrorAction SilentlyContinue\r\n\r\n$path = \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location\"\r\nif (-not (Test-Path $path)) { New-Item -Path $path -Force | Out-Null }\r\nSet-ItemProperty -Path $path -Name \"Value\" -Value \"Deny\" -Type String -Force\r\n\r\n$path = \"HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Sensor\\Overrides\\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}\"\r\nif (-not (Test-Path $path)) { New-Item -Path $path -Force | Out-Null }\r\nSet-ItemProperty -Path $path -Name \"SensorPermissionState\" -Value 0 -Type DWord -Force\r\n\r\nStop-Service -Name \"lfsvc\" -Force -ErrorAction SilentlyContinue\r\nSet-Service -Name \"lfsvc\" -StartupType Disabled -ErrorAction SilentlyContinue",
+        "unapply": "Remove-ItemProperty -Path \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\" -Name \"AllowTelemetry\" -ErrorAction SilentlyContinue\r\n\r\nSet-Service -Name \"DiagTrack\" -StartupType Automatic -ErrorAction SilentlyContinue\r\nStart-Service -Name \"DiagTrack\" -ErrorAction SilentlyContinue\r\n\r\n$path = \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location\"\r\nif (-not (Test-Path $path)) { New-Item -Path $path -Force | Out-Null }\r\nSet-ItemProperty -Path $path -Name \"Value\" -Value \"Allow\" -Type String -Force\r\n\r\n$path = \"HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Sensor\\Overrides\\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}\"\r\nif (Test-Path $path) {\r\n    Set-ItemProperty -Path $path -Name \"SensorPermissionState\" -Value 1 -Type DWord -Force\r\n}\r\n\r\nSet-Service -Name \"lfsvc\" -StartupType Manual -ErrorAction SilentlyContinue\r\nStart-Service -Name \"lfsvc\" -ErrorAction SilentlyContinue"
+      }
+    },
+    {
+      "id": "disable-lockscreen-tips",
+      "title": "Disable Lockscreen Tips",
+      "description": "Disables tips on the lockscreen.",
+      "category": [
+        "General"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-lockscreen-tips",
+      "source": "",
+      "scripts": {
+        "apply": "# Disable fun facts, tips, and more on the lock screen\r\nSet-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" -Name \"RotatingLockScreenOverlayEnabled\" -Value 0 -Type DWord\r\nSet-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" -Name \"SubscribedContent-338387Enabled\" -Value 0 -Type DWord\r\n",
+        "unapply": "# Enable fun facts, tips, and more on the lock screen\r\nSet-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" -Name \"RotatingLockScreenOverlayEnabled\" -Value 1 -Type DWord\r\nSet-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" -Name \"SubscribedContent-338387Enabled\" -Value 1 -Type DWord\r\n"
+      }
+    },
+    {
+      "id": "disable-mouse-acceleration",
+      "title": "Disable Mouse Acceleration",
+      "description": "Disables mouse acceleration for a more consistent and precise mouse movement experience. Great for gaming",
+      "category": [
+        "Performance",
+        "Gaming"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-mouse-acceleration",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path \"HKCU:\\Control Panel\\Mouse\" -Name \"MouseSpeed\" -Value \"0\"\r\nSet-ItemProperty -Path \"HKCU:\\Control Panel\\Mouse\" -Name \"MouseThreshold1\" -Value \"0\"\r\nSet-ItemProperty -Path \"HKCU:\\Control Panel\\Mouse\" -Name \"MouseThreshold2\" -Value \"0\"\r\n",
+        "unapply": "Set-ItemProperty -Path \"HKCU:\\Control Panel\\Mouse\" -Name \"MouseSpeed\" -Value \"1\"\r\nSet-ItemProperty -Path \"HKCU:\\Control Panel\\Mouse\" -Name \"MouseThreshold1\" -Value \"6\"\r\nSet-ItemProperty -Path \"HKCU:\\Control Panel\\Mouse\" -Name \"MouseThreshold2\" -Value \"10\"\r\n"
+      }
+    },
+    {
+      "id": "disable-rdp-warnings",
+      "title": "Disable RDP Warnings for Unsigned Files",
+      "description": "Suppresses Windows security warnings when opening unsigned Remote Desktop (.rdp) files.",
+      "category": [
+        "General",
+        "Privacy"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "addedversion": "2.19.0",
+      "docsurl": "/tweaks/disable-rdp-warnings",
+      "source": "",
+      "scripts": {
+        "apply": "$path = \"HKLM:\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\\Client\"\nif (-not (Test-Path $path)) {\n    New-Item -Path $path -Force | Out-Null\n}\nSet-ItemProperty -Path $path -Name \"RedirectionWarningDialogVersion\" -Value 1 -Type DWord\nWrite-Host \"RDP security warnings disabled.\"\n",
+        "unapply": "$path = \"HKLM:\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\\Client\"\nif (Test-Path $path) {\n    if (Get-ItemProperty -Path $path -Name \"RedirectionWarningDialogVersion\" -ErrorAction SilentlyContinue) {\n        Remove-ItemProperty -Path $path -Name \"RedirectionWarningDialogVersion\"\n        Write-Host \"RDP security warnings re-enabled.\"\n    } else {\n        Write-Host \"Tweak was not applied.\"\n    }\n} else {\n    Write-Host \"Registry path does not exist, nothing to unapply.\"\n}\n"
+      }
+    },
+    {
+      "id": "disable-windows-recall",
+      "title": "Disable Windows Recall",
+      "description": "Disables the Windows Recall feature for better privacy.",
+      "category": [
+        "Privacy"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "addedversion": "2.14.2",
+      "docsurl": "/tweaks/disable-recall",
+      "source": "",
+      "scripts": {
+        "apply": "New-Item -Path \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsAI\" -Force\r\nSet-ItemProperty -Path \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsAI\" -Name \"AllowRecallEnablement\" -Type DWord -Value 0\r\n\r\nStart-Process \"powershell.exe\" -ArgumentList \"-NoProfile -ExecutionPolicy Bypass -Command `\"Write-Host 'Disabling Windows Recall...' -ForegroundColor Cyan; Write-Host 'This may take a while depending on your internet connection. Please wait...' -ForegroundColor Yellow; try { DISM /Online /Disable-Feature /FeatureName:Recall /NoRestart; Write-Host 'Windows Recall has been disabled successfully.' -ForegroundColor Green } catch { Write-Host 'Failed to disable Windows Recall.' -ForegroundColor Red }; Write-Host 'Press any key to close...'; $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')`\"\" -WindowStyle Normal",
+        "unapply": "Remove-Item -Path \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsAI\" -Recurse -Force\r\n\r\nStart-Process \"powershell.exe\" -ArgumentList \"-NoProfile -ExecutionPolicy Bypass -Command `\"Write-Host 'Re-enabling Windows Recall...' -ForegroundColor Cyan; Write-Host 'This may take a while depending on your internet connection. Please wait...' -ForegroundColor Yellow; try { DISM /Online /Enable-Feature /FeatureName:Recall /NoRestart; Write-Host 'Windows Recall has been re-enabled successfully.' -ForegroundColor Green } catch { Write-Host 'Failed to re-enable Windows Recall.' -ForegroundColor Red }; Write-Host 'Press any key to close...'; $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')`\"\" -WindowStyle Normal"
+      }
+    },
+    {
+      "id": "disable-taskbar-seach",
+      "title": "Disable Taskbar Search",
+      "description": "Hides the search box from the taskbar.",
+      "category": [
+        "General",
+        "Appearance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "addedversion": "2.22.0",
+      "docsurl": "/tweaks/disable-taskbar-seach",
+      "source": "",
+      "scripts": {
+        "apply": "$path = \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\"\r\n\r\nif (-not (Test-Path $path)) {\r\n    New-Item -Path $path -Force | Out-Null\r\n}\r\n\r\nNew-ItemProperty -Path $path -Name \"SearchboxTaskbarMode\" -PropertyType DWord -Value 0 -Force | Out-Null\r\n\r\nStop-Process -Name explorer -Force\r\nStart-Process explorer.exe",
+        "unapply": "$path = \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\"\r\n\r\nif (-not (Test-Path $path)) {\r\n    New-Item -Path $path -Force | Out-Null\r\n}\r\n\r\nNew-ItemProperty -Path $path -Name \"SearchboxTaskbarMode\" -PropertyType DWord -Value 2 -Force | Out-Null\r\n\r\nStop-Process -Name explorer -Force\r\nStart-Process explorer.exe"
+      }
+    },
+    {
+      "id": "disable-telemetry",
+      "title": "Disable Telemetry",
+      "description": "Disables Windows telemetry and data collection for improved privacy and performance.",
+      "category": [
+        "Privacy",
+        "Performance"
+      ],
+      "recommended": true,
+      "reversible": true,
+      "addedversion": "2.14.0",
+      "updatedversion": "2.21.1",
+      "docsurl": "/tweaks/disable-telemetry",
+      "source": "",
+      "scripts": {
+        "apply": "# Registry tweaks\r\n$registrySettings = @(\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo\"; Name=\"Enabled\"; Value=0 },\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Privacy\"; Name=\"TailoredExperiencesWithDiagnosticDataEnabled\"; Value=0 },\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\Speech_OneCore\\Settings\\OnlineSpeechPrivacy\"; Name=\"HasAccepted\"; Value=0 },\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\Input\\TIPC\"; Name=\"Enabled\"; Value=0 },\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\InputPersonalization\"; Name=\"RestrictImplicitInkCollection\"; Value=1 },\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\InputPersonalization\"; Name=\"RestrictImplicitTextCollection\"; Value=1 },\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\InputPersonalization\\TrainedDataStore\"; Name=\"HarvestContacts\"; Value=0 },\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\Personalization\\Settings\"; Name=\"AcceptedPrivacyPolicy\"; Value=0 },\r\n    @{ Path=\"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection\"; Name=\"AllowTelemetry\"; Value=0 },\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\"; Name=\"Start_TrackProgs\"; Value=0 },\r\n    @{ Path=\"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\"; Name=\"PublishUserActivities\"; Value=0 },\r\n    @{ Path=\"HKCU:\\Software\\Microsoft\\Siuf\\Rules\"; Name=\"NumberOfSIUFInPeriod\"; Value=0 }\r\n)\r\n\r\nforeach ($reg in $registrySettings) {\r\n    New-Item -Path $reg.Path -Force | Out-Null\r\n    Set-ItemProperty -Path $reg.Path -Name $reg.Name -Value $reg.Value -Type DWord\r\n}\r\n\r\n# Disable Defender Auto Sample Submission\r\nSet-MpPreference -SubmitSamplesConsent 2\r\n\r\n# Disable Connected User Experiences and Telemetry service\r\nSet-Service -Name diagtrack -StartupType Disabled\r\n\r\n# Disable Windows Error Reporting Manager service\r\nSet-Service -Name wermgr -StartupType Disabled\r\n\r\n# Set SvcHostSplitThresholdInKB to total RAM in KB (this can help with performance)\r\n$MemoryKB = (Get-CimInstance Win32_PhysicalMemory | Measure-Object Capacity -Sum).Sum / 1KB\r\nSet-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\" -Name \"SvcHostSplitThresholdInKB\" -Value [int]$MemoryKB\r\n\r\n# Remove PeriodInNanoSeconds key if exists\r\nRemove-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Siuf\\Rules\" -Name \"PeriodInNanoSeconds\" -ErrorAction SilentlyContinue\r\n\r\nWrite-Output \"Telemetry settings have been applied. Bye Bye Microslop\"",
+        "unapply": "\r\n# Registry cleanup (removes entries we added)\r\n$registrySettings = @(\r\n    \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo\\Enabled\",\r\n    \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Privacy\\TailoredExperiencesWithDiagnosticDataEnabled\",\r\n    \"HKCU:\\Software\\Microsoft\\Speech_OneCore\\Settings\\OnlineSpeechPrivacy\\HasAccepted\",\r\n    \"HKCU:\\Software\\Microsoft\\Input\\TIPC\\Enabled\",\r\n    \"HKCU:\\Software\\Microsoft\\InputPersonalization\\RestrictImplicitInkCollection\",\r\n    \"HKCU:\\Software\\Microsoft\\InputPersonalization\\RestrictImplicitTextCollection\",\r\n    \"HKCU:\\Software\\Microsoft\\InputPersonalization\\TrainedDataStore\\HarvestContacts\",\r\n    \"HKCU:\\Software\\Microsoft\\Personalization\\Settings\\AcceptedPrivacyPolicy\",\r\n    \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection\\AllowTelemetry\",\r\n    \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\Start_TrackProgs\",\r\n    \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\PublishUserActivities\",\r\n    \"HKCU:\\Software\\Microsoft\\Siuf\\Rules\\NumberOfSIUFInPeriod\"\r\n)\r\n\r\nforeach ($reg in $registrySettings) {\r\n    Remove-ItemProperty -Path ($reg -replace '\\\\[^\\\\]+$','') -Name ($reg -split '\\\\')[-1] -ErrorAction SilentlyContinue\r\n}\r\n\r\n# Enable Defender Auto Sample Submission\r\nSet-MpPreference -SubmitSamplesConsent 1\r\n\r\n# Enable Connected User Experiences and Telemetry service\r\nSet-Service -Name diagtrack -StartupType Automatic\r\n\r\n# Enable Windows Error Reporting Manager service\r\nSet-Service -Name wermgr -StartupType Automatic\r\n\r\n# Reset SvcHostSplitThresholdInKB to default value\r\nSet-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\" -Name \"SvcHostSplitThresholdInKB\" -Value 399360 -Type DWord\r\n\r\nWrite-Output \"Telemetry settings have been reverted to default.\""
+      }
+    },
+    {
+      "id": "disable-wifi-sense",
+      "title": "Disable Wifi Sense",
+      "description": "Disables Wifi Sense to prevent sharing of Wi-Fi networks with contacts",
+      "category": [
+        "Privacy",
+        "Network",
+        "General"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/disable-wifi-sense",
+      "source": "",
+      "scripts": {
+        "apply": "  Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\PolicyManager\\default\\WiFi\\AllowWiFiHotSpotReporting\" -Name \"Value\" -Type DWord -Value 0\r\n  Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\PolicyManager\\default\\WiFi\\AllowAutoConnectToWiFiSenseHotspots\" -Name \"Value\" -Type DWord -Value 0",
+        "unapply": "Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\PolicyManager\\default\\WiFi\\AllowWiFiHotSpotReporting\" -Name \"Value\" -Type DWord -Value 1\r\nSet-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\PolicyManager\\default\\WiFi\\AllowAutoConnectToWiFiSenseHotspots\" -Name \"Value\" -Type DWord -Value 1"
+      }
+    },
+    {
+      "id": "enable-dark-mode",
+      "title": "Enable Dark Mode",
+      "description": "Enables dark mode for Windows. Great for unactivated systems.",
+      "category": [
+        "General",
+        "Appearance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/enable-dark-mode",
+      "source": "",
+      "scripts": {
+        "apply": "$Path = \"HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\"\r\nSet-ItemProperty -Path $Path -Name AppsUseLightTheme -Value 0\r\nSet-ItemProperty -Path $Path -Name SystemUsesLightTheme -Value 0\r\nStop-Process -Name explorer -Force\r\nStart-Process explorer.exe\r\n",
+        "unapply": "$Path = \"HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\"\r\nSet-ItemProperty -Path $Path -Name AppsUseLightTheme -Value 1\r\nSet-ItemProperty -Path $Path -Name SystemUsesLightTheme -Value 1\r\nStop-Process -Name explorer -Force\r\nStart-Process explorer.exe\r\n"
+      }
+    },
+    {
+      "id": "enable-end-task-right-click",
+      "title": "Enable End Task With Right Click",
+      "description": "Enables the \"End Task\" option in the taskbar context menu",
+      "category": [
+        "General"
+      ],
+      "recommended": true,
+      "reversible": true,
+      "docsurl": "/tweaks/enable-end-task-right-click",
+      "source": "",
+      "scripts": {
+        "apply": "$regPath = \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings\"\r\n$valueName = \"TaskbarEndTask\"\r\n\r\nif (-not (Test-Path $regPath)) {\r\n    New-Item -Path $regPath -Force | Out-Null\r\n}\r\n\r\nSet-ItemProperty -Path $regPath -Name $valueName -Type DWord -Value 1",
+        "unapply": "$regPath = \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings\"\r\n$valueName = \"TaskbarEndTask\"\r\n\r\nif (-not (Test-Path $regPath)) {\r\n    New-Item -Path $regPath -Force | Out-Null\r\n}\r\n\r\nSet-ItemProperty -Path $regPath -Name $valueName -Type DWord -Value 0"
+      }
+    },
+    {
+      "id": "enable-game-mode",
+      "title": "Enable Game Mode",
+      "description": "Enables Game Mode on windows",
+      "category": [
+        "General",
+        "Performance",
+        "Gaming"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/enable-game-mode",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\GameBar\" -Name \"AllowAutoGameMode\" -Value 1\r\nSet-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\GameBar\" -Name \"AutoGameModeEnabled\" -Value 1\r\n\r\nWrite-Output \"Game Mode is now ENABLED.\"\r\n",
+        "unapply": "Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\GameBar\" -Name \"AllowAutoGameMode\" -Value 0\r\nSet-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\GameBar\" -Name \"AutoGameModeEnabled\" -Value 0\r\n\r\nWrite-Output \"Game Mode is now DISABLED.\"\r\n"
+      }
+    },
+    {
+      "id": "enable-hags",
+      "title": "Enable HAGS",
+      "description": "Enables HAGS (Hardware Accelerated GPU Scheduling)",
+      "category": [
+        "Performance",
+        "Gaming",
+        "GPU"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/enable-hags",
+      "source": "",
+      "scripts": {
+        "apply": "$regPath = \"HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers\"\r\n$keyName = \"HwSchMode\"\r\n$value = 2\r\n\r\nIf (-not (Test-Path $regPath)) {\r\n    New-Item -Path $regPath -Force | Out-Null\r\n}\r\n\r\nSet-ItemProperty -Path $regPath -Name $keyName -Value $value -Type DWord\r\n\r\nWrite-Host \"Hardware-Accelerated GPU Scheduling enabled. A restart may be required.\"\r\n",
+        "unapply": "$regPath = \"HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers\"\r\n$keyName = \"HwSchMode\"\r\n$value = 1\r\n\r\nIf (Test-Path $regPath) {\r\n    Set-ItemProperty -Path $regPath -Name $keyName -Value $value -Type DWord\r\n    Write-Host \"Hardware-Accelerated GPU Scheduling disabled. A restart may be required.\"\r\n}\r\nelse {\r\n    Write-Host \"Registry path not found.\"\r\n}\r\n"
+      }
+    },
+    {
+      "id": "enable-optimization-for-windowed-games",
+      "title": "Enable Optimization For Windowed Games",
+      "description": "Enables Optimization For Windowed Games on windows",
+      "category": [
+        "General",
+        "Performance",
+        "Gaming"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/enable-optimization-for-windowed-games",
+      "source": "",
+      "scripts": {
+        "apply": "\r\n$regPath = \"HKCU:\\Software\\Microsoft\\DirectX\\UserGpuPreferences\"\r\n$keyName = \"DirectXUserGlobalSettings\"\r\n$value = \"SwapEffectUpgradeEnable=1;\"\r\n\r\nIf (-not (Test-Path $regPath)) {\r\n    New-Item -Path $regPath -Force | Out-Null\r\n}\r\n\r\nSet-ItemProperty -Path $regPath -Name $keyName -Value $value\r\n\r\nWrite-Host \"DirectX game optimization applied.\"\r\n",
+        "unapply": "$regPath = \"HKCU:\\Software\\Microsoft\\DirectX\\UserGpuPreferences\"\r\n$keyName = \"DirectXUserGlobalSettings\"\r\n\r\nIf (Test-Path \"$regPath\\$keyName\") {\r\n    Remove-ItemProperty -Path $regPath -Name $keyName -ErrorAction SilentlyContinue\r\n    Write-Host \"DirectX game optimization removed.\"\r\n}\r\nelse {\r\n    Write-Host \"Registry key does not exist, nothing to remove.\"\r\n}\r\n"
+      }
+    },
+    {
+      "id": "hide-taskview-and-widgets",
+      "title": "Hide Taskview and Widgets",
+      "description": "Hides the Taskview and Widgets buttons on the taskbar.",
+      "category": [
+        "General",
+        "Appearance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/hide-taskview-and-widgets",
+      "source": "",
+      "scripts": {
+        "apply": "# Hide Task View button\r\nSet-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" -Name \"ShowTaskViewButton\" -Type DWord -Value 0\r\n\r\n# Remove Widgets package\r\nGet-AppxPackage *WebExperience* | Remove-AppxPackage -ErrorAction SilentlyContinue\r\n\r\n# Restart Explorer to apply changes\r\nStop-Process -Name explorer -Force\r\n\r\nWrite-Host \"Widgets removed and Task View hidden.\"\r\n\r\n",
+        "unapply": "Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" -Name \"ShowTaskViewButton\" -Type DWord -Value 1\r\n\r\nWrite-Host \"Reinstalling Windows Widgets...\"\r\nwinget install 9MSSGKG348SP --accept-source-agreements --accept-package-agreements --silent\r\n\r\nStop-Process -Name explorer -Force\r\n\r\nWrite-Host \"Task View restored. Widgets reinstalled (may require sign-out to appear).\"\r\n\r\n\r\n"
+      }
+    },
+    {
+      "id": "menu-show-delay-zero",
+      "title": "Menu Show Delay Zero",
+      "description": "Removes the delay when opening menus.",
+      "category": [
+        "Performance",
+        "Appearance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/menu-show-delay-zero",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path \"HKCU:\\Control Panel\\Desktop\" -Name \"MenuShowDelay\" -Type String -Value \"0\"\r\n",
+        "unapply": "Set-ItemProperty -Path \"HKCU:\\Control Panel\\Desktop\" -Name \"MenuShowDelay\" -Type String -Value \"400\"\r\n"
+      }
+    },
+    {
+      "id": "optimize-network-settings",
+      "title": "Optimize Network Settings",
+      "description": "Changes various Windows settings to improve network latency and speeds.",
+      "category": [
+        "Network",
+        "Gaming"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "updatedversion": "2.9.0",
+      "docsurl": "/tweaks/optimize-network-settings",
+      "source": "",
+      "scripts": {
+        "apply": "Write-Host \"Applying network tweaks...\"\r\n\r\nnetsh int tcp set heuristics disabled\r\nnetsh int tcp set supplemental template=internet congestionprovider=ctcp\r\nnetsh int tcp set global rss=enabled\r\nnetsh int tcp set global ecncapability=enabled\r\nnetsh int tcp set global timestamps=disabled\r\nnetsh int tcp set global fastopen=enabled\r\nnetsh int tcp set global fastopenfallback=enabled\r\nnetsh int tcp set supplemental template=custom icw=10\r\n\r\nWrite-Host \"Network tweaks applied successfully.\"\r\n",
+        "unapply": "Write-Host \"Reverting network tweaks to defaults...\"\r\n\r\nnetsh int tcp set heuristics enabled\r\nnetsh int tcp set supplemental template=internet congestionprovider=default\r\nnetsh int tcp set global rss=default\r\nnetsh int tcp set global ecncapability=default\r\nnetsh int tcp set global timestamps=default\r\nnetsh int tcp set global fastopen=default\r\nnetsh int tcp set global fastopenfallback=default\r\nnetsh int tcp set supplemental template=custom icw=4\r\n\r\nWrite-Host \"Network tweaks reverted to defaults.\"\r\n"
+      }
+    },
+    {
+      "id": "optimize-nvidia-settings",
+      "title": "Optimize Nvidia Settings",
+      "description": "Changes Nvidia Control Panel settings to improve gaming performance",
+      "category": [
+        "Performance",
+        "GPU",
+        "Gaming"
+      ],
+      "recommended": false,
+      "reversible": false,
+      "docsurl": "/tweaks/optimize-nvidia-settings",
+      "source": "",
+      "scripts": {
+        "apply": null,
+        "unapply": null
+      }
+    },
+    {
+      "id": "remove-edge",
+      "title": "Remove Microsoft Edge",
+      "description": "Removes Microsoft Edge from Windows.",
+      "category": [
+        "System",
+        "Privacy"
+      ],
+      "recommended": true,
+      "reversible": true,
+      "addedversion": "2.22.0",
+      "docsurl": "/tweaks/remove-edge",
+      "source": "",
+      "scripts": {
+        "apply": "try {\r\n  New-Item -Path \"$Env:SystemRoot\\SystemApps\\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\\MicrosoftEdge.exe\" -Force\r\n  $Path = Resolve-Path -Path \"$Env:ProgramFiles (x86)\\Microsoft\\Edge\\Application\\*\\Installer\\setup.exe\" | Select-Object -Last 1\r\n  Start-Process -FilePath $Path -ArgumentList '--uninstall --system-level --force-uninstall --delete-profile' -Wait\r\n  Write-Host \"Microsoft Edge was removed\" -ForegroundColor Green\r\n}\r\ncatch {\r\n    Write-Host \"Failed to remove Microsoft Edge: $_\" -ForegroundColor Red\r\n}",
+        "unapply": "Write-Host 'Installing Microsoft Edge With Winget.'\r\nwinget install Microsoft.Edge --source winget"
+      }
+    },
+    {
+      "id": "remove-gaming-apps",
+      "title": "Remove Gaming Apps",
+      "description": "Removes Xbox app, Xbox Game Bar, and Xbox Game Overlay",
+      "category": [
+        "Performance",
+        "Privacy"
+      ],
+      "recommended": false,
+      "reversible": false,
+      "docsurl": "/tweaks/remove-gaming-apps",
+      "source": "",
+      "scripts": {
+        "apply": "$appsList = 'Microsoft.GamingApp', 'Microsoft.XboxGameOverlay', 'Microsoft.XboxGamingOverlay'\r\n\r\nforeach ($app in $appsList) {\r\n    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage\r\n    Get-AppxProvisionedPackage -Online | Where-Object DisplayName -EQ $app | Remove-AppxProvisionedPackage -Online\r\n}\r\n",
+        "unapply": null
+      }
+    },
+    {
+      "id": "remove-ms-bing-integration",
+      "title": "Remove Microsoft Bing Integration",
+      "description": "Removes Bing apps and disables Bing web search in Windows Search.",
+      "category": [
+        "Privacy",
+        "Performance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/remove-ms-bing-integration",
+      "source": "",
+      "scripts": {
+        "apply": "# Remove all Bing apps\r\nGet-AppxPackage *BingNews* | Remove-AppxPackage -ErrorAction SilentlyContinue\r\nGet-AppxPackage *BingWeather* | Remove-AppxPackage -ErrorAction SilentlyContinue\r\nGet-AppxPackage *BingFinance* | Remove-AppxPackage -ErrorAction SilentlyContinue\r\nGet-AppxPackage *BingMaps* | Remove-AppxPackage -ErrorAction SilentlyContinue\r\nGet-AppxPackage *BingSports* | Remove-AppxPackage -ErrorAction SilentlyContinue\r\nGet-AppxPackage *BingTravel* | Remove-AppxPackage -ErrorAction SilentlyContinue\r\nGet-AppxPackage *BingFoodAndDrink* | Remove-AppxPackage -ErrorAction SilentlyContinue\r\nGet-AppxPackage *BingHealthAndFitness* | Remove-AppxPackage -ErrorAction SilentlyContinue\r\n\r\n$searchPath = \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\"\r\nif (!(Test-Path $searchPath)) {\r\n    New-Item -Path $searchPath -Force | Out-Null\r\n}\r\nSet-ItemProperty -Path $searchPath -Name \"BingSearchEnabled\" -Type DWord -Value 0\r\nSet-ItemProperty -Path $searchPath -Name \"CortanaConsent\" -Type DWord -Value 0\r\n\r\n$explorerPath = \"HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer\"\r\nif (!(Test-Path $explorerPath)) {\r\n    New-Item -Path $explorerPath -Force | Out-Null\r\n}\r\nSet-ItemProperty -Path $explorerPath -Name \"DisableSearchBoxSuggestions\" -Type DWord -Value 1\r\n\r\nWrite-Host \"Bing apps removed and Bing search disabled.\"",
+        "unapply": "$searchPath = \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\"\r\nif (Test-Path $searchPath) {\r\n    Set-ItemProperty -Path $searchPath -Name \"BingSearchEnabled\" -Type DWord -Value 1\r\n    Remove-ItemProperty -Path $searchPath -Name \"CortanaConsent\" -ErrorAction SilentlyContinue\r\n}\r\n\r\n$explorerPath = \"HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer\"\r\nif (Test-Path $explorerPath) {\r\n    Remove-ItemProperty -Path $explorerPath -Name \"DisableSearchBoxSuggestions\" -ErrorAction SilentlyContinue\r\n}\r\n\r\nWrite-Host \"Reinstalling Bing apps...\"\r\nwinget install 9WZDNCRFHVFW --accept-source-agreements --accept-package-agreements --silent  # Bing News\r\nwinget install 9WZDNCRFJ3Q2 --accept-source-agreements --accept-package-agreements --silent  # Bing Weather\r\n\r\nWrite-Host \"Bing search re-enabled. Some apps may need to be reinstalled from Microsoft Store.\""
+      }
+    },
+    {
+      "id": "remove-onedrive",
+      "title": "Remove OneDrive",
+      "description": "Removes OneDrive from the system",
+      "category": [
+        "Performance",
+        "General",
+        "Privacy"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/remove-onedrive",
+      "source": "",
+      "scripts": {
+        "apply": "$OneDrivePath = $($env:OneDrive)\r\n        Write-Host \"Removing OneDrive\"\r\n        $regPath = \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\OneDriveSetup.exe\"\r\n        if (Test-Path $regPath) {\r\n            $OneDriveUninstallString = Get-ItemPropertyValue \"$regPath\" -Name \"UninstallString\"\r\n            $OneDriveExe, $OneDriveArgs = $OneDriveUninstallString.Split(\" \")\r\n            Start-Process -FilePath $OneDriveExe -ArgumentList \"$OneDriveArgs /silent\" -NoNewWindow -Wait\r\n        } else {\r\n            Write-Host \"Onedrive dosn't seem to be installed anymore\" -ForegroundColor Red\r\n            return\r\n        }\r\n        # Check if OneDrive got Uninstalled\r\n        if (-not (Test-Path $regPath)) {\r\n        Write-Host \"Copy downloaded Files from the OneDrive Folder to Root UserProfile\"\r\n        Start-Process -FilePath powershell -ArgumentList \"robocopy '$($OneDrivePath)' '$($env:USERPROFILE.TrimEnd())\\' /mov /e /xj\" -NoNewWindow -Wait\r\n  \r\n        Write-Host \"Removing OneDrive leftovers\"\r\n        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue \"$env:localappdata\\Microsoft\\OneDrive\"\r\n        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue \"$env:localappdata\\OneDrive\"\r\n        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue \"$env:programdata\\Microsoft OneDrive\"\r\n        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue \"$env:systemdrive\\OneDriveTemp\"\r\n        reg delete \"HKEY_CURRENT_USER\\Software\\Microsoft\\OneDrive\" -f\r\n        # check if directory is empty before removing:\r\n        If ((Get-ChildItem \"$OneDrivePath\" -Recurse | Measure-Object).Count -eq 0) {\r\n            Remove-Item -Recurse -Force -ErrorAction SilentlyContinue \"$OneDrivePath\"\r\n        }\r\n  \r\n        Write-Host \"Remove Onedrive from explorer sidebar\"\r\n        Set-ItemProperty -Path \"HKCR:\\CLSID\\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\" -Name \"System.IsPinnedToNameSpaceTree\" -Value 0\r\n        Set-ItemProperty -Path \"HKCR:\\Wow6432Node\\CLSID\\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\" -Name \"System.IsPinnedToNameSpaceTree\" -Value 0\r\n  \r\n        Write-Host \"Removing run hook for new users\"\r\n        reg load \"hku\\Default\" \"C:\\Users\\Default\\NTUSER.DAT\"\r\n        reg delete \"HKEY_USERS\\Default\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\" /v \"OneDriveSetup\" /f\r\n        reg unload \"hku\\Default\"\r\n  \r\n        Write-Host \"Removing startmenu entry\"\r\n        Remove-Item -Force -ErrorAction SilentlyContinue \"$env:userprofile\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\OneDrive.lnk\"\r\n  \r\n        Write-Host \"Removing scheduled task\"\r\n        Get-ScheduledTask -TaskPath '\\' -TaskName 'OneDrive*' -ea SilentlyContinue | Unregister-ScheduledTask -Confirm:$false\r\n  \r\n        # Add Shell folders restoring default locations\r\n        Write-Host \"Shell Fixing\"\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"AppData\" -Value \"$env:userprofile\\AppData\\Roaming\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Cache\" -Value \"$env:userprofile\\AppData\\Local\\Microsoft\\Windows\\INetCache\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Cookies\" -Value \"$env:userprofile\\AppData\\Local\\Microsoft\\Windows\\INetCookies\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Favorites\" -Value \"$env:userprofile\\Favorites\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"History\" -Value \"$env:userprofile\\AppData\\Local\\Microsoft\\Windows\\History\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Local AppData\" -Value \"$env:userprofile\\AppData\\Local\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"My Music\" -Value \"$env:userprofile\\Music\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"My Video\" -Value \"$env:userprofile\\Videos\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"NetHood\" -Value \"$env:userprofile\\AppData\\Roaming\\Microsoft\\Windows\\Network Shortcuts\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"PrintHood\" -Value \"$env:userprofile\\AppData\\Roaming\\Microsoft\\Windows\\Printer Shortcuts\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Programs\" -Value \"$env:userprofile\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Recent\" -Value \"$env:userprofile\\AppData\\Roaming\\Microsoft\\Windows\\Recent\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"SendTo\" -Value \"$env:userprofile\\AppData\\Roaming\\Microsoft\\Windows\\SendTo\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Start Menu\" -Value \"$env:userprofile\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Startup\" -Value \"$env:userprofile\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Templates\" -Value \"$env:userprofile\\AppData\\Roaming\\Microsoft\\Windows\\Templates\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"{374DE290-123F-4565-9164-39C4925E467B}\" -Value \"$env:userprofile\\Downloads\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Desktop\" -Value \"$env:userprofile\\Desktop\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"My Pictures\" -Value \"$env:userprofile\\Pictures\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"Personal\" -Value \"$env:userprofile\\Documents\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"{F42EE2D3-909F-4907-8871-4C22FC0BF756}\" -Value \"$env:userprofile\\Documents\" -Type ExpandString\r\n        Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\" -Name \"{0DDD015D-B06C-45D5-8C4C-F59713854639}\" -Value \"$env:userprofile\\Pictures\" -Type ExpandString\r\n        Write-Host \"Restarting explorer\"\r\n        taskkill.exe /F /IM \"explorer.exe\"\r\n        Start-Process \"explorer.exe\"\r\n  \r\n        Write-Host \"Waiting for explorer to complete loading\"\r\n        Write-Host \"Please Note - The OneDrive folder at $OneDrivePath may still have items in it. You must manually delete it, but all the files should already be copied to the base user folder.\"\r\n        Write-Host \"If there are Files missing afterwards, please Login to Onedrive.com and Download them manually\" -ForegroundColor Yellow\r\n        Start-Sleep 5\r\n        } else {\r\n        Write-Host \"Something went Wrong during the Unistallation of OneDrive\" -ForegroundColor Red\r\n        }",
+        "unapply": "Write-Host \"Install OneDrive\"\r\nStart-Process -FilePath winget -ArgumentList \"install -e --accept-source-agreements --accept-package-agreements --silent Microsoft.OneDrive \" -NoNewWindow -Wait"
+      }
+    },
+    {
+      "id": "revert-context-menu",
+      "title": "Revert Context Menu",
+      "description": "Reverts the context menu to the default Windows 10 context menu.",
+      "category": [
+        "General",
+        "Appearance"
+      ],
+      "recommended": true,
+      "reversible": true,
+      "docsurl": "/tweaks/revert-context-menu",
+      "source": "",
+      "scripts": {
+        "apply": "New-Item -Path \"HKCU:\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\" -Name \"InprocServer32\" -force -value \"\"\r\nStop-Process -Name \"explorer\" -Force\r\nStart-Process \"explorer.exe\"",
+        "unapply": "Remove-Item -Path \"HKCU:\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\" -Recurse -Confirm:$false -Force\r\nStop-Process -Name \"explorer\" -Force\r\nStart-Process \"explorer.exe\""
+      }
+    },
+    {
+      "id": "set-powershell7-default",
+      "title": "Set PowerShell 7 as Default",
+      "description": "Sets PowerShell 7 as the default profile in Windows Terminal (installs PS7 if missing)",
+      "category": [
+        "General"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/set-powershell7-default",
+      "source": "",
+      "scripts": {
+        "apply": "if (Test-Path -Path \"$env:ProgramFiles\\PowerShell\\7\") {\r\n    Write-Host \"PowerShell 7 is already installed.\"\r\n} else {\r\n    Write-Host \"Installing PowerShell 7...\"\r\n    winget install --id Microsoft.PowerShell --silent\r\n}\r\n\r\n$targetTerminalName = \"PowerShell\"\r\n\r\nif (-not (Get-Command \"wt\" -ErrorAction SilentlyContinue)) {\r\n    Write-Host \"Windows Terminal not installed. Exiting...\"\r\n    exit\r\n}\r\n\r\n$settingsPath = \"$env:LOCALAPPDATA\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json\"\r\nif (-not (Test-Path -Path $settingsPath)) {\r\n    Write-Host \"Windows Terminal settings.json not found.\"\r\n    exit\r\n}\r\n\r\n$settingsContent = Get-Content -Path $settingsPath | ConvertFrom-Json\r\n$ps7Profile = $settingsContent.profiles.list | Where-Object { $_.name -eq $targetTerminalName }\r\n\r\nif ($ps7Profile) {\r\n    $settingsContent.defaultProfile = $ps7Profile.guid\r\n    $settingsContent | ConvertTo-Json -Depth 100 | Set-Content -Path $settingsPath\r\n    Write-Host \"Default profile set to PowerShell 7\"\r\n} else {\r\n    Write-Host \"No PowerShell 7 profile found.\"\r\n}\r\n",
+        "unapply": "$targetTerminalName = \"Windows PowerShell\"\r\n\r\nif (-not (Get-Command \"wt\" -ErrorAction SilentlyContinue)) {\r\n    Write-Host \"Windows Terminal not installed. Exiting...\"\r\n    exit\r\n}\r\n\r\n$settingsPath = \"$env:LOCALAPPDATA\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json\"\r\nif (-not (Test-Path -Path $settingsPath)) {\r\n    Write-Host \"Windows Terminal settings.json not found.\"\r\n    exit\r\n}\r\n\r\n$settingsContent = Get-Content -Path $settingsPath | ConvertFrom-Json\r\n$ps5Profile = $settingsContent.profiles.list | Where-Object { $_.name -eq $targetTerminalName }\r\n\r\nif ($ps5Profile) {\r\n    $settingsContent.defaultProfile = $ps5Profile.guid\r\n    $settingsContent | ConvertTo-Json -Depth 100 | Set-Content -Path $settingsPath\r\n    Write-Host \"Default profile reverted to PowerShell 5\"\r\n} else {\r\n    Write-Host \"No Windows PowerShell profile found.\"\r\n}\r\n"
+      }
+    },
+    {
+      "id": "set-services-to-manual",
+      "title": "Set Services to Manual",
+      "description": "Sets various Windows services to Manual startup type to improve performance.",
+      "category": [
+        "Performance",
+        "Gaming"
+      ],
+      "recommended": true,
+      "reversible": true,
+      "updatedversion": "2.21.1",
+      "docsurl": "/tweaks/set-services-to-manual",
+      "source": "",
+      "scripts": {
+        "apply": "      $services = @(\r\n      @{ Name = \"AJRouter\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"ALG\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AppIDSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AppMgmt\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AppReadiness\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AppVClient\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"AppXSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Appinfo\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AssignedAccessManagerSvc\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"AudioEndpointBuilder\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"AudioSrv\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"Audiosrv\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"AxInstSV\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BDESVC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BFE\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"BITS\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"BTAGService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BcastDVRUserService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BluetoothUserService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BrokerInfrastructure\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"Browser\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BthAvctpSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"BthHFSrv\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"CDPSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"CDPUserSvc_*\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"COMSysApp\"; StartupType = \"Manual\" },\r\n      @{ Name = \"CaptureService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"CertPropSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"ClipSVC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"ConsentUxUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"CoreMessagingRegistrar\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"CredentialEnrollmentManagerUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"CryptSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"CscService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DPS\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DcomLaunch\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DcpSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DevQueryBroker\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DeviceAssociationBrokerSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DeviceAssociationService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DeviceInstall\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DevicePickerUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DevicesFlowUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Dhcp\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DiagTrack\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"DialogBlockingService\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"DispBrokerDesktopSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DisplayEnhancementService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DmEnrollmentSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Dnscache\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DoSvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"DsSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DsmSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DusmSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"EFS\"; StartupType = \"Manual\" },\r\n      @{ Name = \"EapHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"EntAppSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"EventLog\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"EventSystem\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"FDResPub\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Fax\"; StartupType = \"Manual\" },\r\n      @{ Name = \"FontCache\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"FrameServer\"; StartupType = \"Manual\" },\r\n      @{ Name = \"FrameServerMonitor\"; StartupType = \"Manual\" },\r\n      @{ Name = \"GraphicsPerfSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"HomeGroupListener\"; StartupType = \"Manual\" },\r\n      @{ Name = \"HomeGroupProvider\"; StartupType = \"Manual\" },\r\n      @{ Name = \"HvHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"IEEtwCollectorService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"IKEEXT\"; StartupType = \"Manual\" },\r\n      @{ Name = \"InstallService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"InventorySvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"IpxlatCfgSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"KeyIso\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"KtmRm\"; StartupType = \"Manual\" },\r\n      @{ Name = \"LSM\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"LanmanServer\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"LanmanWorkstation\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"LicenseManager\"; StartupType = \"Manual\" },\r\n      @{ Name = \"LxpSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MSDTC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MSiSCSI\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MapsBroker\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"McpManagementService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MessagingService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MicrosoftEdgeElevationService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MixedRealityOpenXRSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MpsSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"MsKeyboardFilter\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NPSMSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NaturalAuthentication\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NcaSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NcbService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NcdAutoSetup\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NetSetupSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NetTcpPortSharing\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"Netlogon\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"Netman\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NgcCtnrSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NgcSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NlaSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"OneSyncSvc_*\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"P9RdrService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PNRPAutoReg\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PNRPsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PcaSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PeerDistSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PenService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PerfHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PhoneSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PimIndexMaintenanceSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PlugPlay\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PolicyAgent\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Power\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"PrintNotify\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PrintWorkflowUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"ProfSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"PushToInstall\"; StartupType = \"Manual\" },\r\n      @{ Name = \"QWAVE\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RasAuto\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RasMan\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RemoteAccess\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"RemoteRegistry\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"RetailDemo\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RmSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RpcEptMapper\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"RpcLocator\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RpcSs\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SCPolicySvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SCardSvr\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SDRSVC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SEMgrSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SENS\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SNMPTRAP\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SNMPTrap\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SSDPSRV\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SamSs\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"ScDeviceEnum\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Schedule\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SecurityHealthService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Sense\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SensorDataService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SensorService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SensrSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SessionEnv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SgrmBroker\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SharedAccess\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SharedRealitySvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"ShellHWDetection\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SmsRouter\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Spooler\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SstpSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"StateRepository\"; StartupType = \"Manual\" },\r\n      @{ Name = \"StiSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"StorSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SysMain\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SystemEventsBroker\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"TabletInputService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TapiSrv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TermService\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"TextInputManagementService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Themes\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"TieringEngineService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TimeBroker\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TimeBrokerSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TokenBroker\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TrkWks\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"TroubleshootingSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TrustedInstaller\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UI0Detect\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UdkUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UevAgentService\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"UmRdpService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UnistoreSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UserDataSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UserManager\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"UsoSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"VGAuthService\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"VMTools\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"VSS\"; StartupType = \"Manual\" },\r\n      @{ Name = \"VacSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"VaultSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"W32Time\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WEPHOSTSVC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WFDSConMgrSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WMPNetworkSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WManSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WPDBusEnum\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WSService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WSearch\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"WaaSMedicSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WalletService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WarpJITSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WbioSrvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Wcmsvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"WcsPlugInService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WdNisSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WdiServiceHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WdiSystemHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WebClient\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Wecsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WerSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WiaRpc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WinDefend\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"WinHttpAutoProxySvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WinRM\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Winmgmt\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"WlanSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"WpcMonSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WpnService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WpnUserService_*\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"XblAuthManager\"; StartupType = \"Manual\" },\r\n      @{ Name = \"XblGameSave\"; StartupType = \"Manual\" },\r\n      @{ Name = \"XboxGipSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"XboxNetApiSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"autotimesvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"bthserv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"camsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"cbdhsvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"cloudidsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"dcsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"defragsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"diagnosticshub.standardcollector.service\"; StartupType = \"Manual\" },\r\n      @{ Name = \"diagsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"dmwappushservice\"; StartupType = \"Manual\" },\r\n      @{ Name = \"dot3svc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"edgeupdate\"; StartupType = \"Manual\" },\r\n      @{ Name = \"edgeupdatem\"; StartupType = \"Manual\" },\r\n      @{ Name = \"embeddedmode\"; StartupType = \"Manual\" },\r\n      @{ Name = \"fdPHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"fhsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"gpsvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"hidserv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"icssvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"iphlpsvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"lfsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"lltdsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"lmhosts\"; StartupType = \"Manual\" },\r\n      @{ Name = \"mpssvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"msiserver\"; StartupType = \"Manual\" },\r\n      @{ Name = \"netprofm\"; StartupType = \"Manual\" },\r\n      @{ Name = \"nsi\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"p2pimsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"p2psvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"perceptionsimulation\"; StartupType = \"Manual\" },\r\n      @{ Name = \"pla\"; StartupType = \"Manual\" },\r\n      @{ Name = \"seclogon\"; StartupType = \"Manual\" },\r\n      @{ Name = \"shpamsvc\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"smphost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"spectrum\"; StartupType = \"Manual\" },\r\n      @{ Name = \"sppsvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"ssh-agent\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"svsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"swprv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"tiledatamodelsvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"tzautoupdate\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"uhssvc\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"upnphost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vds\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vm3dservice\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicguestinterface\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicheartbeat\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmickvpexchange\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicrdv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicshutdown\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmictimesync\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicvmsession\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicvss\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmvss\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wbengine\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wcncsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"webthreatdefsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"webthreatdefusersvc_*\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"wercplsupport\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wisvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wlidsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wlpasvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wmiApSrv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"workfolderssvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wscsvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"wuauserv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wudfsvc\"; StartupType = \"Manual\" }\r\n  )\r\n\r\n  foreach ($svc in $services) {\r\n    try {\r\n        Set-Service -Name $svc.Name -StartupType $svc.StartupType -ErrorAction Stop\r\n        Write-Output \"Set $($svc.Name) to $($svc.StartupType)\"\r\n    } catch {\r\n        Write-Warning \"Failed to set $($svc.Name): $_\"\r\n    }\r\n}",
+        "unapply": "$services = @(\r\n      @{ Name = \"AJRouter\"; StartupType = \"Manual\" },\r\n      @{ Name = \"ALG\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AppIDSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AppMgmt\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AppReadiness\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AppVClient\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"AppXSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Appinfo\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AssignedAccessManagerSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"AudioEndpointBuilder\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"AudioSrv\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"Audiosrv\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"AxInstSV\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BDESVC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BFE\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"BITS\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BTAGService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BcastDVRUserService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BluetoothUserService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BrokerInfrastructure\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"Browser\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BthAvctpSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"BthHFSrv\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"CDPSvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"CDPUserSvc_*\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"COMSysApp\"; StartupType = \"Manual\" },\r\n      @{ Name = \"CaptureService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"CertPropSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"ClipSVC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"ConsentUxUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"CoreMessagingRegistrar\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"CredentialEnrollmentManagerUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"CryptSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"CscService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DPS\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DcomLaunch\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DcpSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DevQueryBroker\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DeviceAssociationBrokerSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DeviceAssociationService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DeviceInstall\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DevicePickerUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DevicesFlowUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Dhcp\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DiagTrack\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DialogBlockingService\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"DispBrokerDesktopSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DisplayEnhancementService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DmEnrollmentSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Dnscache\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"DoSvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"DsSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DsmSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"DusmSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"EFS\"; StartupType = \"Manual\" },\r\n      @{ Name = \"EapHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"EntAppSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"EventLog\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"EventSystem\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"FDResPub\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Fax\"; StartupType = \"Manual\" },\r\n      @{ Name = \"FontCache\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"FrameServer\"; StartupType = \"Manual\" },\r\n      @{ Name = \"FrameServerMonitor\"; StartupType = \"Manual\" },\r\n      @{ Name = \"GraphicsPerfSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"HomeGroupListener\"; StartupType = \"Manual\" },\r\n      @{ Name = \"HomeGroupProvider\"; StartupType = \"Manual\" },\r\n      @{ Name = \"HvHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"IEEtwCollectorService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"IKEEXT\"; StartupType = \"Manual\" },\r\n      @{ Name = \"InstallService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"InventorySvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"IpxlatCfgSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"KeyIso\"; StartupType = \"Manual\" },\r\n      @{ Name = \"KtmRm\"; StartupType = \"Manual\" },\r\n      @{ Name = \"LSM\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"LanmanServer\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"LanmanWorkstation\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"LicenseManager\"; StartupType = \"Manual\" },\r\n      @{ Name = \"LxpSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MSDTC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MSiSCSI\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MapsBroker\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"McpManagementService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MessagingService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MicrosoftEdgeElevationService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MixedRealityOpenXRSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"MpsSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"MsKeyboardFilter\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"NPSMSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NaturalAuthentication\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NcaSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NcbService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NcdAutoSetup\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NetSetupSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NetTcpPortSharing\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"Netlogon\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Netman\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NgcCtnrSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NgcSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"NlaSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"OneSyncSvc_*\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"P9RdrService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PNRPAutoReg\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PNRPsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PcaSvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"PeerDistSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PenService_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PerfHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PhoneSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PimIndexMaintenanceSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PlugPlay\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PolicyAgent\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Power\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"PrintNotify\"; StartupType = \"Manual\" },\r\n      @{ Name = \"PrintWorkflowUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"ProfSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"PushToInstall\"; StartupType = \"Manual\" },\r\n      @{ Name = \"QWAVE\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RasAuto\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RasMan\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RemoteAccess\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"RemoteRegistry\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"RetailDemo\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RmSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RpcEptMapper\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"RpcLocator\"; StartupType = \"Manual\" },\r\n      @{ Name = \"RpcSs\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SCPolicySvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SCardSvr\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SDRSVC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SEMgrSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SENS\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SNMPTRAP\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SNMPTrap\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SSDPSRV\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SamSs\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"ScDeviceEnum\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Schedule\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SecurityHealthService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Sense\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SensorDataService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SensorService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SensrSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SessionEnv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SgrmBroker\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"SharedAccess\"; StartupType = \"Manual\" },\r\n      @{ Name = \"SharedRealitySvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"ShellHWDetection\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SmsRouter\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Spooler\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SstpSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"StateRepository\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"StiSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"StorSvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"SysMain\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"SystemEventsBroker\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"TabletInputService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TapiSrv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TermService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TextInputManagementService\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"Themes\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"TieringEngineService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TimeBroker\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TimeBrokerSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TokenBroker\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TrkWks\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"TroubleshootingSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"TrustedInstaller\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UI0Detect\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UdkUserSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UevAgentService\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"UmRdpService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UnistoreSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UserDataSvc_*\"; StartupType = \"Manual\" },\r\n      @{ Name = \"UserManager\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"UsoSvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"VGAuthService\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"VMTools\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"VSS\"; StartupType = \"Manual\" },\r\n      @{ Name = \"VacSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"VaultSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"W32Time\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WEPHOSTSVC\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WFDSConMgrSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WMPNetworkSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WManSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WPDBusEnum\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WSService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WSearch\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"WaaSMedicSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WalletService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WarpJITSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WbioSrvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Wcmsvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"WcsPlugInService\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WdNisSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WdiServiceHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WdiSystemHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WebClient\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Wecsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WerSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WiaRpc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WinDefend\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"WinHttpAutoProxySvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WinRM\"; StartupType = \"Manual\" },\r\n      @{ Name = \"Winmgmt\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"WlanSvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"WpcMonSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"WpnService\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"WpnUserService_*\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"XblAuthManager\"; StartupType = \"Manual\" },\r\n      @{ Name = \"XblGameSave\"; StartupType = \"Manual\" },\r\n      @{ Name = \"XboxGipSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"XboxNetApiSvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"autotimesvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"bthserv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"camsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"cbdhsvc_*\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"cloudidsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"dcsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"defragsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"diagnosticshub.standardcollector.service\"; StartupType = \"Manual\" },\r\n      @{ Name = \"diagsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"dmwappushservice\"; StartupType = \"Manual\" },\r\n      @{ Name = \"dot3svc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"edgeupdate\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"edgeupdatem\"; StartupType = \"Manual\" },\r\n      @{ Name = \"embeddedmode\"; StartupType = \"Manual\" },\r\n      @{ Name = \"fdPHost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"fhsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"gpsvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"hidserv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"icssvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"iphlpsvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"lfsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"lltdsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"lmhosts\"; StartupType = \"Manual\" },\r\n      @{ Name = \"mpssvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"msiserver\"; StartupType = \"Manual\" },\r\n      @{ Name = \"netprofm\"; StartupType = \"Manual\" },\r\n      @{ Name = \"nsi\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"p2pimsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"p2psvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"perceptionsimulation\"; StartupType = \"Manual\" },\r\n      @{ Name = \"pla\"; StartupType = \"Manual\" },\r\n      @{ Name = \"seclogon\"; StartupType = \"Manual\" },\r\n      @{ Name = \"shpamsvc\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"smphost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"spectrum\"; StartupType = \"Manual\" },\r\n      @{ Name = \"sppsvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"ssh-agent\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"svsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"swprv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"tiledatamodelsvc\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"tzautoupdate\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"uhssvc\"; StartupType = \"Disabled\" },\r\n      @{ Name = \"upnphost\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vds\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vm3dservice\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"vmicguestinterface\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicheartbeat\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmickvpexchange\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicrdv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicshutdown\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmictimesync\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicvmsession\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmicvss\"; StartupType = \"Manual\" },\r\n      @{ Name = \"vmvss\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wbengine\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wcncsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"webthreatdefsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"webthreatdefusersvc_*\"; StartupType = \"Automatic\" },\r\n      @{ Name = \"wercplsupport\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wisvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wlidsvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wlpasvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wmiApSrv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"workfolderssvc\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wscsvc\"; StartupType = \"AutomaticDelayedStart\" },\r\n      @{ Name = \"wuauserv\"; StartupType = \"Manual\" },\r\n      @{ Name = \"wudfsvc\"; StartupType = \"Manual\" }\r\n  )\r\n  \r\n  foreach ($svc in $services) {\r\n      try {\r\n          Set-Service -Name $svc.Name -StartupType $svc.StartupType -ErrorAction Stop\r\n          Write-Output \"Set $($svc.Name) to $($svc.StartupType)\"\r\n      } catch {\r\n          Write-Warning \"Failed to set $($svc.Name): $_\"\r\n      }\r\n  }"
+      }
+    },
+    {
+      "id": "set-time-utc",
+      "title": "Set Time To UTC",
+      "description": "Sets the system time to UTC, Great for dual booting",
+      "category": [
+        "General"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/set-time-utc",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation\" -Name \"RealTimeIsUniversal\" -Value 1 -Type DWord -Force",
+        "unapply": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation\" -Name \"RealTimeIsUniversal\" -Value 0 -Type DWord -Force"
+      }
+    },
+    {
+      "id": "set-win32-priority-separation",
+      "title": "Set Win32 Priority Separation",
+      "description": "Optimizes foreground app performance by modifying system process priority behavior.",
+      "category": [
+        "Performance"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/set-win32-priority-separation",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl\" -Name \"Win32PrioritySeparation\" -Type DWord -Value 36\r\n",
+        "unapply": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl\" -Name \"Win32PrioritySeparation\" -Type DWord -Value 2\r\n"
+      }
+    },
+    {
+      "id": "show-seconds-in-taskbar-clock",
+      "title": "Show Seconds in Taskbar Clock",
+      "description": "Enables the seconds next to the clock in the taskbar",
+      "category": [
+        "Appearance",
+        "General"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "docsurl": "/tweaks/show-seconds-in-system-clock",
+      "source": "",
+      "scripts": {
+        "apply": "Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" -Name \"ShowSecondsInSystemClock\" -Type DWord -Value 1\r\n\r\n# Restart Explorer to apply changes\r\nStop-Process -Name explorer -Force\r\nStart-Process explorer\r\n",
+        "unapply": "Set-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" -Name \"ShowSecondsInSystemClock\" -Type DWord -Value 0\r\n\r\n# Restart Explorer to apply changes\r\nStop-Process -Name explorer -Force\r\nStart-Process explorer\r\n"
+      }
+    },
+    {
+      "id": "ultimate-performance-plan",
+      "title": "Ultimate Performance Power Plan",
+      "description": "Enables And Applies The Windows Ultimate Powerplan for better performance",
+      "category": [
+        "Performance",
+        "Gaming"
+      ],
+      "recommended": true,
+      "reversible": true,
+      "docsurl": "/tweaks/ultimate-performance-plan",
+      "source": "",
+      "scripts": {
+        "apply": "$ultimatePlan = powercfg -l | Select-String \"Ultimate Performance\"\r\n  \r\n  if (-not $ultimatePlan) {\r\n      Write-Host \"Ultimate Performance plan not found. Creating...\" \r\n      powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61\r\n  } else {\r\n      Write-Host \"Ultimate Performance plan already exists.\" \r\n  }\r\n  \r\n  # Get the GUID of the Ultimate Performance plan\r\n  $ultimatePlanGUID = (powercfg -l | Select-String \"Ultimate Performance\").ToString().Split()[3]\r\n  \r\n  # Set it as the active plan\r\n  powercfg -setactive $ultimatePlanGUID\r\n  \r\n  Write-Host \"Ultimate Performance power plan is now active.\" ",
+        "unapply": "$balancedGUID = \"381b4222-f694-41f0-9685-ff5bb260df2e\"\r\n  \r\n  # check if the Balanced plan exists\r\n  $balancedExists = powercfg -l | Select-String $balancedGUID\r\n  \r\n  if ($balancedExists) {\r\n      powercfg -setactive $balancedGUID\r\n      Write-Host \"Balanced power plan is now active.\" \r\n  } else {\r\n      Write-Host \"Balanced power plan not found. Creating a new Balanced plan...\" \r\n      powercfg -duplicatescheme $balancedGUID\r\n      powercfg -setactive $balancedGUID\r\n      Write-Host \"Balanced power plan created and activated.\" \r\n  }"
+      }
+    },
+    {
+      "id": "wpbt",
+      "title": "Disable Windows Platform Binary Table",
+      "description": "Prevents your computer vendor from executing programs at boot, reducing potential security risks.",
+      "category": [
+        "Privacy"
+      ],
+      "recommended": false,
+      "reversible": true,
+      "addedversion": "2.14.1",
+      "docsurl": "/tweaks/wpbt",
+      "source": "",
+      "scripts": {
+        "apply": "# Credit to Chris Titus Tech\r\n\r\n$regPath = \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\"\r\n$regName = \"DisableWpbtExecution\"\r\n$applyValue = 1\r\n\r\nif (-not (Test-Path $regPath)) {\r\n    New-Item -Path $regPath -Force | Out-Null\r\n}\r\n\r\nSet-ItemProperty -Path $regPath -Name $regName -Value $applyValue -Type DWord\r\n\r\nWrite-Host \"WPBT execution disabled.\"",
+        "unapply": "# Credit to Chris Titus Tech\r\n\r\n$regPath = \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\"\r\n$regName = \"DisableWpbtExecution\"\r\n\r\nif (Test-Path $regPath) {\r\n    if (Get-ItemProperty -Path $regPath -Name $regName -ErrorAction SilentlyContinue) {\r\n        Remove-ItemProperty -Path $regPath -Name $regName\r\n        Write-Host \"WPBT execution restored to default.\"\r\n    } else {\r\n        Write-Host \"Tweak was not applied.\"\r\n    }\r\n} else {\r\n    Write-Host \"Registry path does not exist, nothing to unapply.\"\r\n}"
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+name: Publicar Zevyron
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Windows Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.29.3
+          run_install: false
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Validar projeto
+        run: pnpm run typecheck
+
+      - name: Publicar no GitHub Releases
+        run: pnpm run release:github
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZEVYRON_GITHUB_OWNER: ${{ github.repository_owner }}
+          ZEVYRON_GITHUB_REPO: ${{ github.event.repository.name }}
