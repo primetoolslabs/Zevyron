@@ -6,10 +6,10 @@ import { useI18n } from "@/i18n"
 export default function ChangelogModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { language } = useI18n()
   const copy = language === "pt-BR"
-    ? { title: "Novidades do Zevyron", intro: "Esta versão consolida a identidade oficial Zevyron.", items: ["Nova identidade visual Zevyron", "Dashboard premium com informações reais do sistema", "Base multilíngue com Português, Inglês e Espanhol", "Catálogo de aplicativos local e independente", "Remoção de integrações herdadas do projeto original"], close: "Fechar" }
+    ? { title: "Novidades do Zevyron", intro: "Esta versão marca a consolidação do canal Stable do Zevyron.", items: ["Canal Stable para distribuição pública", "Atualizações automáticas validadas via GitHub Releases", "Instalador revisado com logo Zevyron sem fundo preto", "Dashboard com informações reais do sistema", "Interface multilíngue em Português, Inglês e Espanhol"], close: "Fechar" }
     : language === "es-ES"
-      ? { title: "Novedades de Zevyron", intro: "Esta versión consolida la identidad oficial de Zevyron.", items: ["Nueva identidad visual Zevyron", "Panel premium con información real del sistema", "Base multilingüe en Portugués, Inglés y Español", "Catálogo de aplicaciones local e independiente", "Eliminación de integraciones heredadas del proyecto original"], close: "Cerrar" }
-      : { title: "What's new in Zevyron", intro: "This release consolidates the official Zevyron identity.", items: ["New Zevyron visual identity", "Premium dashboard with real system information", "Multilingual foundation for Portuguese, English and Spanish", "Independent local app catalog", "Removal of inherited integrations from the original project"], close: "Close" }
+      ? { title: "Novedades de Zevyron", intro: "Esta versión consolida el canal Stable de Zevyron.", items: ["Canal Stable para distribución pública", "Actualizaciones automáticas validadas mediante GitHub Releases", "Instalador revisado con el logo de Zevyron sin fondo negro", "Panel con información real del sistema", "Interfaz multilingüe en Portugués, Inglés y Español"], close: "Cerrar" }
+      : { title: "What's new in Zevyron", intro: "This release consolidates the Zevyron Stable channel.", items: ["Stable channel for public distribution", "Automatic updates validated through GitHub Releases", "Installer revised with the Zevyron logo and no black background", "Dashboard with real system information", "Multilingual interface in Portuguese, English and Spanish"], close: "Close" }
 
   return (
     <Modal open={open} onClose={onClose}>

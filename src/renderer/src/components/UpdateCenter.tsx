@@ -73,7 +73,7 @@ export default function UpdateCenter() {
         <div>
           <h3 className="text-base font-medium text-zevyron-text">{t("update.title")}</h3>
           <p className="text-sm text-zevyron-text-secondary mt-1">
-            {t("update.currentVersion")}: {state.currentVersion || "—"}
+            {t("update.currentVersion")}: {state.currentVersion || "—"} · {t("settings.channel")}: {t("settings.stable")}
           </p>
         </div>
         <span className={`text-xs px-2.5 py-1 rounded-full border ${state.configured ? "border-emerald-500/40 text-emerald-400" : "border-yellow-500/40 text-yellow-400"}`}>

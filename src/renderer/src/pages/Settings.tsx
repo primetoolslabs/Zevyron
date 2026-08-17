@@ -487,9 +487,14 @@ function Settings() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-base font-medium text-zevyron-text mb-1">Zevyron</h3>
-                    <p className="text-sm text-zevyron-text-secondary">
-                      {t("settings.version")} {jsonData.version}
-                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <p className="text-sm text-zevyron-text-secondary">
+                        {t("settings.version")} {jsonData.version}
+                      </p>
+                      <span className="text-[10px] uppercase tracking-[0.16em] px-2 py-0.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400">
+                        {t("settings.stable")}
+                      </span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Button variant="secondary" onClick={() => setChangelogOpen(true)}>

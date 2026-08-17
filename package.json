@@ -1,7 +1,7 @@
 {
   "name": "zevyron",
-  "version": "2.24.3",
-  "description": "Zevyron - Advanced System Performance | Free and Open Source",
+  "version": "2.25.0",
+  "description": "Zevyron - Advanced System Performance | Stable | Free and Open Source",
   "main": "./out/main/index.js",
   "author": "Zevyron",
   "scripts": {
