@@ -33,6 +33,9 @@ jobs:
       - name: Instalar dependências
         run: pnpm install --frozen-lockfile
 
+      - name: Validar versão da tag
+        run: pnpm run check:version-sync
+
       - name: Validar projeto
         run: pnpm run typecheck
 
