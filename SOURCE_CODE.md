@@ -1,13 +1,9 @@
-# Código-fonte do Zevyron
+# Zevyron — Source Code
 
-O Zevyron é distribuído gratuitamente sob a GNU General Public License version 3 (GPLv3).
+Zevyron is free and open-source software distributed under GNU GPLv3.
 
-Código-fonte oficial desta distribuição:
+When Zevyron binaries are publicly distributed, the corresponding source code for that exact distributed version must also be made available in a GPLv3-compliant manner. Before public release, replace the placeholder below with the official public source-code location.
 
-https://github.com/primetoolslabs/Zevyron
+Official source-code location: TO BE PUBLISHED BEFORE PUBLIC DISTRIBUTION
 
-Os Releases oficiais e arquivos de atualização são publicados em:
-
-https://github.com/primetoolslabs/Zevyron/releases
-
-Ao distribuir uma versão modificada, cumpra os termos da GPLv3 e disponibilize o código-fonte correspondente conforme aplicável.
+The corresponding source should include the preferred form for modification and the scripts/configuration used to control compilation and installation, subject to GPLv3 requirements.

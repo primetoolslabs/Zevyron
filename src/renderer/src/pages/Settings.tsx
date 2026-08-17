@@ -510,9 +510,9 @@ function Settings() {
                     <p className="text-sm text-zevyron-text-secondary mt-1">{t("settings.noActivation")}</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <Button variant="secondary" onClick={() => invoke({ channel: "legal:open", file: "LICENSE-GPL-3.0.txt" })}>{t("settings.license")}</Button>
-                    <Button variant="secondary" onClick={() => invoke({ channel: "legal:open", file: "SOURCE_CODE.md" })}>{t("settings.sourceCode")}</Button>
-                    <Button variant="secondary" onClick={() => invoke({ channel: "legal:open", file: "THIRD_PARTY_NOTICES.md" })}>{t("settings.thirdParty")}</Button>
+                    <Button variant="secondary" onClick={() => invoke({ channel: "legal:open", payload: "LICENSE-GPL-3.0.txt" })}>{t("settings.license")}</Button>
+                    <Button variant="secondary" onClick={() => invoke({ channel: "legal:open", payload: "SOURCE_CODE.md" })}>{t("settings.sourceCode")}</Button>
+                    <Button variant="secondary" onClick={() => invoke({ channel: "legal:open", payload: "THIRD_PARTY_NOTICES.md" })}>{t("settings.thirdParty")}</Button>
                   </div>
                 </div>
               </SettingCard>

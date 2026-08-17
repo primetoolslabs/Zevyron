@@ -1,6 +1,6 @@
 {
   "name": "zevyron",
-  "version": "2.24.1",
+  "version": "2.24.2",
   "description": "Zevyron - Advanced System Performance | Free and Open Source",
   "main": "./out/main/index.js",
   "author": "Zevyron",
@@ -171,13 +171,5 @@
     },
     "npmRebuild": false
   },
-  "packageManager": "pnpm@10.29.3",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/primetoolslabs/Zevyron.git"
-  },
-  "homepage": "https://github.com/primetoolslabs/Zevyron#readme",
-  "bugs": {
-    "url": "https://github.com/primetoolslabs/Zevyron/issues"
-  }
+  "packageManager": "pnpm@10.29.3"
 }
