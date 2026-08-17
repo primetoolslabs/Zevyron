@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { Loader2, Menu, Minus, Shield, Square, Terminal, X } from "lucide-react"
 import { close, minimize, toggleMaximize } from "../lib/electron"
-import zevyronLogo from "../../../../resources/zevyron-icon.png"
 import Card from "./ui/Card"
 import useAppInstallStore from "@/store/appInstallStore"
 import InstallConsoleModal from "./installConsoleModal"
@@ -39,7 +38,6 @@ function TitleBar({
           >
             <Menu size={16} />
           </button>
-          <img src={zevyronLogo} alt="Zevyron" className="h-7 w-7 object-contain drop-shadow-[0_0_8px_rgba(0,174,255,0.45)]" />
           <span className="text-zevyron-text text-sm font-semibold tracking-[0.12em]">ZEVYRON</span>
           <div className="bg-zevyron-card border border-zevyron-border-secondary p-1 rounded-xl w-16 text-center text-sm text-zevyron-text">
             Stable

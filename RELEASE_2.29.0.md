@@ -1,4 +1,4 @@
-# Zevyron 2.29.2 Stable
+# Zevyron 2.29.3 Stable
 
 ## Nova aba Sobre o Zevyron
 

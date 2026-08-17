@@ -116,11 +116,11 @@ function Nav({ collapsed }) {
     <nav
       className={`h-screen text-zevyron-text fixed left-0 top-0 flex flex-col py-6 z-40  transition-all duration-300 ease-in-out ${collapsed ? "w-16" : "w-52"}`}
     >
-      <div className={`px-3 mt-10 mb-3 flex items-center justify-center ${collapsed ? "h-11" : "h-28"}`}>
+      <div className={`px-3 mt-10 mb-3 flex items-center justify-center ${collapsed ? "h-11" : "h-36"}`}>
         <img
           src={collapsed ? zevyronIcon : zevyronBrand}
           alt="Zevyron"
-          className={collapsed ? "w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(0,174,255,0.35)]" : "w-full max-w-[168px] h-28 object-contain drop-shadow-[0_0_14px_rgba(0,174,255,0.22)]"}
+          className={collapsed ? "w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(0,174,255,0.35)]" : "w-full max-w-[194px] h-36 object-contain drop-shadow-[0_0_16px_rgba(0,174,255,0.28)]"}
         />
       </div>
       <div className="flex-1 flex flex-col gap-2 px-3 relative" ref={containerRef}>

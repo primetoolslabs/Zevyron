@@ -1,4 +1,4 @@
-# Zevyron 2.29.2 Stable
+# Zevyron 2.29.3 Stable
 
 Correção do build da nova página **Sobre o Zevyron**.
 
