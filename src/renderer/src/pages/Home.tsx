@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
   Activity, Cpu, Gamepad2, Gauge, Globe2, HardDrive, MemoryStick, Network,
-  RotateCcw, Search, ShieldCheck, Sparkles, Thermometer, Wifi, Zap,
-} from "lucide-react"
+  RotateCcw, Search, ShieldCheck, Sparkles, Thermometer, Wifi, Zap } from "lucide-react"
 import RootDiv from "@/components/rootdiv"
 import Greeting from "@/components/greeting"
 import { invoke } from "@/lib/electron"
@@ -88,8 +87,7 @@ function Home() {
           gpu: push(prev.gpu, Number(v.gpu ?? 0)),
           ram: push(prev.ram, Number(v.ram || 0)),
           disk: push(prev.disk, Number(v.disk || 0)),
-          network: push(prev.network, networkPercent),
-        }
+          network: push(prev.network, networkPercent) }
       })
     }).catch(() => {})
     load(); const id = setInterval(load, 4000)
