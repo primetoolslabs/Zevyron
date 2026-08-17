@@ -11,6 +11,7 @@ import {
   LayoutGrid,
   RotateCw,
   Settings,
+  Info,
   Wrench,
   WifiOff,
   Bubbles,
@@ -23,7 +24,7 @@ import Button from "./ui/button"
 import Modal from "./ui/modal"
 import useOnlineStore from "../store/online"
 import zevyronIcon from "../../../../resources/zevyron-icon.png"
-import zevyronWordmark from "../../../../resources/zevyron-horizontal.png"
+import zevyronBrand from "../../../../resources/zevyron-brand-vertical.png"
 import { useI18n } from "@/i18n"
 
 const tabIcons = {
@@ -37,6 +38,7 @@ const tabIcons = {
   dns: <EthernetPort size={20} />,
   apps: <LayoutGrid size={20} />,
   settings: <Settings size={20} />,
+  about: <Info size={20} />,
 }
 
 function Nav({ collapsed }) {
@@ -52,6 +54,7 @@ function Nav({ collapsed }) {
     dns: { label: t("nav.dns"), path: "/dns" },
     apps: { label: t("nav.apps"), path: "/apps" },
     settings: { label: t("nav.settings"), path: "/settings" },
+    about: { label: t("nav.about", "Sobre o Zevyron"), path: "/about" },
   }
   const location = useLocation()
   const navigate = useNavigate()
@@ -113,11 +116,11 @@ function Nav({ collapsed }) {
     <nav
       className={`h-screen text-zevyron-text fixed left-0 top-0 flex flex-col py-6 z-40  transition-all duration-300 ease-in-out ${collapsed ? "w-16" : "w-52"}`}
     >
-      <div className={`px-3 mt-10 mb-3 flex items-center justify-center ${collapsed ? "h-11" : "h-14"}`}>
+      <div className={`px-3 mt-10 mb-3 flex items-center justify-center ${collapsed ? "h-11" : "h-28"}`}>
         <img
-          src={collapsed ? zevyronIcon : zevyronWordmark}
+          src={collapsed ? zevyronIcon : zevyronBrand}
           alt="Zevyron"
-          className={collapsed ? "w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(0,174,255,0.35)]" : "w-full max-w-[176px] h-12 object-contain"}
+          className={collapsed ? "w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(0,174,255,0.35)]" : "w-full max-w-[168px] h-28 object-contain drop-shadow-[0_0_14px_rgba(0,174,255,0.22)]"}
         />
       </div>
       <div className="flex-1 flex flex-col gap-2 px-3 relative" ref={containerRef}>

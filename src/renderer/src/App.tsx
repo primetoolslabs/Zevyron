@@ -24,6 +24,7 @@ import { toast } from "react-toastify"
 import Debloat from "./pages/Debloat"
 import NoAdmin from "./components/noAdmin"
 import GameMode from "./pages/GameMode"
+import About from "./pages/About"
 
 function App() {
   const [showBrandSplash, setShowBrandSplash] = useState(true)
@@ -197,6 +198,7 @@ function App() {
             <Route path="/dns" element={<DNS />} />
             <Route path="/apps" element={<Apps />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/about" element={<About />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
