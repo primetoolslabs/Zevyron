@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from "react"
-import { Activity, Code2, Cpu, Gauge, Github, Globe2, Info, MemoryStick, MonitorCog, ShieldCheck, Sparkles, Wrench } from "lucide-react"
+import { Activity, Code2, Cpu, Gauge, Globe2, Info, MemoryStick, MonitorCog, ShieldCheck, Sparkles, Wrench } from "lucide-react"
 import RootDiv from "@/components/rootdiv"
 import UpdateCenter from "@/components/UpdateCenter"
 import useSystemStore from "@/store/systemInfo"
@@ -95,7 +95,7 @@ export default function About() {
           <div className="grid md:grid-cols-[360px_1fr] gap-5 items-center">
             <img src={primeTools} alt="PrimeTools Lab" className="w-full max-h-[120px] object-contain" />
             <div><p className="text-sm text-zevyron-text-secondary leading-6">{text("Este aplicativo foi desenvolvido pela PrimeTools Lab com foco em tecnologia, performance, segurança e transparência.","This application was developed by PrimeTools Lab with a focus on technology, performance, safety and transparency.","Esta aplicación fue desarrollada por PrimeTools Lab con enfoque en tecnología, rendimiento, seguridad y transparencia.")}</p>
-              <div className="flex flex-wrap gap-2 mt-4"><LinkButton icon={<Github size={15}/>} label="GitHub" onClick={()=>open("https://github.com/primetoolslabs/Zevyron")}/><LinkButton icon={<Globe2 size={15}/>} label="PrimeTools Lab" onClick={()=>open("https://github.com/primetoolslabs")}/></div>
+              <div className="flex flex-wrap gap-2 mt-4"><LinkButton icon={<Code2 size={15}/>} label="GitHub" onClick={()=>open("https://github.com/primetoolslabs/Zevyron")}/><LinkButton icon={<Globe2 size={15}/>} label="PrimeTools Lab" onClick={()=>open("https://github.com/primetoolslabs")}/></div>
             </div>
           </div>
         </div>
