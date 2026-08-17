@@ -9,7 +9,6 @@ import log from "electron-log"
 import { shell } from "electron"
 import { executePowerShell } from "@main/powershell"
 import { detectGPU, clearGpuCache } from "@main/gpu"
-import { mainWindow } from "@main/windowState"
 import { TtlCache } from "@main/cache"
 import type { SystemInfo } from "../types"
 
@@ -37,93 +36,118 @@ async function getSystemInfo(): Promise<SystemInfo> {
   if (cached) return cached
 
   try {
-    const [cpuData, osInfo, memLayout] = await Promise.all([
+    // Fetch all information needed by the HOME in one response. Older builds sent
+    // GPU/storage later through `system-info-extra`, but the renderer did not
+    // subscribe to that event, leaving the cards incomplete on many machines.
+    const [cpuData, osInfo, memLayout, diskLayout, fsSize, blockDevices, gpuInfo] = await Promise.all([
       si.cpu(),
       si.osInfo(),
       si.memLayout(),
+      si.diskLayout().catch(() => [] as any),
+      si.fsSize().catch(() => [] as any),
+      si.blockDevices().catch(() => [] as any),
+      detectGPU().catch(() => ({
+        model: "GPU not found",
+        vram: "N/A",
+        hasGPU: false,
+        isNvidia: false,
+        integratedModel: "Not detected",
+        hasIntegratedGPU: false,
+      })),
     ])
 
     const totalMemory = os.totalmem()
-    const memoryType = (memLayout as any).length > 0 ? (memLayout as any)[0].type : "Unknown"
+    const memoryModules = Array.isArray(memLayout) ? memLayout : []
+    const memoryType = memoryModules
+      .map((module: any) => String(module?.type || "").trim())
+      .find((type: string) => type && !/unknown|undefined|null/i.test(type)) || "Unknown"
 
-    const versionScript = `(Get-ItemProperty -Path "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion").DisplayVersion`
-    const versionPsResult = await executePowerShell(null, {
-      script: versionScript,
-      name: "GetWindowsVersion",
-    })
-    const windowsVersion = versionPsResult.success ? versionPsResult.output!.trim() : "Unknown"
-
-    const result: SystemInfo = {
-      cpu_model: (cpuData as any).brand,
-      cpu_cores: (cpuData as any).physicalCores,
-      cpu_threads: (cpuData as any).threads || (cpuData as any).physicalCores,
-      memory_total: totalMemory,
-      memory_type: memoryType,
-      os: osInfo.distro || "Windows",
-      os_version: windowsVersion || "Unknown",
+    const cleanText = (value: unknown, fallback = "Unknown") => {
+      const str = String(value ?? "").trim()
+      if (!str || /^(unknown|undefined|null|default string|to be filled by o\.e\.m\.)$/i.test(str)) return fallback
+      return str
     }
 
-    setImmediate(async () => {
-      detectGPU()
-        .then((gpuInfo) => {
-          mainWindow?.webContents.send("system-info-extra", {
-            gpu_model: gpuInfo.model,
-            vram: gpuInfo.vram,
-            hasGPU: gpuInfo.hasGPU,
-            isNvidia: gpuInfo.isNvidia,
-            integrated_gpu: gpuInfo.integratedModel,
-            hasIntegratedGPU: gpuInfo.hasIntegratedGPU,
-          })
-        })
-        .catch((error) => {
-          console.error("Failed to detect GPU:", error)
-        })
-
-      try {
-        const [diskLayout, fsSize, blockDevices] = await Promise.all([
-          si.diskLayout(),
-          si.fsSize(),
-          si.blockDevices(),
-        ])
-
-        const cDrive = (fsSize as any).find((d: any) =>
-          d.mount.toUpperCase().startsWith("C:"),
-        )
-
-        let primaryDisk: any = null
-        if (cDrive) {
-          const cBlock = (blockDevices as any).find(
-            (b: any) => b.mount && b.mount.toUpperCase().startsWith("C:"),
-          )
-          if (cBlock) {
-            primaryDisk =
-              (diskLayout as any).find(
-                (disk: any) =>
-                  disk.device?.toLowerCase() === cBlock.device?.toLowerCase() ||
-                  disk.name?.toLowerCase().includes(cBlock.name?.toLowerCase()),
-              ) || null
-          }
-        }
-
-        mainWindow?.webContents.send("system-info-extra", {
-          disk_model: primaryDisk?.name || primaryDisk?.device || "Unknown Storage",
-          disk_size: cDrive?.size
-            ? `${Math.round(cDrive.size / 1024 / 1024 / 1024).toFixed(1)} GB`
-            : "Unknown",
-        })
-      } catch (error) {
-        console.error("Failed to fetch disk info:", error)
+    let windowsVersion = cleanText((osInfo as any).release, "Unknown")
+    try {
+      const versionScript = `(Get-ItemProperty -Path "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion").DisplayVersion`
+      const versionPsResult = await executePowerShell(null, {
+        script: versionScript,
+        name: "GetWindowsVersion",
+      })
+      if (versionPsResult.success && versionPsResult.output?.trim()) {
+        windowsVersion = cleanText(versionPsResult.output.trim(), windowsVersion)
       }
-    })
+    } catch {
+      // osInfo.release remains a reliable fallback if registry access is unavailable.
+    }
+
+    const drives = Array.isArray(fsSize) ? fsSize : []
+    const blocks = Array.isArray(blockDevices) ? blockDevices : []
+    const layouts = Array.isArray(diskLayout) ? diskLayout : []
+    const cDrive = drives.find((d: any) => String(d?.mount || "").toUpperCase().startsWith("C:")) || drives[0]
+    const cBlock = blocks.find((b: any) => String(b?.mount || "").toUpperCase().startsWith("C:"))
+
+    let primaryDisk: any = null
+    if (cBlock) {
+      primaryDisk = layouts.find((disk: any) => {
+        const diskDevice = String(disk?.device || "").toLowerCase()
+        const blockDevice = String(cBlock?.device || "").toLowerCase()
+        const diskName = String(disk?.name || "").toLowerCase()
+        const blockName = String(cBlock?.name || "").toLowerCase()
+        return (diskDevice && blockDevice && diskDevice === blockDevice) ||
+          (diskName && blockName && (diskName.includes(blockName) || blockName.includes(diskName)))
+      }) || null
+    }
+    if (!primaryDisk && layouts.length === 1) primaryDisk = layouts[0]
+
+    const diskModel = cleanText(
+      cBlock?.model || primaryDisk?.name || primaryDisk?.device || cBlock?.name,
+      "Unknown Storage",
+    )
+    const diskSizeBytes = Number(cDrive?.size || primaryDisk?.size || 0)
+    const diskSize = diskSizeBytes > 0
+      ? `${(diskSizeBytes / 1024 / 1024 / 1024).toFixed(diskSizeBytes >= 100 * 1024 ** 3 ? 0 : 1)} GB`
+      : "Unknown"
+
+    const result: SystemInfo = {
+      cpu_model: cleanText((cpuData as any).brand || (cpuData as any).manufacturer),
+      cpu_cores: Number((cpuData as any).physicalCores || (cpuData as any).cores || 0),
+      cpu_threads: Number((cpuData as any).cores || (cpuData as any).threads || (cpuData as any).physicalCores || 0),
+      gpu_model: gpuInfo.hasGPU ? cleanText(gpuInfo.model) : undefined,
+      vram: gpuInfo.hasGPU ? cleanText(gpuInfo.vram, "Unknown") : undefined,
+      hasGPU: gpuInfo.hasGPU,
+      isNvidia: gpuInfo.isNvidia,
+      integrated_gpu: gpuInfo.hasIntegratedGPU ? cleanText(gpuInfo.integratedModel) : undefined,
+      hasIntegratedGPU: gpuInfo.hasIntegratedGPU,
+      memory_total: totalMemory,
+      memory_type: memoryType,
+      os: cleanText((osInfo as any).distro, "Windows"),
+      os_version: windowsVersion,
+      disk_model: diskModel,
+      disk_size: diskSize,
+    }
 
     systemInfoCache.set("systemInfo", result)
     return result
   } catch (error) {
     console.error("Failed to get system info:", error)
-    throw error
+    // HOME should remain usable even if one hardware provider fails.
+    return {
+      cpu_model: "Unknown",
+      cpu_cores: 0,
+      cpu_threads: 0,
+      memory_total: os.totalmem(),
+      memory_type: "Unknown",
+      os: "Windows",
+      os_version: "Unknown",
+      disk_model: "Unknown Storage",
+      disk_size: "Unknown",
+      hasGPU: false,
+      hasIntegratedGPU: false,
+    }
   }
 }
-
 
 async function getSystemHealth() {
   try {

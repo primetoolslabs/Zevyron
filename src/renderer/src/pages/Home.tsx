@@ -17,9 +17,10 @@ type Health = {
   board: string; uptime: number
 }
 
-const fmtBytes = (bytes = 0) => {
-  if (!bytes) return "0 GB"
-  const gb = bytes / 1024 / 1024 / 1024
+const fmtBytes = (bytes?: number | null) => {
+  const value = Number(bytes || 0)
+  if (!Number.isFinite(value) || value <= 0) return "—"
+  const gb = value / 1024 / 1024 / 1024
   return `${gb.toFixed(gb >= 100 ? 0 : 1)} GB`
 }
 const fmtRate = (bytes = 0) => bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB/s` : `${Math.round(bytes / 1024)} KB/s`
@@ -172,7 +173,31 @@ function Home() {
 
         <div className="grid grid-cols-1 xl:grid-cols-[1.12fr_.88fr] gap-3">
           <section className="rounded-xl border border-zevyron-border bg-[#071221]/95 p-4"><h2 className="font-semibold mb-3">Módulos de Otimização</h2><div className="grid grid-cols-2 md:grid-cols-5 gap-2">{modules.map(m=><button key={m.label} onClick={()=>navigate(m.path)} className="rounded-lg border border-zevyron-border bg-[#081626] p-3 text-center hover:-translate-y-0.5 transition-transform"><div style={{color:m.color}} className="flex justify-center">{m.icon}</div><div style={{color:m.color}} className="text-xs mt-2">{m.label}</div><div className="text-[10px] text-zevyron-text-secondary mt-1">{m.sub}</div></button>)}</div></section>
-          <section className="rounded-xl border border-zevyron-border bg-[#071221]/95 p-4"><h2 className="font-semibold text-[#62c8ff] mb-3">Informações do Sistema</h2><div className="grid grid-cols-[110px_1fr] gap-y-1 text-xs"><span className="text-zevyron-text-secondary">CPU</span><span>{systemInfo?.cpu_model || '—'}</span><span className="text-zevyron-text-secondary">GPU</span><span>{systemInfo?.gpu_model || systemInfo?.integrated_gpu || '—'}</span><span className="text-zevyron-text-secondary">Placa Mãe</span><span>{health.board}</span><span className="text-zevyron-text-secondary">Memória</span><span>{fmtBytes(systemInfo?.memory_total)}</span><span className="text-zevyron-text-secondary">Armazenamento</span><span>{systemInfo?.disk_model || '—'} ({systemInfo?.disk_size || '—'})</span><span className="text-zevyron-text-secondary">Sistema</span><span>{systemInfo?.os || 'Windows'} {systemInfo?.os_version || ''}</span></div></section>
+          <section className="rounded-xl border border-zevyron-border bg-[#071221]/95 p-4 min-w-0">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <h2 className="font-semibold text-[#62c8ff]">Informações do Sistema</h2>
+              <button
+                onClick={() => invoke({ channel: "get-system-info" }).then((info:any) => setSystemInfo(info)).catch(() => {})}
+                className="text-[10px] px-2 py-1 rounded-md border border-zevyron-border text-zevyron-text-secondary hover:text-[#62c8ff] hover:border-[#0876b8]"
+              >
+                Atualizar
+              </button>
+            </div>
+            <div className="grid grid-cols-[110px_minmax(0,1fr)] gap-x-3 gap-y-2 text-xs">
+              <span className="text-zevyron-text-secondary">CPU</span>
+              <span className="truncate" title={systemInfo?.cpu_model || ""}>{systemInfo?.cpu_model || "—"}</span>
+              <span className="text-zevyron-text-secondary">GPU</span>
+              <span className="truncate" title={systemInfo?.gpu_model || systemInfo?.integrated_gpu || ""}>{systemInfo?.gpu_model || systemInfo?.integrated_gpu || "—"}</span>
+              <span className="text-zevyron-text-secondary">Placa Mãe</span>
+              <span className="truncate" title={health.board || ""}>{health.board && health.board !== "Unknown" ? health.board : "—"}</span>
+              <span className="text-zevyron-text-secondary">Memória</span>
+              <span>{fmtBytes(systemInfo?.memory_total)}{systemInfo?.memory_type && systemInfo.memory_type !== "Unknown" ? ` ${systemInfo.memory_type}` : ""}</span>
+              <span className="text-zevyron-text-secondary">Armazenamento</span>
+              <span className="truncate" title={`${systemInfo?.disk_model || ""} ${systemInfo?.disk_size || ""}`}>{systemInfo?.disk_model && systemInfo.disk_model !== "Unknown Storage" ? systemInfo.disk_model : "—"}{systemInfo?.disk_size && systemInfo.disk_size !== "Unknown" ? ` (${systemInfo.disk_size})` : ""}</span>
+              <span className="text-zevyron-text-secondary">Sistema</span>
+              <span className="truncate" title={`${systemInfo?.os || "Windows"} ${systemInfo?.os_version || ""}`}>{systemInfo?.os || "Windows"}{systemInfo?.os_version && systemInfo.os_version !== "Unknown" ? ` ${systemInfo.os_version}` : ""}</span>
+            </div>
+          </section>
         </div>
 
         <section className="rounded-xl border border-zevyron-border bg-[#071221]/95 p-4 flex flex-wrap items-center gap-6"><div><div className="font-semibold">Status das Otimizações</div><div className="grid grid-cols-4 gap-8 mt-2 text-center"><div><b className="text-2xl">{tweakCount}</b><div className="text-[10px] text-zevyron-text-secondary">Total</div></div><div><b className="text-2xl text-emerald-400">{activeTweaks.length}</b><div className="text-[10px] text-zevyron-text-secondary">Ativas</div></div><div><b className="text-2xl text-amber-400">{Math.min(6,available)}</b><div className="text-[10px] text-zevyron-text-secondary">Recomendadas</div></div><div><b className="text-2xl text-[#13b5ff]">{available}</b><div className="text-[10px] text-zevyron-text-secondary">Disponíveis</div></div></div></div><div className="ml-auto max-w-md text-xs text-zevyron-text-secondary">{available} otimizações disponíveis para melhorar o desempenho do seu PC.</div><button onClick={()=>navigate('/tweaks')} className="px-8 py-3 rounded-lg border border-[#00aaff] bg-[#006dff24] text-[#16b6ff] shadow-[0_0_16px_rgba(0,109,255,.18)]"><Zap className="inline mr-2"/>ZEVYRON BOOST</button></section>
