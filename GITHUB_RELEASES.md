@@ -81,3 +81,8 @@ Etapas principais do workflow:
 
 Se uma execução anterior falhou com HTTP 429 ao baixar `pnpm/action-setup`, faça commit desta correção, atualize a tag da versão e execute novamente o workflow.
 
+
+
+## Publicação via GitHub CLI
+
+O workflow atual gera os artefatos com `electron-builder --publish never` e publica usando o GitHub CLI (`gh`). Isso evita depender do publicador interno do electron-builder para criar o Release.

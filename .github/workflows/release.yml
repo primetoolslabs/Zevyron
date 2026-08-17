@@ -36,9 +36,62 @@ jobs:
       - name: Validar projeto
         run: pnpm run typecheck
 
-      - name: Publicar no GitHub Releases
-        run: pnpm run release:github
+      - name: Gerar instalador e arquivos de atualização
+        run: pnpm run release:win
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZEVYRON_GITHUB_OWNER: ${{ github.repository_owner }}
           ZEVYRON_GITHUB_REPO: ${{ github.event.repository.name }}
+
+      - name: Conferir arquivos gerados
+        shell: pwsh
+        run: |
+          Write-Host "Arquivos gerados em dist:"
+          Get-ChildItem -Path dist -File | Format-Table Name, Length
+
+          $assets = Get-ChildItem -Path dist -File | Where-Object {
+            $_.Name -like "*.exe" -or
+            $_.Name -like "*.zip" -or
+            $_.Name -eq "latest.yml" -or
+            $_.Name -like "*.blockmap"
+          }
+
+          if (-not $assets -or $assets.Count -eq 0) {
+            throw "Nenhum arquivo de release foi encontrado na pasta dist."
+          }
+
+      - name: Criar ou atualizar GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+
+          $assets = Get-ChildItem -Path dist -File | Where-Object {
+            $_.Name -like "*.exe" -or
+            $_.Name -like "*.zip" -or
+            $_.Name -eq "latest.yml" -or
+            $_.Name -like "*.blockmap"
+          } | Select-Object -ExpandProperty FullName
+
+          Write-Host "Tag: $tag"
+          Write-Host "Arquivos que serão publicados:"
+          $assets | ForEach-Object { Write-Host " - $_" }
+
+          gh release view $tag --repo "${{ github.repository }}" *> $null
+
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Release já existe. Atualizando arquivos..."
+            gh release upload $tag @assets --clobber --repo "${{ github.repository }}"
+          }
+          else {
+            Write-Host "Criando novo Release..."
+            gh release create $tag @assets `
+              --repo "${{ github.repository }}" `
+              --title "Zevyron $tag" `
+              --generate-notes `
+              --verify-tag
+          }
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Falha ao criar ou atualizar o GitHub Release."
+          }
