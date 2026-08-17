@@ -4,7 +4,7 @@ import { useI18n } from "@/i18n"
 import { useNavigate } from "react-router-dom"
 import {
   Activity, Cpu, Gamepad2, Gauge, HardDrive, MemoryStick, Network, Play,
-  RefreshCw, ShieldCheck, Square, Thermometer, Timer, Wifi, Zap, X,
+  RefreshCw, ShieldCheck, Square, Timer, Wifi, Zap, X,
 } from "lucide-react"
 import { toast } from "react-toastify"
 
