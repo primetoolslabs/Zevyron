@@ -1,12 +1,12 @@
 import { promises as fsp } from "fs"
 import path from "path"
 import util from "util"
-import { exec, spawn } from "child_process"
+import { exec, execFile, spawn } from "child_process"
 import { app, ipcMain } from "electron"
 import { mainWindow } from "@main/windowState"
 import fs from "fs"
 import log from "electron-log"
-const execPromise = util.promisify(exec)
+const execFilePromise = util.promisify(execFile)
 
 console.log = log.log
 console.error = log.error
@@ -16,6 +16,11 @@ function isSafeId(id: string): boolean {
   return /^[a-zA-Z0-9._-]+$/.test(id)
 }
 
+function safeScriptName(name: unknown): string {
+  const normalized = String(name || "script").replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80)
+  return normalized || "script"
+}
+
 function ensureDirectoryExists(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true })
@@ -23,31 +28,36 @@ function ensureDirectoryExists(dirPath) {
 }
 
 export async function executePowerShell(_, props) {
-  const { script, name = "script" } = props
+  const { script, name = "script" } = props || {}
+  if (typeof script !== "string" || !script.trim()) {
+    return { success: false, error: "PowerShell script is empty or invalid." }
+  }
+
+  const tempDir = path.join(app.getPath("userData"), "scripts")
+  ensureDirectoryExists(tempDir)
+  const safeName = safeScriptName(name)
+  const tempFile = path.join(tempDir, `${safeName}-${Date.now()}.ps1`)
 
   try {
-    const tempDir = path.join(app.getPath("userData"), "scripts")
-    ensureDirectoryExists(tempDir)
-    const tempFile = path.join(tempDir, `${name}-${Date.now()}.ps1`)
+    await fsp.writeFile(tempFile, script, { encoding: "utf8", mode: 0o600 })
+    const { stdout, stderr } = await execFilePromise("powershell.exe", [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      tempFile,
+    ], { windowsHide: true, maxBuffer: 10 * 1024 * 1024 })
 
-    await fsp.writeFile(tempFile, script)
-
-    const { stdout, stderr } = await execPromise(
-      `powershell.exe -NoProfile -ExecutionPolicy Bypass -File "${tempFile}"`,
-    )
-
-    await fsp.unlink(tempFile).catch(console.error)
-
-    if (stderr) {
-      console.warn(`PowerShell stderr [${name}]:`, stderr)
-    }
-
-    console.log(`PowerShell stdout [${name}]:`, stdout)
-
+    if (stderr) console.warn(`PowerShell stderr [${safeName}]:`, stderr)
+    console.log(`PowerShell stdout [${safeName}]:`, stdout)
     return { success: true, output: stdout }
   } catch (error: any) {
-    console.error(`PowerShell execution error [${name}]:`, error)
-    return { success: false, error: error.message }
+    console.error(`PowerShell execution error [${safeName}]:`, error)
+    return { success: false, error: error.message, output: error?.stdout || error?.stderr }
+  } finally {
+    await fsp.unlink(tempFile).catch(() => {})
   }
 }
 
@@ -73,7 +83,7 @@ export function executePowerShellStreaming(
   return new Promise(async (resolve) => {
     const tempDir = path.join(app.getPath("userData"), "scripts")
     ensureDirectoryExists(tempDir)
-    const tempFile = path.join(tempDir, `${name}-${Date.now()}.ps1`)
+    const tempFile = path.join(tempDir, `${safeScriptName(name)}-${Date.now()}.ps1`)
 
     await fsp.writeFile(tempFile, script)
 
@@ -124,7 +134,7 @@ async function runPowerShellInWindow(_, { script, name = "script", noExit = true
     const tempDir = path.join(app.getPath("userData"), "scripts")
     ensureDirectoryExists(tempDir)
 
-    const tempFile = path.join(tempDir, `${name}-${Date.now()}.ps1`)
+    const tempFile = path.join(tempDir, `${safeScriptName(name)}-${Date.now()}.ps1`)
     await fsp.writeFile(tempFile, script)
     const noExitFlag = noExit ? "-NoExit" : ""
     const command = `start powershell.exe ${noExitFlag} -ExecutionPolicy Bypass -File "${tempFile}"`

@@ -16,6 +16,7 @@ type SessionState = {
   game?: { name: string; process: string; pid: number }
   profile?: GameProfile
   previousPowerGuid?: string | null
+  previousPriority?: string | null
   applied?: string[]
 }
 
@@ -25,7 +26,6 @@ const knownGames: Array<{ process: string; name: string }> = [
   { process: "gta5.exe", name: "Grand Theft Auto V" },
   { process: "gta5_enhanced.exe", name: "Grand Theft Auto V Enhanced" },
   { process: "minecraft.exe", name: "Minecraft" },
-  { process: "javaw.exe", name: "Minecraft / Java Game" },
   { process: "valorant-win64-shipping.exe", name: "VALORANT" },
   { process: "fortniteclient-win64-shipping.exe", name: "Fortnite" },
   { process: "rocketleague.exe", name: "Rocket League" },
@@ -132,16 +132,20 @@ async function activate(_event: unknown, payload: any = {}) {
     if (result.success) applied.push("power-plan")
   }
 
+  let previousPriority: string | null = null
   if (payload.priority !== false) {
     const priority = profile === "safe" ? "AboveNormal" : "High"
     const result = await executePowerShell(null, {
       name: "game-mode-priority",
-      script: `$p = Get-Process -Id ${Number(game.pid)} -ErrorAction Stop; $p.PriorityClass = '${priority}'; $p.PriorityClass`,
+      script: `$p = Get-Process -Id ${Number(game.pid)} -ErrorAction Stop; $old = [string]$p.PriorityClass; $p.PriorityClass = '${priority}'; Write-Output "PREVIOUS=$old"; Write-Output "CURRENT=$($p.PriorityClass)"`,
     })
-    if (result.success) applied.push("game-priority")
+    if (result.success) {
+      previousPriority = result.output?.match(/PREVIOUS=([^\r\n]+)/)?.[1]?.trim() || "Normal"
+      applied.push("game-priority")
+    }
   }
 
-  const session: SessionState = { active: true, startedAt: Date.now(), game, profile, previousPowerGuid, applied }
+  const session: SessionState = { active: true, startedAt: Date.now(), game, profile, previousPowerGuid, previousPriority, applied }
   saveSession(session)
   return { success: true, session }
 }
@@ -155,7 +159,7 @@ async function stop() {
   if (session.applied?.includes("game-priority") && session.game?.pid) {
     await executePowerShell(null, {
       name: "game-mode-priority-restore",
-      script: `$p = Get-Process -Id ${session.game.pid} -ErrorAction SilentlyContinue; if ($p) { $p.PriorityClass = 'Normal' }`,
+      script: `$p = Get-Process -Id ${session.game.pid} -ErrorAction SilentlyContinue; if ($p) { $p.PriorityClass = '${session.previousPriority || "Normal"}' }`,
     })
   }
   const endedAt = Date.now()
@@ -175,7 +179,10 @@ async function stop() {
 async function closeProcess(_event: unknown, payload: any) {
   const pid = Number(payload?.pid)
   const name = String(payload?.name || "").toLowerCase()
-  if (!Number.isInteger(pid) || pid <= 0 || criticalProcesses.has(name)) return { success: false, error: "Protected or invalid process." }
+  const session = getSession()
+  const protectedBySession = session.game?.pid === pid
+  const protectedByName = criticalProcesses.has(name) || name === "zevyron.exe" || name === "powershell.exe"
+  if (!Number.isInteger(pid) || pid <= 0 || protectedByName || protectedBySession) return { success: false, error: "Protected or invalid process." }
   const result = await executePowerShell(null, { name: "game-mode-close-process", script: `Stop-Process -Id ${pid} -ErrorAction Stop` })
   return result
 }

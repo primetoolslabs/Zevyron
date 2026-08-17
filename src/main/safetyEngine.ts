@@ -51,11 +51,11 @@ const historyPath = path.join(safetyRoot, "history.json")
 const snapshotsDir = path.join(safetyRoot, "snapshots")
 
 const advancedPatterns: Array<[RegExp, string]> = [
-  [/DisableRealtimeMonitoring|Windows Defender|\\Defender/i, "Modifies Windows Defender protection"],
+  [/DisableRealtimeMonitoring|Set-MpPreference|Windows Defender|\\Defender/i, "Modifies Windows Defender protection"],
   [/EnableVirtualizationBasedSecurity|HypervisorEnforcedCodeIntegrity|Core Isolation/i, "Modifies Core Isolation/VBS"],
   [/bcdedit/i, "Changes Windows boot configuration (BCD)"],
   [/reg\s+(delete|add).*(Policies|CurrentControlSet\\Services)/i, "Changes policies or services in the Registry"],
-  [/Set-Service|sc\.exe\s+(config|delete|stop)/i, "Changes Windows services"],
+  [/Set-Service|Stop-Service|Disable-Service|sc\.exe\s+(config|delete|stop)/i, "Changes Windows services"],
   [/Remove-AppxPackage|Remove-AppxProvisionedPackage/i, "Removes provisioned Windows components/apps"],
   [/Remove-Item.*(System32|Windows\\)/i, "Removes files from protected Windows locations"],
   [/Disable-WindowsOptionalFeature|dism(\.exe)?\s+.*\/Disable-Feature/i, "Disables an optional Windows feature"],
@@ -82,6 +82,11 @@ export function assessTweak(tweak: SafetyTweak): SafetyAssessment {
   const findings: string[] = []
   let score = riskFromMeta(tweak.risk) === "advanced" ? 80 : riskFromMeta(tweak.risk) === "moderate" ? 45 : 10
 
+  if (tweak.name === "optimize-nvidia-settings") {
+    findings.push("Runs an external GPU configuration utility")
+    score = Math.max(score, 55)
+  }
+
   for (const [pattern, reason] of advancedPatterns) {
     if (pattern.test(script)) {
       findings.push(reason)
@@ -98,7 +103,7 @@ export function assessTweak(tweak: SafetyTweak): SafetyAssessment {
   const reversible = Boolean(tweak.psunapply?.trim()) && tweak.reversible !== false
   if (!reversible) {
     findings.push("No automatic rollback script is available")
-    score += 15
+    score = Math.max(score + 15, 45)
   }
 
   const level: SafetyLevel = score >= 70 ? "advanced" : score >= 30 ? "moderate" : "safe"

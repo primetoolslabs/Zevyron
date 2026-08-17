@@ -1,6 +1,7 @@
 # Zevyron Debloat Script
 # This script provides options for different debloat methods
-# Made by Parcoil
+# Original debloat implementation attribution: Parcoil
+# Zevyron integration and safety controls: PrimeTools Lab
 # Credits to Raphire for his debloat script: https://github.com/Raphire
 
 param(
@@ -688,7 +689,7 @@ try {
     # get the ui params 
     if ($ScriptChoice -eq "raphire") {
         Write-Host "Running Raphire's Win11Debloat script..." -ForegroundColor Green
-        & ([scriptblock]::Create((Invoke-RestMethod 'https://debloat.raphi.re/'))) -Silent -RemoveApps
+        Write-Host "Remote script execution is disabled by Zevyron Safety Engine. Use the built-in Debloat module instead." -ForegroundColor Yellow; exit 2
         Write-Host "Raphire's script completed!" -ForegroundColor Green
         $script:appsWereRemoved = $true
     }
@@ -729,7 +730,7 @@ try {
             
             if ($choice -eq "raphire") {
                 Write-Host "Running Raphire's Win11Debloat script..." -ForegroundColor Green
-                & ([scriptblock]::Create((Invoke-RestMethod 'https://debloat.raphi.re/'))) -Silent -RemoveApps
+                Write-Host "Remote script execution is disabled by Zevyron Safety Engine. Use the built-in Debloat module instead." -ForegroundColor Yellow; exit 2
                 Write-Host "Debloat completed!" -ForegroundColor Green
                 $script:appsWereRemoved = $true
             }
@@ -752,12 +753,12 @@ try {
         }
         catch {
             Write-Host "Interactive mode failed, falling back to Raphire's script: $_" -ForegroundColor Yellow
-            & ([scriptblock]::Create((Invoke-RestMethod 'https://debloat.raphi.re/'))) -Silent -RemoveApps
+            Write-Host "Remote script execution is disabled by Zevyron Safety Engine. Use the built-in Debloat module instead." -ForegroundColor Yellow; exit 2
         }
     }
     else {
         Write-Host "Unknown script choice '$ScriptChoice', defaulting to Raphire's script..." -ForegroundColor Yellow
-        & ([scriptblock]::Create((Invoke-RestMethod 'https://debloat.raphi.re/'))) -Silent -RemoveApps
+        Write-Host "Remote script execution is disabled by Zevyron Safety Engine. Use the built-in Debloat module instead." -ForegroundColor Yellow; exit 2
     }
     Write-Host "Debloat Script From https://getzevyron.net" -ForegroundColor Cyan
 

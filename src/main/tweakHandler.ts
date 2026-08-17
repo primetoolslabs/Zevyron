@@ -83,6 +83,8 @@ export async function loadTweaks(): Promise<Tweak[]> {
       continue
     }
 
+    if (meta.hidden === true) continue
+
     const tweak = {
       name,
       psapply,
@@ -149,8 +151,20 @@ export const setupTweaksHandlers = (): void => {
     "tweak-states:save",
     async (_event: IpcMainInvokeEvent, payload: string): Promise<boolean> => {
       try {
+        if (typeof payload !== "string" || payload.length > 100_000) {
+          throw new Error("Invalid tweak state payload")
+        }
+        const parsed = JSON.parse(payload)
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+          throw new Error("Tweak states must be an object")
+        }
+        const allowed = new Set((await loadTweaks()).map((t) => t.name))
+        const sanitized: Record<string, boolean> = {}
+        for (const [key, value] of Object.entries(parsed)) {
+          if (allowed.has(key) && typeof value === "boolean") sanitized[key] = value
+        }
         await fs.mkdir(path.dirname(tweaksStatePath), { recursive: true })
-        await fs.writeFile(tweaksStatePath, payload, "utf8")
+        await fs.writeFile(tweaksStatePath, JSON.stringify(sanitized, null, 2), "utf8")
         return true
       } catch (error) {
         console.error("Error saving tweak states:", error)
@@ -169,6 +183,9 @@ export const setupTweaksHandlers = (): void => {
     const tweaks = await loadTweaks()
     const tweak = tweaks.find((t) => t.name === name)
     if (!tweak) {
+      throw new Error(`Tweak not found: ${name}`)
+    }
+    if (name !== "optimize-nvidia-settings" && !tweak.psapply?.trim()) {
       throw new Error(`No apply script found for tweak: ${name}`)
     }
 

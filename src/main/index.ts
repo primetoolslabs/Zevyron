@@ -98,7 +98,16 @@ function createWindow(): void {
   }
 
   mainWindow.webContents.setWindowOpenHandler((details: Electron.HandlerDetails) => {
-    shell.openExternal(details.url)
+    try {
+      const url = new URL(details.url)
+      if (url.protocol === "https:" || url.protocol === "http:") {
+        void shell.openExternal(url.toString())
+      } else {
+        console.warn(`[Zevyron]: Blocked external URL protocol: ${url.protocol}`)
+      }
+    } catch {
+      console.warn("[Zevyron]: Blocked invalid external URL")
+    }
     return { action: "deny" }
   })
 
@@ -183,9 +192,11 @@ app
     })
 
     ipcMain.handle("open-devtools", () => {
-      if (mainWindow) {
+      if (!app.isPackaged && mainWindow) {
         mainWindow.webContents.openDevTools()
+        return true
       }
+      return false
     })
 
     ipcMain.handle("legal:open", async (_event, file: string) => {

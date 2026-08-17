@@ -157,11 +157,6 @@ function Nav({ collapsed }) {
               {!collapsed && (
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{label}</span>
-                  {id === "debloat" && (
-                    <span className="rounded-full bg-zevyron-primary/10 text-zevyron-primary text-[10px] uppercase tracking-[0.08em] px-2 py-0.5">
-                      Beta
-                    </span>
-                  )}
                 </div>
               )}
             </Button>

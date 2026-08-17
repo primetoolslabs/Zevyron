@@ -1,69 +1,84 @@
-# Auditoria de Otimizações — ZEVYRON Safety Engine
+# ZEVYRON — Auditoria Completa das Otimizações
 
-Gerado para a versão 2.27.0. Total auditado: **42** tweaks.
+**Versão auditada:** 2.28.0 Stable  
+**Data:** 17/08/2026  
+**Desenvolvido por:** PrimeTools Lab
 
-- Seguro: **11**
-- Moderado: **17**
-- Avançado: **14**
-- Sem reversão automática: **3**
+## Resultado executivo
 
-> A classificação combina o risco declarado no `meta.json`, padrões detectados nos scripts PowerShell e a existência de reversão automática. A auditoria é preventiva e não substitui testes em diferentes versões do Windows.
+- Tweaks visíveis: **40**
+- Seguros: **10**
+- Moderados: **17**
+- Avançados: **13**
+- Bloqueados/ocultos por política: **2**
+- O Safety Engine impede que itens avançados entrem automaticamente nos presets recomendados.
+- Alterações irreversíveis nunca são classificadas abaixo de Moderado.
+- Alterações em Defender, VBS/Core Isolation, BCD, serviços, rede ou remoção de componentes são elevadas para Avançado.
 
-| Otimização | Nível | Score | Reversível | Motivos principais |
-|---|---:|---:|:---:|---|
-| Set 24-Hour Clock (`24-hour-clock`) | Moderado | 45/100 | Sim | Encerra processos |
-| Align Taskbar Left (`align-taskbar-left`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Debloat Windows (`debloat-windows`) | Avançado | 95/100 | Não | Remove apps provisionados; Sem reversão automática |
-| Detailed BSOD (`detailed-bsod`) | Moderado | 45/100 | Sim | Altera HKLM |
-| Disable Background MS Store apps (`disable-background-ms-store-apps`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Disable Consumer Features (`consumer-features`) | Moderado | 45/100 | Sim | Altera HKLM |
-| Disable Copilot (`disable-copilot`) | Avançado | 80/100 | Sim | Remove apps provisionados |
-| Disable Core Isolation (`disable-core-isolation`) | Avançado | 80/100 | Sim | Modifica isolamento de núcleo/VBS; Altera HKLM |
-| Disable Defender RTP (`disable-defender-rtp`) | Avançado | 80/100 | Sim | Modifica a proteção do Windows Defender |
-| Disable Dynamic Ticking (`disable-dynamic-ticking`) | Avançado | 80/100 | Sim | Altera BCD |
-| Disable Fast Startup (`disable-fast-startup`) | Moderado | 45/100 | Sim | Altera HKLM |
-| Disable Gamebar (`disable-gamebar`) | Avançado | 80/100 | Sim | Remove apps provisionados; Desinstala app |
-| Disable Hibernation (`disable-hibernation`) | Moderado | 45/100 | Sim | Altera energia |
-| Disable Location Tracking (`disable-location-tracking`) | Avançado | 80/100 | Sim | Altera serviços; Remove arquivos protegidos; Altera HKLM |
-| Disable Lockscreen Tips (`disable-lockscreen-tips`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Disable Mouse Acceleration (`disable-mouse-acceleration`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Disable RDP Warnings for Unsigned Files (`disable-rdp-warnings`) | Moderado | 45/100 | Sim | Altera HKLM |
-| Disable Windows Recall (`disable-windows-recall`) | Avançado | 80/100 | Sim | Remove arquivos protegidos; Desativa recurso Windows; Altera HKLM |
-| Disable Taskbar Search (`disable-taskbar-seach`) | Moderado | 45/100 | Sim | Encerra processos |
-| Disable Telemetry (`disable-telemetry`) | Avançado | 80/100 | Sim | Altera serviços; Altera HKLM |
-| Disable Wifi Sense (`disable-wifi-sense`) | Moderado | 45/100 | Sim | Altera HKLM |
-| Enable Dark Mode (`enable-dark-mode`) | Moderado | 45/100 | Sim | Encerra processos |
-| Enable End Task With Right Click (`enable-end-task-right-click`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Enable Game Mode (`enable-game-mode`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Enable HAGS (`enable-hags`) | Moderado | 45/100 | Sim | Altera HKLM |
-| Enable Optimization For Windowed Games (`enable-optimization-for-windowed-games`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Hide Taskview and Widgets (`hide-taskview-and-widgets`) | Avançado | 80/100 | Sim | Remove apps provisionados; Encerra processos |
-| Menu Show Delay Zero (`menu-show-delay-zero`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Optimize Network Settings (`optimize-network-settings`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Optimize Nvidia Settings (`optimize-nvidia-settings`) | Seguro | 25/100 | Não | Sem reversão automática |
-| Remove Microsoft Edge (`remove-edge`) | Moderado | 45/100 | Sim | Sem padrões de alto risco detectados |
-| Remove Gaming Apps (`remove-gaming-apps`) | Avançado | 95/100 | Não | Remove apps provisionados; Sem reversão automática |
-| Remove Microsoft Bing Integration (`remove-ms-bing-integration`) | Avançado | 80/100 | Sim | Remove apps provisionados |
-| Remove OneDrive (`remove-onedrive`) | Avançado | 80/100 | Sim | Remove arquivos protegidos; Altera tarefas agendadas; Encerra processos |
-| Revert Context Menu (`revert-context-menu`) | Moderado | 45/100 | Sim | Encerra processos |
-| Set PowerShell 7 as Default (`set-powershell7-default`) | Seguro | 10/100 | Sim | Sem padrões de alto risco detectados |
-| Set Services to Manual (`set-services-to-manual`) | Avançado | 80/100 | Sim | Altera serviços |
-| Set Time To UTC (`set-time-utc`) | Moderado | 45/100 | Sim | Altera HKLM |
-| Set Win32 Priority Separation (`set-win32-priority-separation`) | Moderado | 45/100 | Sim | Altera HKLM |
-| Show Seconds in Taskbar Clock (`show-seconds-in-taskbar-clock`) | Moderado | 45/100 | Sim | Encerra processos |
-| Ultimate Performance Power Plan (`ultimate-performance-plan`) | Moderado | 45/100 | Sim | Altera energia |
-| Disable Windows Platform Binary Table (`wpbt`) | Moderado | 45/100 | Sim | Altera HKLM |
+## Itens bloqueados pela política pública
 
-## Política do Safety Engine
+1. **Disable Defender RTP** — removido da interface pública porque desativar proteção em tempo real conflita com a política de segurança do Zevyron.
+2. **Debloat Windows legado** — removido da interface pública porque possuía uma opção que baixava e executava script remoto. O módulo Debloat interno permanece como caminho suportado.
 
-- **Seguro:** snapshot e registro antes/depois da execução.
-- **Moderado:** snapshot, registro, destaque visual e reversão quando disponível.
-- **Avançado:** confirmação explícita, snapshot e tentativa de ponto de restauração antes de aplicar.
-- Toda execução recebe ID de auditoria e fica registrada no histórico local.
-- O botão **Desfazer última** executa o script de reversão da última alteração elegível.
+## Auditoria por tweak
 
-## Itens que merecem revisão manual contínua
+| Tweak | Nível | Score | Reversão | Motivo principal |
+|---|---:|---:|---:|---|
+| Set 24-Hour Clock | Moderado | 45 | Sim | Process restart/termination |
+| Align Taskbar Left | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Debloat Windows | Bloqueado | — | Não | Oculto pela política de segurança do Zevyron |
+| Detailed BSOD | Moderado | 45 | Sim | Machine-wide registry |
+| Disable Background MS Store apps | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Disable Consumer Features | Moderado | 45 | Sim | Machine-wide registry |
+| Disable Copilot | Avançado | 80 | Sim | Windows app removal |
+| Disable Core Isolation | Avançado | 80 | Sim | Core Isolation/VBS, Machine-wide registry |
+| Disable Defender RTP | Bloqueado | — | Não | Oculto pela política de segurança do Zevyron |
+| Disable Dynamic Ticking | Avançado | 80 | Sim | Boot configuration |
+| Disable Fast Startup | Moderado | 45 | Sim | Machine-wide registry |
+| Disable Gamebar | Avançado | 80 | Sim | Windows app removal, Application uninstall |
+| Disable Hibernation | Moderado | 45 | Sim | Power configuration |
+| Disable Location Tracking | Avançado | 80 | Sim | Windows services, Protected Windows files, Machine-wide registry |
+| Disable Lockscreen Tips | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Disable Mouse Acceleration | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Disable RDP Warnings for Unsigned Files | Moderado | 45 | Sim | Machine-wide registry |
+| Disable Windows Recall | Avançado | 80 | Sim | Protected Windows files, Optional Windows features, Machine-wide registry |
+| Disable Taskbar Search | Moderado | 45 | Sim | Process restart/termination |
+| Disable Telemetry | Avançado | 80 | Sim | Defender/security configuration, Windows services, Machine-wide registry |
+| Disable Wifi Sense | Moderado | 45 | Sim | Machine-wide registry |
+| Enable Dark Mode | Moderado | 45 | Sim | Process restart/termination |
+| Enable End Task With Right Click | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Enable Game Mode | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Enable HAGS | Moderado | 45 | Sim | Machine-wide registry |
+| Enable Optimization For Windowed Games | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Hide Taskview and Widgets | Avançado | 80 | Sim | Windows app removal, Process restart/termination |
+| Menu Show Delay Zero | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Optimize Network Settings | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Optimize Nvidia Settings | Avançado | 70 | Não | Utilitário externo NVIDIA, Sem reversão automática |
+| Remove Microsoft Edge | Moderado | 45 | Sim | Sem padrão de alto risco detectado |
+| Remove Gaming Apps | Avançado | 95 | Não | Windows app removal, Sem reversão automática |
+| Remove Microsoft Bing Integration | Avançado | 80 | Sim | Windows app removal |
+| Remove OneDrive | Avançado | 80 | Sim | Protected Windows files, Scheduled tasks, Process restart/termination |
+| Revert Context Menu | Moderado | 45 | Sim | Process restart/termination |
+| Set PowerShell 7 as Default | Seguro | 10 | Sim | Sem padrão de alto risco detectado |
+| Set Services to Manual | Avançado | 80 | Sim | Windows services |
+| Set Time To UTC | Moderado | 45 | Sim | Machine-wide registry |
+| Set Win32 Priority Separation | Moderado | 45 | Sim | Machine-wide registry |
+| Show Seconds in Taskbar Clock | Moderado | 45 | Sim | Process restart/termination |
+| Ultimate Performance Power Plan | Moderado | 45 | Sim | Power configuration |
+| Disable Windows Platform Binary Table | Moderado | 45 | Sim | Machine-wide registry |
 
-- Tweaks que alteram Defender, Core Isolation/VBS, BCD, serviços, rede ou removem componentes do Windows.
-- Tweaks sem `unapply.ps1` devem permanecer fora de presets automáticos sempre que possível.
-- Scripts devem ser revalidados após grandes atualizações do Windows.
+## Garantias adicionadas na 2.28.0
+
+- Estado de um tweak é persistido **somente depois** de a execução retornar sucesso.
+- Payload do arquivo `tweakStates.json` é validado contra a lista real de tweaks e aceita somente booleanos.
+- Scripts temporários do PowerShell usam nomes sanitizados e são removidos em `finally`, inclusive após falhas.
+- O executor PowerShell principal usa `execFile`, evitando composição desnecessária de linha de comando.
+- O Game Mode preserva e restaura a prioridade anterior do processo do jogo.
+- O Zevyron não permite fechar pelo Game Mode processos críticos, o próprio Zevyron ou o jogo ativo.
+- O falso positivo genérico `javaw.exe = Minecraft` foi removido.
+- Links externos abertos pelo Electron são limitados a HTTP/HTTPS.
+- O pipeline do GitHub executa uma auditoria estática antes de gerar o instalador.
+
+## Observações importantes
+
+Nenhuma ferramenta de otimização de Windows pode garantir comportamento idêntico em todo hardware, edição do Windows e política corporativa. Por isso, os itens classificados como Avançados continuam exigindo confirmação e o Zevyron tenta criar ponto de restauração quando apropriado. Sensores de temperatura/GPU podem não existir em alguns drivers; nesses casos a interface mostra `—`, nunca um valor inventado.

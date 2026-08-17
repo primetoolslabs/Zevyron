@@ -1,3 +1,12 @@
+# Changelog
+
+## 2.28.0 — Auditoria de Confiabilidade
+- Safety Engine e Game Mode revisados.
+- Dashboard passa a usar séries reais de monitoramento.
+- Fluxo de tweaks ficou transacional: estado salvo somente após sucesso.
+- Pré-auditoria automática adicionada ao pipeline de release.
+- Branding PrimeTools Lab consolidado.
+
 # 2.27.0 — Safety Engine
 
 - Safety Engine com auditoria de risco, snapshots, histórico e reversão.

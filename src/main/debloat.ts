@@ -195,8 +195,19 @@ async function uninstallApps(
   results: Array<{ name: string; success: boolean; error?: string }>
 }> {
   const results: Array<{ name: string; success: boolean; error?: string }> = []
+  const authoritativeApps = cache || (await getInstalledApps())
 
-  for (const { name, uninstallString, quietUninstallString, isStoreApp, packageName } of apps) {
+  for (const requested of apps) {
+    const match = authoritativeApps.find((item) =>
+      requested.isStoreApp
+        ? item.isStoreApp === true && item.packageName === requested.packageName && item.name === requested.name
+        : item.isStoreApp === false && item.name === requested.name && item.uninstallString === requested.uninstallString,
+    )
+    if (!match) {
+      results.push({ name: requested.name || "Unknown", success: false, error: "Application request did not match the installed-app inventory" })
+      continue
+    }
+    const { name, uninstallString, quietUninstallString, isStoreApp, packageName } = match
     if (!mainWindow) {
       results.push({ name, success: false, error: "Main window not available" })
       continue
@@ -206,6 +217,10 @@ async function uninstallApps(
 
     try {
       if (isStoreApp) {
+        if (!/^[a-zA-Z0-9_.~\-]+$/.test(packageName)) {
+          results.push({ name, success: false, error: "Invalid Store package identifier" })
+          continue
+        }
         const script = `Remove-AppxPackage "${packageName}"`
         const result = await executePowerShell(null, { script, name: `Uninstall-${name}` })
         const success = result.success
@@ -230,7 +245,8 @@ async function uninstallApps(
         }
         const exePath = exeMatch[1].trim()
         const exeArgs = exeMatch[2].trim()
-        const script = `$p = Start-Process '${exePath.replace(/'/g, "''")}' -ArgumentList '${exeArgs || "/S"}' -PassThru; $p.WaitForExit(); Start-Sleep -Seconds 2; $p.ExitCode`
+        const safeArgs = (exeArgs || "/S").replace(/'/g, "''")
+        const script = `$p = Start-Process '${exePath.replace(/'/g, "''")}' -ArgumentList '${safeArgs}' -PassThru; $p.WaitForExit(); Start-Sleep -Seconds 2; $p.ExitCode`
 
         const result = await executePowerShell(null, { script, name: `Uninstall-${name}` })
         const exitCode = parseInt(result.output?.trim() ?? "1", 10)
@@ -240,7 +256,8 @@ async function uninstallApps(
         continue
       }
 
-      const script = `$p = Start-Process msiexec.exe -ArgumentList '${msiMatch[1].trim()} /quiet /norestart' -PassThru; $p.WaitForExit(); $p.ExitCode`
+      const safeMsiArgs = `${msiMatch[1].trim()} /quiet /norestart`.replace(/'/g, "''")
+      const script = `$p = Start-Process msiexec.exe -ArgumentList '${safeMsiArgs}' -PassThru; $p.WaitForExit(); $p.ExitCode`
 
       const result = await executePowerShell(null, {
         script,

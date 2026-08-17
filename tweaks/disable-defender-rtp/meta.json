@@ -2,7 +2,13 @@
   "title": "Disable Defender RTP",
   "name": "disable-defender-rtp",
   "risk": "risky",
-  "category": ["Performance", "General"],
-  "description": "Disables Defender Real-time Protection",
-  "deepDescription": "Sets the Defender policy DisableRealtimeMonitoring to true, instructing Windows Security to stop actively scanning files and processes in real time. For better performance"
+  "category": [
+    "Performance",
+    "General"
+  ],
+  "description": "This legacy tweak is hidden from the public UI because disabling Windows Defender real-time protection conflicts with Zevyron safety policy.",
+  "deepDescription": "This legacy tweak is hidden from the public UI because disabling Windows Defender real-time protection conflicts with Zevyron safety policy.",
+  "hidden": true,
+  "recommended": false,
+  "modal": "This legacy tweak is hidden from the public UI because disabling Windows Defender real-time protection conflicts with Zevyron safety policy."
 }

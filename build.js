@@ -39,6 +39,7 @@ async function buildRegistry() {
     try {
       const metaRaw = await fs.readFile(metaPath, "utf8")
       const meta = JSON.parse(metaRaw)
+      if (meta.hidden === true) continue
 
       const baseTweak = {
         id: meta.name || folder,

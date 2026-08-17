@@ -127,7 +127,7 @@ async function getSystemInfo(): Promise<SystemInfo> {
 
 async function getSystemHealth() {
   try {
-    const [load, memory, temp, disks, network, baseboard, time] = await Promise.all([
+    const [load, memory, temp, disks, network, baseboard, time, graphics] = await Promise.all([
       si.currentLoad(),
       si.mem(),
       si.cpuTemperature(),
@@ -135,20 +135,52 @@ async function getSystemHealth() {
       si.networkStats(),
       si.baseboard(),
       si.time(),
+      si.graphics(),
     ])
+
     const cDrive = (disks as any[]).find((d: any) => String(d.mount || "").toUpperCase().startsWith("C:")) || (disks as any[])[0]
     const net = (network as any[]).find((n: any) => n.operstate === "up") || (network as any[])[0]
-    const cpu = Math.round(Number((load as any).currentLoad || 0))
-    const ram = Math.round(((memory as any).active / Math.max((memory as any).total, 1)) * 100)
-    const disk = cDrive ? Math.round(Number(cDrive.use || 0)) : 0
-    const cpuTemp = Math.round(Number((temp as any).main || 0))
-    const score = Math.max(45, Math.min(100, Math.round(100 - cpu * .22 - ram * .16 - disk * .08 - Math.max(0, cpuTemp - 55) * .18)))
+    const controllers = (graphics as any)?.controllers || []
+    const gpuInfo = controllers.find((g: any) => Number.isFinite(Number(g.utilizationGpu))) || controllers[0] || {}
+
+    const cpu = Math.max(0, Math.min(100, Math.round(Number((load as any).currentLoad || 0))))
+    const ram = Math.max(0, Math.min(100, Math.round(((memory as any).active / Math.max((memory as any).total, 1)) * 100)))
+    const disk = cDrive ? Math.max(0, Math.min(100, Math.round(Number(cDrive.use || 0)))) : 0
+    const rawTemp = Number((temp as any).main)
+    const cpuTemp = Number.isFinite(rawTemp) && rawTemp > 0 ? Math.round(rawTemp) : null
+    const gpuRaw = Number(gpuInfo.utilizationGpu)
+    const gpu = Number.isFinite(gpuRaw) && gpuRaw >= 0 ? Math.max(0, Math.min(100, Math.round(gpuRaw))) : null
+    const gpuTempRaw = Number(gpuInfo.temperatureGpu)
+    const gpuTemp = Number.isFinite(gpuTempRaw) && gpuTempRaw > 0 ? Math.round(gpuTempRaw) : null
+
+    // Zevyron Health Score is a transparent heuristic based only on current resource pressure.
+    // Missing sensor values are ignored instead of being represented as zero.
+    const tempPenalty = cpuTemp === null ? 0 : Math.max(0, cpuTemp - 60) * 0.25
+    const score = Math.max(40, Math.min(100, Math.round(100 - cpu * 0.20 - ram * 0.17 - disk * 0.08 - tempPenalty)))
+
+    let diskRead = 0
+    let diskWrite = 0
+    try {
+      const io: any = await si.disksIO()
+      diskRead = Number(io?.rIO_sec || 0)
+      diskWrite = Number(io?.wIO_sec || 0)
+    } catch {
+      // Some storage drivers do not expose I/O counters.
+    }
+
     return {
-      cpu, ram, disk, cpuTemp, score,
+      cpu,
+      ram,
+      disk,
+      cpuTemp,
+      gpu,
+      gpuTemp,
+      score,
+      scoreKind: "resource-pressure",
       memoryUsed: (memory as any).active || 0,
       memoryTotal: (memory as any).total || 0,
-      diskRead: Number(net?.rx_sec || 0),
-      diskWrite: Number(net?.tx_sec || 0),
+      diskRead,
+      diskWrite,
       download: Number(net?.rx_sec || 0),
       upload: Number(net?.tx_sec || 0),
       ping: null,
@@ -157,9 +189,10 @@ async function getSystemHealth() {
     }
   } catch (error) {
     console.error("Failed to get system health:", error)
-    return { cpu: 0, ram: 0, disk: 0, cpuTemp: 0, score: 0, memoryUsed: 0, memoryTotal: 0, download: 0, upload: 0, board: "Unknown", uptime: 0 }
+    return { cpu: 0, ram: 0, disk: 0, cpuTemp: null, gpu: null, gpuTemp: null, score: 0, scoreKind: "unavailable", memoryUsed: 0, memoryTotal: 0, diskRead: 0, diskWrite: 0, download: 0, upload: 0, ping: null, board: "Unknown", uptime: 0 }
   }
 }
+
 function restartSystem(): { success: boolean } {
   try {
     exec("shutdown /r /t 0")

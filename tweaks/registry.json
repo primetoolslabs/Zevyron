@@ -1,5 +1,5 @@
 {
-  "version": "2026-08-16T00:18:49.219Z",
+  "version": "2026-08-17T18:30:55.106296Z",
   "tweaks": [
     {
       "id": "24-hour-clock",
@@ -11,6 +11,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -24,20 +26,8 @@
       ],
       "recommended": false,
       "reversible": true,
-      "docsurl": "",
-      "source": ""
-    },
-    {
-      "id": "debloat-windows",
-      "title": "Debloat Windows",
-      "description": "Choose between Zevyron Debloat script or Raphire's Win11Debloat script to remove built-in Windows apps and bloatware.",
-      "category": [
-        "Performance",
-        "Privacy"
-      ],
-      "recommended": true,
-      "reversible": false,
-      "updatedversion": "2.14.0",
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -50,6 +40,7 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
       "updatedversion": "2.21.1",
       "docsurl": "",
       "source": ""
@@ -64,6 +55,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -77,6 +70,7 @@
       "recommended": false,
       "reversible": true,
       "addedversion": "2.14.1",
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -90,6 +84,8 @@
       ],
       "recommended": true,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -103,19 +99,8 @@
       ],
       "recommended": false,
       "reversible": true,
-      "docsurl": "",
-      "source": ""
-    },
-    {
-      "id": "disable-defender-rtp",
-      "title": "Disable Defender RTP",
-      "description": "Disables Defender Real-time Protection",
-      "category": [
-        "Performance",
-        "General"
-      ],
-      "recommended": false,
-      "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -128,6 +113,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -141,6 +128,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -153,6 +142,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -166,6 +157,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -178,6 +171,7 @@
       ],
       "recommended": true,
       "reversible": true,
+      "addedversion": null,
       "updatedversion": "2.21.1",
       "docsurl": "",
       "source": ""
@@ -191,6 +185,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -204,6 +200,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -218,6 +216,7 @@
       "recommended": false,
       "reversible": true,
       "addedversion": "2.19.0",
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -231,6 +230,7 @@
       "recommended": false,
       "reversible": true,
       "addedversion": "2.14.2",
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -245,6 +245,7 @@
       "recommended": false,
       "reversible": true,
       "addedversion": "2.22.0",
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -274,6 +275,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -287,6 +290,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -299,6 +304,8 @@
       ],
       "recommended": true,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -313,6 +320,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -327,6 +336,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -341,6 +352,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -354,6 +367,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -367,6 +382,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -380,6 +397,7 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
       "updatedversion": "2.9.0",
       "docsurl": "",
       "source": ""
@@ -395,6 +413,8 @@
       ],
       "recommended": false,
       "reversible": false,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -409,6 +429,7 @@
       "recommended": true,
       "reversible": true,
       "addedversion": "2.22.0",
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -422,6 +443,8 @@
       ],
       "recommended": false,
       "reversible": false,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -435,6 +458,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -449,6 +474,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -462,6 +489,8 @@
       ],
       "recommended": true,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -474,6 +503,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -487,6 +518,7 @@
       ],
       "recommended": true,
       "reversible": true,
+      "addedversion": null,
       "updatedversion": "2.21.1",
       "docsurl": "",
       "source": ""
@@ -500,6 +532,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -512,6 +546,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -525,6 +561,8 @@
       ],
       "recommended": false,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -538,6 +576,8 @@
       ],
       "recommended": true,
       "reversible": true,
+      "addedversion": null,
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     },
@@ -551,6 +591,7 @@
       "recommended": false,
       "reversible": true,
       "addedversion": "2.14.1",
+      "updatedversion": null,
       "docsurl": "",
       "source": ""
     }

@@ -36,6 +36,12 @@ jobs:
       - name: Validar projeto
         run: pnpm run typecheck
 
+      - name: Testes automatizados
+        run: pnpm run test
+
+      - name: Auditoria de release
+        run: pnpm run audit:release
+
       - name: Gerar instalador e arquivos de atualização
         run: pnpm run release:win
         env:

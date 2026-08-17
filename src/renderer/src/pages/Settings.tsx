@@ -502,13 +502,17 @@ function Settings() {
                     </Button>
                     <div className="text-right">
                       <p className="text-sm text-zevyron-text-secondary">
-                        © {new Date().getFullYear()} Zevyron
+                        © {new Date().getFullYear()} PrimeTools Lab
                       </p>
                     </div>
                   </div>
                 </div>
               </SettingCard>
               <SettingCard className="mt-4">
+                <div className="space-y-2 mb-4 pb-4 border-b border-zevyron-border">
+                  <h3 className="text-base font-medium text-zevyron-text">Desenvolvido por PrimeTools Lab</h3>
+                  <p className="text-sm text-zevyron-text-secondary">Tecnologia • Performance • Confiança</p>
+                </div>
                 <div className="space-y-3">
                   <div>
                     <h3 className="text-base font-medium text-zevyron-text">{t("settings.freeOpenSource")}</h3>
