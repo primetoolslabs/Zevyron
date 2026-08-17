@@ -1,3 +1,10 @@
+# Changelog
+
+## 2.25.3 - Stable
+
+- Corrigido build NSIS causado por `LANG_PORTUGUESEBR` em arquivo residual `installer.nsh`.
+- Instalador mantém identidade visual Zevyron e fluxo multilíngue.
+
 
 ## 2.25.2 - Stable
 
