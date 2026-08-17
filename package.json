@@ -1,6 +1,6 @@
 {
   "name": "zevyron",
-  "version": "2.25.0",
+  "version": "2.25.1",
   "description": "Zevyron - Advanced System Performance | Stable | Free and Open Source",
   "main": "./out/main/index.js",
   "author": "Zevyron",
@@ -167,7 +167,9 @@
       "installerIcon": "build/installerIcon.ico",
       "uninstallerIcon": "build/installerIcon.ico",
       "createStartMenuShortcut": true,
-      "runAfterFinish": true
+      "runAfterFinish": true,
+      "include": "build/installer.nsh",
+      "license": "build/license.txt"
     },
     "npmRebuild": false
   },

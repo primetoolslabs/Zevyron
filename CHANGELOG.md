@@ -1,3 +1,13 @@
+# Zevyron Changelog
+
+## 2.25.1 Stable
+
+- New Control Center dashboard
+- Real-time system telemetry
+- Zevyron Boost quick actions
+- Redesigned branded installer
+- Stable channel badge
+
 # Changelog
 
 ## 2.25.0 Stable

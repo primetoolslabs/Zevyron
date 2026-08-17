@@ -1,4 +1,4 @@
-> **Current channel:** Stable — **Version 2.25.0**
+> **Current channel:** Stable — **Version 2.25.1**
 
 # ZEVYRON
 

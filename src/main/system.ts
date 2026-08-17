@@ -124,6 +124,42 @@ async function getSystemInfo(): Promise<SystemInfo> {
   }
 }
 
+
+async function getSystemHealth() {
+  try {
+    const [load, memory, temp, disks, network, baseboard, time] = await Promise.all([
+      si.currentLoad(),
+      si.mem(),
+      si.cpuTemperature(),
+      si.fsSize(),
+      si.networkStats(),
+      si.baseboard(),
+      si.time(),
+    ])
+    const cDrive = (disks as any[]).find((d: any) => String(d.mount || "").toUpperCase().startsWith("C:")) || (disks as any[])[0]
+    const net = (network as any[]).find((n: any) => n.operstate === "up") || (network as any[])[0]
+    const cpu = Math.round(Number((load as any).currentLoad || 0))
+    const ram = Math.round(((memory as any).active / Math.max((memory as any).total, 1)) * 100)
+    const disk = cDrive ? Math.round(Number(cDrive.use || 0)) : 0
+    const cpuTemp = Math.round(Number((temp as any).main || 0))
+    const score = Math.max(45, Math.min(100, Math.round(100 - cpu * .22 - ram * .16 - disk * .08 - Math.max(0, cpuTemp - 55) * .18)))
+    return {
+      cpu, ram, disk, cpuTemp, score,
+      memoryUsed: (memory as any).active || 0,
+      memoryTotal: (memory as any).total || 0,
+      diskRead: Number(net?.rx_sec || 0),
+      diskWrite: Number(net?.tx_sec || 0),
+      download: Number(net?.rx_sec || 0),
+      upload: Number(net?.tx_sec || 0),
+      ping: null,
+      board: [baseboard?.manufacturer, baseboard?.model].filter(Boolean).join(" ") || "Unknown",
+      uptime: Number((time as any).uptime || 0),
+    }
+  } catch (error) {
+    console.error("Failed to get system health:", error)
+    return { cpu: 0, ram: 0, disk: 0, cpuTemp: 0, score: 0, memoryUsed: 0, memoryTotal: 0, download: 0, upload: 0, board: "Unknown", uptime: 0 }
+  }
+}
 function restartSystem(): { success: boolean } {
   try {
     exec("shutdown /r /t 0")
@@ -498,6 +534,7 @@ export const setupSystemHandlers = (): void => {
   ipcMain.handle("open-log-folder", openLogFolder)
   ipcMain.handle("clear-zevyron-cache", clearZevyronCache)
   ipcMain.handle("get-system-info", getSystemInfo)
+  ipcMain.handle("get-system-health", getSystemHealth)
   ipcMain.handle("get-user-name", getUserName)
   ipcMain.handle("restart-explorer", restartExplorer)
   ipcMain.handle("check-winget", async () => checkWinget())
@@ -511,6 +548,7 @@ export const cleanupSystemHandlers = (): void => {
   ipcMain.removeHandler("open-log-folder")
   ipcMain.removeHandler("clear-zevyron-cache")
   ipcMain.removeHandler("get-system-info")
+  ipcMain.removeHandler("get-system-health")
   ipcMain.removeHandler("get-user-name")
   ipcMain.removeHandler("restart-explorer")
   ipcMain.removeHandler("check-winget")

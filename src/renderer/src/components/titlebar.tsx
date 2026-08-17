@@ -42,7 +42,7 @@ function TitleBar({
           <img src={zevyronLogo} alt="Zevyron" className="h-7 w-7 object-contain drop-shadow-[0_0_8px_rgba(0,174,255,0.45)]" />
           <span className="text-zevyron-text text-sm font-semibold tracking-[0.12em]">ZEVYRON</span>
           <div className="bg-zevyron-card border border-zevyron-border-secondary p-1 rounded-xl w-16 text-center text-sm text-zevyron-text">
-            Beta
+            Stable
           </div>
         </div>
         <div>

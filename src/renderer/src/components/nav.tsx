@@ -144,7 +144,7 @@ function Nav({ collapsed }) {
               className={clsx(
                 `flex items-center gap-3 py-2 rounded-lg transition-all duration-200 border relative ${collapsed ? "px-2 justify-center" : "px-3"}`,
                 activeTab === id
-                  ? "border-transparent text-zevyron-primary"
+                  ? "border-[#07558a] bg-[linear-gradient(90deg,rgba(0,94,255,.22),rgba(0,170,255,.05))] text-zevyron-primary shadow-[inset_3px_0_0_#008cff]"
                   : isDisabled
                     ? "opacity-50 cursor-not-allowed text-zevyron-text-secondary border-transparent"
                     : "text-zevyron-text-secondary hover:bg-zevyron-border-secondary hover:text-zevyron-text border-transparent",
@@ -241,11 +241,13 @@ function Nav({ collapsed }) {
         </div>
       </Modal>
       {!collapsed && (
-        <div className="mx-3 mb-2 px-3 py-2 rounded-xl border border-zevyron-border bg-zevyron-card/60 text-center">
-          <p className="text-[9px] tracking-[0.2em] uppercase text-zevyron-text-muted">Advanced System Performance</p>
+        <div className="mx-3 mb-3 p-3 rounded-xl border border-[#075c96] bg-[radial-gradient(circle_at_20%_0%,rgba(0,130,255,.16),transparent_55%),#071321] shadow-[0_0_18px_rgba(0,90,255,.08)]">
+          <div className="flex items-center gap-2 text-[#14b8ff] font-semibold text-sm"><span className="text-2xl">ϟ</span>ZEVYRON BOOST</div>
+          <p className="text-[10px] text-zevyron-text-secondary mt-1 mb-3">Prepare seu PC para o máximo desempenho</p>
+          <button onClick={() => navigate('/tweaks')} className="w-full py-2 rounded-lg border border-[#008cff] bg-[#006dff20] text-[#16b6ff] text-xs hover:bg-[#006dff33]">ϟ ANALISAR AGORA</button>
         </div>
       )}
-      <p className="text-zevyron-primary text-center text-sm">v{info.version}</p>
+      <p className="text-zevyron-primary text-center text-xs mb-2">v{info.version} · Stable</p>
     </nav>
   )
 }

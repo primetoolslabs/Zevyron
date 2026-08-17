@@ -1,25 +1,18 @@
-# Instalador Zevyron
+# Zevyron Installer — 2.25.1 Stable
 
-O instalador Windows usa NSIS em modo assistido.
+O instalador usa NSIS em modo assistido e mantém:
 
-- Exibe seletor de idioma: Português (Brasil), English e Español.
-- Exibe Termos de Uso/Licença e exige aceite antes de continuar.
-- Permite escolher o diretório de instalação.
-- Usa ícone Zevyron com canal alpha/transparência.
-- Usa artes próprias no cabeçalho e lateral do instalador.
+- seletor de idioma;
+- tela de boas-vindas Zevyron;
+- termos/licença;
+- escolha do diretório de instalação;
+- progresso de instalação;
+- tela de conclusão;
+- atualização por cima da versão instalada.
 
-## Gerar o instalador
+## Identidade visual
 
-```cmd
-pnpm install
-pnpm run build:electron
-```
-
-O instalador será gerado com nome semelhante a `Zevyron-2.23.2-Setup.exe`.
-
-> Observação: os termos fornecidos no projeto são uma base operacional e devem ser revisados por profissional jurídico antes de distribuição comercial.
-
-
-## Visual Stable 2.25.0
-
-O cabeçalho e a barra lateral do assistente NSIS usam a logo oficial Zevyron composta sobre fundo claro. Isso evita o fundo preto causado por imagens transparentes convertidas diretamente para BMP, formato que não possui canal alfa. O ícone do instalador continua usando ICO com transparência real.
+- Sidebar azul-marinho/preto com logo Zevyron integrada;
+- cabeçalho claro com logo transparente;
+- sem quadrado/fundo preto ao redor da logo;
+- canal Stable.
