@@ -7,6 +7,7 @@ import { logo } from "@main/windowState"
 import { executePowerShell } from "@main/powershell"
 import { detectGPU } from "@main/gpu"
 import log from "electron-log"
+import { assessTweak, executeWithSafety, setupSafetyEngineHandlers } from "@main/safetyEngine"
 
 console.log = log.log
 console.error = log.error
@@ -33,7 +34,7 @@ const getExePath = (exeName: string): string => {
   return path.join(process.resourcesPath, exeName)
 }
 
-async function loadTweaks(): Promise<Tweak[]> {
+export async function loadTweaks(): Promise<Tweak[]> {
   const entries = await fs.readdir(tweaksDir, { withFileTypes: true })
   const tweaks: Tweak[] = []
   for (const dir of entries) {
@@ -82,11 +83,15 @@ async function loadTweaks(): Promise<Tweak[]> {
       continue
     }
 
-    tweaks.push({
+    const tweak = {
       name,
       psapply,
       psunapply: psunapply || "",
       ...meta,
+    }
+    tweaks.push({
+      ...tweak,
+      safety: assessTweak(tweak),
     })
   }
   return tweaks
@@ -158,7 +163,9 @@ export const setupTweaksHandlers = (): void => {
     return await loadTweaks()
   })
 
-  ipcMain.handle("tweak:apply", async (_: any, name: string): Promise<any> => {
+  ipcMain.handle("tweak:apply", async (_: any, payload: string | { name: string; acknowledgedRisk?: boolean }): Promise<any> => {
+    const name = typeof payload === "string" ? payload : payload.name
+    const acknowledgedRisk = typeof payload === "string" ? false : Boolean(payload.acknowledgedRisk)
     const tweaks = await loadTweaks()
     const tweak = tweaks.find((t) => t.name === name)
     if (!tweak) {
@@ -175,21 +182,29 @@ export const setupTweaksHandlers = (): void => {
       }
     }
 
-    if (name === "optimize-nvidia-settings") {
-      console.log(logo, "Running Nvidia settings optimization...")
-      await NvidiaProfileInspector()
-    } else {
-      return executePowerShell(null, { script: tweak.psapply, name })
-    }
+    return executeWithSafety(
+      tweak,
+      "apply",
+      async () => {
+        if (name === "optimize-nvidia-settings") {
+          console.log(logo, "Running Nvidia settings optimization...")
+          await NvidiaProfileInspector()
+          return { success: true }
+        }
+        return executePowerShell(null, { script: tweak.psapply, name })
+      },
+      acknowledgedRisk,
+    )
   })
 
-  ipcMain.handle("tweak:unapply", async (_: any, name: string): Promise<any> => {
+  ipcMain.handle("tweak:unapply", async (_: any, payload: string | { name: string; acknowledgedRisk?: boolean }): Promise<any> => {
+    const name = typeof payload === "string" ? payload : payload.name
     const tweaks = await loadTweaks()
     const tweak = tweaks.find((t) => t.name === name)
     if (!tweak || !tweak.psunapply) {
       throw new Error(`No unapply script found for tweak: ${name}`)
     }
-    return executePowerShell(null, { script: tweak.psunapply, name })
+    return executeWithSafety(tweak, "unapply", () => executePowerShell(null, { script: tweak.psunapply, name }), true)
   })
 
   ipcMain.handle("nvidia-inspector", (_: any, _args: any): Promise<string> => {
@@ -199,7 +214,8 @@ export const setupTweaksHandlers = (): void => {
   ipcMain.handle("tweak:active", (): string[] => {
     return getActiveTweaks()
   })
-  console.log("[Zevyron main/tweakHandler.ts]: Tweak handlers setup complete")
+  setupSafetyEngineHandlers(loadTweaks)
+  console.log("[Zevyron main/tweakHandler.ts]: Tweak + Safety Engine handlers setup complete")
 }
 
 const getActiveTweaks = (): string[] => {
@@ -220,6 +236,10 @@ export const cleanupTweaksHandlers = (): void => {
   ipcMain.removeHandler("tweak:apply")
   ipcMain.removeHandler("tweak:unapply")
   ipcMain.removeHandler("nvidia-inspector")
+  ipcMain.removeHandler("safety:audit")
+  ipcMain.removeHandler("safety:history")
+  ipcMain.removeHandler("safety:undo")
+  ipcMain.removeHandler("safety:open-folder")
 }
 
 export default {

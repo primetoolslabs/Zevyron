@@ -39,6 +39,23 @@ const translations: Record<Language, Dictionary> = {
 
 // Exact UI phrases. This layer also covers legacy hard-coded strings and dynamically loaded metadata.
 const phrases: Record<string, Phrase> = {
+  "Modifies Windows Defender protection": { pt: "Modifica a proteção do Windows Defender", es: "Modifica la protección de Windows Defender" },
+  "Modifies Core Isolation/VBS": { pt: "Modifica o Isolamento de Núcleo/VBS", es: "Modifica el Aislamiento del Núcleo/VBS" },
+  "Changes Windows boot configuration (BCD)": { pt: "Altera a configuração de inicialização do Windows (BCD)", es: "Cambia la configuración de arranque de Windows (BCD)" },
+  "Changes policies or services in the Registry": { pt: "Altera políticas ou serviços no Registro", es: "Cambia políticas o servicios en el Registro" },
+  "Changes Windows services": { pt: "Altera serviços do Windows", es: "Cambia servicios de Windows" },
+  "Removes provisioned Windows components/apps": { pt: "Remove componentes/aplicativos provisionados do Windows", es: "Elimina componentes/aplicaciones aprovisionados de Windows" },
+  "Removes files from protected Windows locations": { pt: "Remove arquivos de áreas protegidas do Windows", es: "Elimina archivos de ubicaciones protegidas de Windows" },
+  "Disables an optional Windows feature": { pt: "Desativa um recurso opcional do Windows", es: "Desactiva una función opcional de Windows" },
+  "Changes network stack or adapters": { pt: "Altera a pilha ou adaptadores de rede", es: "Cambia la pila o los adaptadores de red" },
+  "Changes power plan/settings": { pt: "Altera o plano/configurações de energia", es: "Cambia el plan/configuración de energía" },
+  "Changes scheduled tasks": { pt: "Altera tarefas agendadas", es: "Cambia tareas programadas" },
+  "Changes machine-wide Registry settings": { pt: "Altera configurações de máquina no Registro", es: "Cambia configuraciones del Registro a nivel de equipo" },
+  "Terminates processes": { pt: "Encerra processos", es: "Finaliza procesos" },
+  "Uninstalls an application": { pt: "Desinstala um aplicativo", es: "Desinstala una aplicación" },
+  "Resets/clears network state": { pt: "Reinicia/limpa o estado da rede", es: "Reinicia/limpia el estado de la red" },
+  "No automatic rollback script is available": { pt: "Não há script de reversão automática", es: "No hay script de reversión automática" },
+  "No high-risk pattern was detected by static audit": { pt: "Nenhum padrão de alto risco foi detectado na auditoria estática", es: "No se detectó ningún patrón de alto riesgo en la auditoría estática" },
   "Advanced System Performance": { pt: "Desempenho Avançado do Sistema", es: "Rendimiento Avanzado del Sistema" },
   "System Control Center": { pt: "Central de Controle do Sistema", es: "Centro de Control del Sistema" },
   "Loading system information": { pt: "Carregando informações do sistema", es: "Cargando información del sistema" },

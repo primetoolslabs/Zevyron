@@ -11,7 +11,11 @@ import {
   Paintbrush,
   ExternalLink,
   ShieldCheck,
-} from "lucide-react"
+  LockKeyhole,
+  History,
+  FolderOpen,
+}
+ from "lucide-react"
 import { toast } from "react-toastify"
 import RootDiv from "@/components/rootdiv"
 import Tooltip from "@/components/ui/tooltip"
@@ -31,8 +35,10 @@ import { Star } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Tweak } from "@/types/index"
+import { useI18n } from "@/i18n"
 
 function Tweaks() {
+  const { language, tx } = useI18n()
   const [tweaks, setTweaks] = useState<Tweak[]>([])
   const [toggleStates, setToggleStates] = useState({})
   const [isLoading, setIsLoading] = useState(true)
@@ -46,6 +52,8 @@ function Tweaks() {
   const [selectedRecommendedTweaks, setSelectedRecommendedTweaks] = useState<Set<string>>(new Set())
   const [isApplyingRecommended, setIsApplyingRecommended] = useState(false)
   const [isAltHeld, setIsAltHeld] = useState(false)
+  const [safetyAudit, setSafetyAudit] = useState<any>(null)
+  const [safetyHistory, setSafetyHistory] = useState<any[]>([])
 
   const { setNeedsRestart } = useRestartStore()
   const systemInfo = useSystemStore((state) => state.systemInfo)
@@ -73,6 +81,7 @@ function Tweaks() {
   useEffect(() => {
     loadTweaks()
     loadToggleStates()
+    loadSafetyAudit()
   }, [])
 
   useEffect(() => {
@@ -89,6 +98,55 @@ function Tweaks() {
       window.removeEventListener("keyup", handleKeyUp)
     }
   }, [])
+
+
+  const loadSafetyAudit = async () => {
+    try {
+      const report = await invoke({ channel: "safety:audit" })
+      setSafetyAudit(report)
+      const history = await invoke({ channel: "safety:history" })
+      setSafetyHistory(Array.isArray(history) ? history : [])
+    } catch (error) {
+      console.error("Error loading Safety Engine audit:", error)
+    }
+  }
+
+  const confirmSafetyRisk = (tweak: Tweak): boolean => {
+    const safety = tweak.safety
+    if (!safety || safety.level !== "advanced") return true
+    const reasons = (safety.reasons || []).map((reason) => `• ${tx(reason)}`).join("\n")
+    const message =
+      language === "pt-BR"
+        ? `ZEVYRON SAFETY ENGINE\n\nEsta otimização foi classificada como AVANÇADA (risco ${safety.score}/100).\n\n${reasons}\n\nO Zevyron criará um snapshot e tentará criar um ponto de restauração antes da alteração. Deseja continuar?`
+        : language === "es-ES"
+          ? `ZEVYRON SAFETY ENGINE\n\nEsta optimización fue clasificada como AVANZADA (riesgo ${safety.score}/100).\n\n${reasons}\n\nZevyron creará una instantánea e intentará crear un punto de restauración antes del cambio. ¿Deseas continuar?`
+          : `ZEVYRON SAFETY ENGINE\n\nThis optimization was classified as ADVANCED (risk ${safety.score}/100).\n\n${reasons}\n\nZevyron will create a snapshot and attempt to create a restore point before the change. Continue?`
+    return window.confirm(message)
+  }
+
+  const safetyPayload = (tweak: Tweak) => ({
+    name: tweak.name,
+    acknowledgedRisk: tweak.safety?.level === "advanced",
+  })
+
+  const undoLastSafetyChange = async () => {
+    const record = safetyHistory.find((item) => item.success && item.action === "apply" && item.reversible)
+    if (!record) {
+      toast.info("Nenhuma alteração reversível encontrada no histórico do Safety Engine.")
+      return
+    }
+    if (!window.confirm(`Desfazer a última alteração segura?\n\n${record.title}`)) return
+    const result = await invoke({ channel: "safety:undo", payload: record.id })
+    if (result?.success === false) {
+      toast.error(result.error || "Não foi possível desfazer a alteração.")
+      return
+    }
+    const newStates = { ...toggleStates, [record.tweakName]: false }
+    setToggleStates(newStates)
+    await saveToggleStates(newStates)
+    await loadSafetyAudit()
+    toast.success(`Alteração desfeita: ${record.title}`)
+  }
 
   const loadTweaks = async () => {
     try {
@@ -133,6 +191,7 @@ function Tweaks() {
 
   const applyTweak = async (tweak, _) => {
     toast.dismiss()
+    if (!toggleStates[tweak.name] && !confirmSafetyRisk(tweak)) return
     const newState = !toggleStates[tweak.name]
     const newStates = {
       ...toggleStates,
@@ -151,7 +210,7 @@ function Tweaks() {
       if (newState) {
         const result = await invoke({
           channel: "tweak:apply",
-          payload: tweak.name,
+          payload: safetyPayload(tweak),
         })
         if (result?.success === false) {
           throw new Error(result.error || `Failed to apply tweak: ${tweak.title}`)
@@ -168,7 +227,7 @@ function Tweaks() {
       } else {
         const result = await invoke({
           channel: "tweak:unapply",
-          payload: tweak.name,
+          payload: { name: tweak.name },
         })
         if (result?.success === false) {
           throw new Error(result.error || `Failed to unapply tweak: ${tweak.title}`)
@@ -212,6 +271,7 @@ function Tweaks() {
 
   const applyNonReversibleTweak = async (tweak, _) => {
     toast.dismiss()
+    if (!confirmSafetyRisk(tweak)) return
     const newStates = {
       ...toggleStates,
       [tweak.name]: true,
@@ -225,7 +285,7 @@ function Tweaks() {
       await saveToggleStates(newStates)
       const result = await invoke({
         channel: "tweak:apply",
-        payload: tweak.name,
+        payload: safetyPayload(tweak),
       })
       if (result?.success === false) {
         throw new Error(result.error || `Failed to apply tweak: ${tweak.title}`)
@@ -293,12 +353,13 @@ function Tweaks() {
 
   const forceReapplyTweak = async (tweak: Tweak) => {
     toast.dismiss()
+    if (!confirmSafetyRisk(tweak)) return
     const loadingToastId = toast.loading(`Reapplying tweak: ${tweak.title}`)
 
     try {
       const result = await invoke({
         channel: "tweak:apply",
-        payload: tweak.name,
+        payload: safetyPayload(tweak),
       })
       if (result?.success === false) {
         throw new Error(result.error || `Failed to reapply tweak: ${tweak.title}`)
@@ -328,7 +389,9 @@ function Tweaks() {
     const preset = presets[0]
     const presetTweaks = tweaks.filter((t) => preset.tweaks.includes(t.name))
     setRecommendedTweaksToApply(presetTweaks)
-    setSelectedRecommendedTweaks(new Set(presetTweaks.map((t) => t.name)))
+    setSelectedRecommendedTweaks(
+      new Set(presetTweaks.filter((t) => t.safety?.level !== "advanced").map((t) => t.name)),
+    )
     setIsRecommendedModalOpen(true)
   }
 
@@ -343,6 +406,7 @@ function Tweaks() {
     )
 
     for (const tweak of tweaksToApply) {
+      if (!confirmSafetyRisk(tweak)) continue
       const loadingToastId = toast.loading(`Applying tweak: ${tweak.title}`)
 
       try {
@@ -352,7 +416,7 @@ function Tweaks() {
 
         const result = await invoke({
           channel: "tweak:apply",
-          payload: tweak.name,
+          payload: safetyPayload(tweak),
         })
         if (result?.success === false) {
           throw new Error(result.error || `Failed to apply tweak: ${tweak.title}`)
@@ -463,7 +527,7 @@ function Tweaks() {
         <div className="bg-zevyron-card border border-zevyron-border rounded-2xl p-4 max-w-xl w-full mx-4 max-h-2xl">
           <h3 className="text-xl font-semibold text-zevyron-text mb-3">Apply Recommended Tweaks</h3>
           <div className="text-zevyron-text-secondary text-sm leading-6 whitespace-pre-wrap max-h-64 overflow-y-auto custom-scrollbar mb-6">
-            Select the tweaks you want to apply:
+            Select the tweaks you want to apply. Advanced items are not selected automatically by the Safety Engine:
             <p className="text-xs text-orange-500 ">
               Debloating windows is highly recommended. you can do it after you apply the recomended
               tweaks. its not here because it has a UI
@@ -538,6 +602,7 @@ function Tweaks() {
             {selectedTweak && (
               <Button
                 onClick={async () => {
+                  if (!selectedTweak || !confirmSafetyRisk(selectedTweak)) return
                   const newState = true
                   const newStates = {
                     ...toggleStates,
@@ -553,7 +618,7 @@ function Tweaks() {
                     await saveToggleStates(newStates)
                     const result = await invoke({
                       channel: "tweak:apply",
-                      payload: selectedTweak.name,
+                      payload: safetyPayload(selectedTweak),
                     })
                     if (result?.success === false) {
                       throw new Error(
@@ -597,6 +662,38 @@ function Tweaks() {
       </Modal>
       <RootDiv>
         <div className="max-w-450 mx-auto ">
+          <div className="mb-4 rounded-2xl border border-cyan-500/30 bg-cyan-950/15 p-4 shadow-[0_0_30px_rgba(0,180,255,0.06)]">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-3 min-w-60">
+                <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/25">
+                  <LockKeyhole className="w-5 h-5 text-cyan-400" />
+                </div>
+                <div>
+                  <div className="font-semibold text-zevyron-text">ZEVYRON SAFETY ENGINE</div>
+                  <div className="text-xs text-zevyron-text-secondary">Auditoria, snapshot, proteção e reversão das otimizações</div>
+                </div>
+              </div>
+              {safetyAudit && (
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="px-2.5 py-1 rounded-lg bg-green-500/10 text-green-400 border border-green-500/20">Seguro: {safetyAudit.safe}</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">Moderado: {safetyAudit.moderate}</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20">Avançado: {safetyAudit.advanced}</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-slate-500/10 text-slate-300 border border-slate-500/20">Sem reversão: {safetyAudit.nonReversible}</span>
+                </div>
+              )}
+              <div className="ml-auto flex gap-2">
+                <Button variant="secondary" onClick={undoLastSafetyChange} disabled={!safetyHistory.some((item) => item.success && item.action === "apply" && item.reversible)}>
+                  <RotateCw className="w-4 h-4" /> Desfazer última
+                </Button>
+                <Button variant="secondary" onClick={() => invoke({ channel: "safety:open-folder" })}>
+                  <FolderOpen className="w-4 h-4" /> Registros
+                </Button>
+                <Button variant="secondary" onClick={loadSafetyAudit}>
+                  <History className="w-4 h-4" /> Reauditar
+                </Button>
+              </div>
+            </div>
+          </div>
           <div className="mb-4">
             <div className="space-y-4">
               <LargeInput
@@ -705,6 +802,26 @@ function Tweaks() {
                                 </div>
                               </Tooltip>
                             ))}
+                            {tweak.safety && (
+                              <Tooltip
+                                content={(tweak.safety.reasons || []).map((reason) => tx(reason)).join(" • ")}
+                                delay={0.3}
+                                side="right"
+                              >
+                                <div className={`p-1.5 rounded-lg border ${
+                                  tweak.safety.level === "safe"
+                                    ? "bg-green-500/10 border-green-500/20 text-green-400"
+                                    : tweak.safety.level === "moderate"
+                                      ? "bg-yellow-500/10 border-yellow-500/20 text-yellow-400"
+                                      : "bg-red-500/10 border-red-500/20 text-red-400"
+                                }`}>
+                                  <div className="flex gap-1.5 items-center">
+                                    {tweak.safety.level === "safe" ? <ShieldCheck className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+                                    <span className="text-xs capitalize">{tweak.safety.level === "moderate" ? "Moderado" : tweak.safety.level === "advanced" ? "Avançado" : "Seguro"}</span>
+                                  </div>
+                                </div>
+                              </Tooltip>
+                            )}
                             {tweak.risk && (
                               <Tooltip
                                 content={tweak.risk === "safe" ? "Safe to use" : "Use with caution"}

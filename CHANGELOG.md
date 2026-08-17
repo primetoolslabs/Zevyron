@@ -1,3 +1,9 @@
+# 2.27.0 — Safety Engine
+
+- Safety Engine com auditoria de risco, snapshots, histórico e reversão.
+- Confirmação e ponto de restauração para alterações avançadas.
+- Auditoria das otimizações existentes.
+
 # Zevyron 2.26.0 Stable — Game Mode
 
 - Novo ZEVYRON GAME MODE funcional.

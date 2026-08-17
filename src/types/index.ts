@@ -45,6 +45,15 @@ export interface Tweak {
   addedversion?: string
   updatedversion?: string
   risk?: "safe" | "risky" | "caution"
+  safety?: {
+    level: "safe" | "moderate" | "advanced"
+    score: number
+    reversible: boolean
+    restorePointRecommended: boolean
+    requiresConfirmation: boolean
+    reasons: string[]
+    findings: string[]
+  }
   meta: TweakMeta
 }
 
