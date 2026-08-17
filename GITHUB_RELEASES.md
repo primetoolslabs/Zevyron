@@ -64,3 +64,20 @@ pnpm run release:github
 ```
 
 Nunca salve um token real no repositório.
+
+## GitHub Actions sem pnpm/action-setup
+
+O workflow do Zevyron usa o Corepack incluído no Node.js 22 para ativar o pnpm 10.29.3.
+Isso remove a dependência da action `pnpm/action-setup` e reduz uma etapa externa no processo de build.
+
+Etapas principais do workflow:
+
+1. `actions/checkout@v4` baixa o código.
+2. `actions/setup-node@v4` instala o Node.js 22.
+3. `corepack enable` ativa os shims de gerenciadores de pacotes.
+4. `corepack prepare pnpm@10.29.3 --activate` seleciona a versão usada pelo projeto.
+5. `pnpm install --frozen-lockfile` instala dependências reproduzíveis.
+6. O projeto é validado e publicado no GitHub Releases.
+
+Se uma execução anterior falhou com HTTP 429 ao baixar `pnpm/action-setup`, faça commit desta correção, atualize a tag da versão e execute novamente o workflow.
+

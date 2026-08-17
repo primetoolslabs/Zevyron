@@ -18,17 +18,17 @@ jobs:
       - name: Baixar código
         uses: actions/checkout@v4
 
-      - name: Instalar pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.29.3
-          run_install: false
-
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
+
+      - name: Ativar pnpm com Corepack
+        shell: pwsh
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.29.3 --activate
+          pnpm --version
 
       - name: Instalar dependências
         run: pnpm install --frozen-lockfile
