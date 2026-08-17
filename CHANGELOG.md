@@ -1,3 +1,17 @@
+# Zevyron 2.26.0 Stable — Game Mode
+
+- Novo ZEVYRON GAME MODE funcional.
+- Detecção automática de jogos conhecidos.
+- Perfis Seguro, Equilibrado e Máximo Desempenho.
+- Prioridade de processo limitada a AboveNormal/High; nunca Realtime.
+- Troca temporária de perfil de energia com restauração automática.
+- Monitoramento de CPU, GPU, RAM, disco, rede e temperaturas disponíveis.
+- Processos críticos protegidos; fechamento de processos exige ação explícita do usuário.
+- Histórico local das sessões.
+- Autoativação opcional ao detectar jogo.
+- Restauração automática quando o jogo é encerrado.
+- FPS permanece indisponível até existir uma fonte de telemetria compatível.
+
 # Changelog
 
 ## 2.25.3 - Stable

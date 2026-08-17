@@ -6,6 +6,7 @@ import {
   EthernetPort,
   Folder,
   Home,
+  Gamepad2,
   Icon,
   LayoutGrid,
   RotateCw,
@@ -27,6 +28,7 @@ import { useI18n } from "@/i18n"
 
 const tabIcons = {
   home: <Home size={20} />,
+  gameMode: <Gamepad2 size={20} />,
   tweaks: <Wrench size={20} />,
   debloat: <Bubbles size={20} />,
   clean: <Icon iconNode={broom} size={20} />,
@@ -41,6 +43,7 @@ function Nav({ collapsed }) {
   const { t } = useI18n()
   const tabs = {
     home: { label: t("nav.dashboard"), path: "/" },
+    gameMode: { label: t("nav.gameMode", "Game Mode"), path: "/game-mode" },
     tweaks: { label: t("nav.tweaks"), path: "/tweaks" },
     debloat: { label: t("nav.debloat"), path: "/debloat" },
     utilities: { label: t("nav.utilities"), path: "/utilities" },

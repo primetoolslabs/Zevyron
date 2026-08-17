@@ -13,6 +13,7 @@ import { setMainWindow } from "@main/windowState"
 import Store from "electron-store"
 import { is, getResourcePath } from "@main/utils"
 import { startDiscordRPC } from "@main/rpc"
+import { setupGameModeHandlers, startGameDetection, writeGameModeDiagnostic } from "@main/gameMode"
 
 console.log = log.log
 console.error = log.error
@@ -149,6 +150,9 @@ app
     setupDNSHandlers()
     setupBackupHandlers()
     setupDebloatHandlers()
+    setupGameModeHandlers()
+    startGameDetection()
+    writeGameModeDiagnostic()
     if (store.get("rpcEnabled") !== false) {
       startDiscordRPC()
     }

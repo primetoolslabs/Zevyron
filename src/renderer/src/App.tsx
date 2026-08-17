@@ -23,6 +23,7 @@ import zevyronVertical from "../../../resources/zevyron-vertical.png"
 import { toast } from "react-toastify"
 import Debloat from "./pages/Debloat"
 import NoAdmin from "./components/noAdmin"
+import GameMode from "./pages/GameMode"
 
 function App() {
   const [showBrandSplash, setShowBrandSplash] = useState(true)
@@ -46,6 +47,12 @@ function App() {
       "install-error": () => {
         clearApps()
         toast.error("There was an error during the operation. Please try again.")
+      },
+      "game-mode:detected": (_event: unknown, game: { name?: string }) => {
+        toast.info(`🎮 ${game?.name || "Game"} detectado — Game Mode pronto.`)
+      },
+      "game-mode:auto-activated": (_event: unknown, game: { name?: string }) => {
+        toast.success(`🎮 Game Mode ativado automaticamente: ${game?.name || "Game"}`)
       },
     }
 
@@ -181,6 +188,7 @@ function App() {
         >
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/game-mode" element={<GameMode />} />
             <Route path="/tweaks" element={<Tweaks />} />
             <Route path="/debloat" element={<Debloat />} />
             <Route path="/clean" element={<Clean />} />
