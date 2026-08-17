@@ -1,3 +1,10 @@
+
+## 2.25.2 - Stable
+
+- Corrigido build do instalador NSIS no GitHub Actions.
+- Preservado novo visual do instalador Zevyron.
+- Removida macro NSIS personalizada incompatível que fazia warnings encerrarem o build.
+
 # Zevyron Changelog
 
 ## 2.25.1 Stable
