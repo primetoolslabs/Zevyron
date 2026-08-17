@@ -1,0 +1,103 @@
+name: Publicar Zevyron
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Windows Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Ativar pnpm com Corepack
+        shell: pwsh
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.29.3 --activate
+          pnpm --version
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Validar projeto
+        run: pnpm run typecheck
+
+      - name: Testes automatizados
+        run: pnpm run test
+
+      - name: Auditoria de release
+        run: pnpm run audit:release
+
+      - name: Gerar instalador e arquivos de atualização
+        run: pnpm run release:win
+        env:
+          ZEVYRON_GITHUB_OWNER: ${{ github.repository_owner }}
+          ZEVYRON_GITHUB_REPO: ${{ github.event.repository.name }}
+
+      - name: Conferir arquivos gerados
+        shell: pwsh
+        run: |
+          Write-Host "Arquivos gerados em dist:"
+          Get-ChildItem -Path dist -File | Format-Table Name, Length
+
+          $assets = Get-ChildItem -Path dist -File | Where-Object {
+            $_.Name -like "*.exe" -or
+            $_.Name -like "*.zip" -or
+            $_.Name -eq "latest.yml" -or
+            $_.Name -like "*.blockmap"
+          }
+
+          if (-not $assets -or $assets.Count -eq 0) {
+            throw "Nenhum arquivo de release foi encontrado na pasta dist."
+          }
+
+      - name: Criar ou atualizar GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+
+          $assets = Get-ChildItem -Path dist -File | Where-Object {
+            $_.Name -like "*.exe" -or
+            $_.Name -like "*.zip" -or
+            $_.Name -eq "latest.yml" -or
+            $_.Name -like "*.blockmap"
+          } | Select-Object -ExpandProperty FullName
+
+          Write-Host "Tag: $tag"
+          Write-Host "Arquivos que serão publicados:"
+          $assets | ForEach-Object { Write-Host " - $_" }
+
+          gh release view $tag --repo "${{ github.repository }}" *> $null
+
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Release já existe. Atualizando arquivos..."
+            gh release upload $tag @assets --clobber --repo "${{ github.repository }}"
+          }
+          else {
+            Write-Host "Criando novo Release..."
+            gh release create $tag @assets `
+              --repo "${{ github.repository }}" `
+              --title "Zevyron $tag" `
+              --generate-notes `
+              --verify-tag
+          }
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Falha ao criar ou atualizar o GitHub Release."
+          }

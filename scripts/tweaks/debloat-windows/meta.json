@@ -1,0 +1,31 @@
+{
+  "title": "Debloat Windows",
+  "name": "debloat-windows",
+  "risk": "risky",
+  "description": "Use the dedicated Debloat module for selective app removal. Remote script execution is disabled by the Zevyron Safety Engine.",
+  "reversible": false,
+  "updatedversion": "2.14.0",
+  "recommended": false,
+  "top": true,
+  "deepDescription": "Use the dedicated Debloat module for selective app removal. Remote script execution is disabled by the Zevyron Safety Engine.",
+  "modal": "Use the dedicated Debloat module for selective app removal. Remote script execution is disabled by the Zevyron Safety Engine.",
+  "category": [
+    "Performance",
+    "Privacy"
+  ],
+  "links": [
+    {
+      "name": "Debloat Windows Script (Raphire)",
+      "url": "https://github.com/Raphire/Win11Debloat"
+    },
+    {
+      "name": "Use Zevyron Debloat Script without Zevyron",
+      "url": "https://getzevyron.net/debloat"
+    },
+    {
+      "name": "Zevyron Debloat Script",
+      "url": ""
+    }
+  ],
+  "hidden": true
+}
