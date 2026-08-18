@@ -14,7 +14,6 @@ import Store from "electron-store"
 import { is, getResourcePath } from "@main/utils"
 import { startDiscordRPC } from "@main/rpc"
 import { setupGameModeHandlers, startGameDetection, writeGameModeDiagnostic } from "@main/gameMode"
-import { setupSmartOptimizationHandlers } from "@main/smartOptimization"
 
 console.log = log.log
 console.error = log.error
@@ -161,7 +160,6 @@ app
     setupBackupHandlers()
     setupDebloatHandlers()
     setupGameModeHandlers()
-    setupSmartOptimizationHandlers()
     startGameDetection()
     writeGameModeDiagnostic()
     if (store.get("rpcEnabled") !== false) {

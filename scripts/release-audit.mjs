@@ -13,7 +13,7 @@ const exists = (p) => fs.existsSync(path.join(root, p))
 const pkg = JSON.parse(read('package.json'))
 if (pkg.name !== 'zevyron') fail('package.json name must be zevyron'); else ok('Package identity')
 if (pkg.author !== 'PrimeTools Lab') fail('package.json author must be PrimeTools Lab'); else ok('PrimeTools Lab attribution')
-if (!/^\d+\.\d+\.\d+([-.][0-9A-Za-z.-]+)?$/.test(pkg.version)) fail(`Invalid semantic version: ${pkg.version}`); else ok(`Version ${pkg.version}`)
+if (!/^\d+\.\d+\.\d+$/.test(pkg.version)) fail(`Invalid semantic version: ${pkg.version}`); else ok(`Version ${pkg.version}`)
 if (pkg.build?.productName !== 'Zevyron' || pkg.build?.appId !== 'com.zevyron.app') fail('Electron product identity mismatch'); else ok('Electron identity')
 
 for (const file of [

@@ -1,4 +1,4 @@
-# Zevyron 2.29.4 Stable
+# Zevyron 2.29.5 Stable
 
 Atualização visual sem alteração das funcionalidades.
 

@@ -25,8 +25,6 @@ import Debloat from "./pages/Debloat"
 import NoAdmin from "./components/noAdmin"
 import GameMode from "./pages/GameMode"
 import About from "./pages/About"
-import SmartOptimization from "./pages/SmartOptimization"
-import SafetyCenter from "./pages/SafetyCenter"
 
 function App() {
   const [showBrandSplash, setShowBrandSplash] = useState(true)
@@ -192,8 +190,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/game-mode" element={<GameMode />} />
-            <Route path="/smart" element={<SmartOptimization />} />
-            <Route path="/safety" element={<SafetyCenter />} />
             <Route path="/tweaks" element={<Tweaks />} />
             <Route path="/debloat" element={<Debloat />} />
             <Route path="/clean" element={<Clean />} />
