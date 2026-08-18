@@ -1,4 +1,4 @@
-# Zevyron 2.30.0-beta.2
+# Zevyron 2.30.0-beta.3
 
 Correção de compatibilidade do Smart Optimization.
 

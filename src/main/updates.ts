@@ -1,7 +1,10 @@
 import { app, ipcMain, BrowserWindow } from "electron"
 import { autoUpdater, UpdateInfo } from "electron-updater"
+import Store from "electron-store"
 import { existsSync } from "node:fs"
 import { join } from "node:path"
+
+export type UpdateChannel = "stable" | "beta" | "preview"
 
 type UpdaterState = {
   configured: boolean
@@ -10,6 +13,22 @@ type UpdaterState = {
   downloadedVersion: string | null
   progress: number
   error: string | null
+  channel: UpdateChannel
+}
+
+type UpdateStore = {
+  updateChannel: UpdateChannel
+}
+
+const store = new Store<UpdateStore>({
+  defaults: {
+    updateChannel: "stable",
+  },
+})
+
+const normalizeChannel = (value: unknown): UpdateChannel => {
+  if (value === "beta" || value === "preview") return value
+  return "stable"
 }
 
 const state: UpdaterState = {
@@ -19,6 +38,7 @@ const state: UpdaterState = {
   downloadedVersion: null,
   progress: 0,
   error: null,
+  channel: normalizeChannel(store.get("updateChannel")),
 }
 
 let interval: NodeJS.Timeout | null = null
@@ -27,8 +47,37 @@ function send(getMainWindow: () => BrowserWindow | null, channel: string, payloa
   getMainWindow()?.webContents.send(channel, payload)
 }
 
+function updaterChannel(channel: UpdateChannel): "latest" | "beta" | "alpha" {
+  if (channel === "beta") return "beta"
+  if (channel === "preview") return "alpha"
+  return "latest"
+}
+
+function applyChannel(channel: UpdateChannel): void {
+  state.channel = channel
+  store.set("updateChannel", channel)
+
+  // electron-builder channels: latest = Stable, beta = Beta, alpha = Preview.
+  autoUpdater.channel = updaterChannel(channel)
+  autoUpdater.allowPrerelease = channel !== "stable"
+  // Setting channel may enable downgrade internally. We explicitly keep it disabled:
+  // changing channel must never silently install an older build.
+  autoUpdater.allowDowngrade = false
+
+  state.availableVersion = null
+  state.downloadedVersion = null
+  state.progress = 0
+  state.error = null
+}
+
 function publicState() {
-  return { ...state, currentVersion: app.getVersion(), channel: "latest", provider: "github" }
+  return {
+    ...state,
+    currentVersion: app.getVersion(),
+    updateChannel: updaterChannel(state.channel),
+    provider: "github",
+    allowPrerelease: autoUpdater.allowPrerelease,
+  }
 }
 
 function hasPackagedUpdateConfig(): boolean {
@@ -37,18 +86,16 @@ function hasPackagedUpdateConfig(): boolean {
 }
 
 export function initAutoUpdater(getMainWindow: () => BrowserWindow | null): void {
-  // electron-builder creates resources/app-update.yml from build.publish.
-  // electron-updater reads it automatically; no GitHub token is shipped to users.
   state.configured = hasPackagedUpdateConfig()
 
   autoUpdater.autoDownload = false
   autoUpdater.autoInstallOnAppQuit = false
-  autoUpdater.allowDowngrade = false
-  autoUpdater.allowPrerelease = false
-  autoUpdater.channel = "latest"
+  applyChannel(normalizeChannel(store.get("updateChannel")))
 
   if (state.configured) {
-    console.log("[Zevyron Updater]: GitHub Releases configured from app-update.yml")
+    console.log(
+      `[Zevyron Updater]: GitHub Releases configured. Channel=${state.channel} (${updaterChannel(state.channel)})`
+    )
   } else {
     console.warn("[Zevyron Updater]: app-update.yml not found; updater disabled for this build")
   }
@@ -105,6 +152,15 @@ export function initAutoUpdater(getMainWindow: () => BrowserWindow | null): void
 
   ipcMain.handle("updater:get-version", () => app.getVersion())
   ipcMain.handle("updater:get-state", () => publicState())
+  ipcMain.handle("updater:get-channel", () => state.channel)
+
+  ipcMain.handle("updater:set-channel", async (_event, requested: unknown) => {
+    const channel = normalizeChannel(requested)
+    applyChannel(channel)
+    const nextState = publicState()
+    send(getMainWindow, "updater:channel-changed", nextState)
+    return { ok: true, state: nextState }
+  })
 
   ipcMain.handle("updater:check", async () => {
     if (!state.configured) {
@@ -142,7 +198,6 @@ export function initAutoUpdater(getMainWindow: () => BrowserWindow | null): void
 
   if (state.configured) {
     setTimeout(() => triggerAutoUpdateCheck(), 6000)
-    // Check every 6 hours. This avoids excessive requests while keeping updates timely.
     interval = setInterval(() => triggerAutoUpdateCheck(), 6 * 60 * 60_000)
   }
 
@@ -157,6 +212,6 @@ export async function triggerAutoUpdateCheck(): Promise<void> {
   try {
     await autoUpdater.checkForUpdates()
   } catch {
-    // The UI receives the detailed error through autoUpdater's error event.
+    // Detailed errors are emitted through autoUpdater's error event.
   }
 }

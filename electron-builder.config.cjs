@@ -13,6 +13,12 @@ const owner = process.env.ZEVYRON_GITHUB_OWNER || github.owner
 const repo = process.env.ZEVYRON_GITHUB_REPO || github.repo || "Zevyron"
 const hasGithub = Boolean(owner && repo && (github.configured || process.env.ZEVYRON_GITHUB_OWNER))
 const wantsPublish = process.argv.includes("--publish") && !process.argv.includes("never")
+const version = String(pkg.version || "")
+const updateChannel = version.includes("-alpha") || version.includes("-preview")
+  ? "alpha"
+  : version.includes("-beta")
+    ? "beta"
+    : "latest"
 
 if (wantsPublish && !hasGithub) {
   throw new Error("GitHub Releases ainda não foi configurado. Execute: pnpm github:configure <usuario> [repositorio]")
@@ -21,6 +27,6 @@ if (wantsPublish && !hasGithub) {
 module.exports = {
   ...pkg.build,
   publish: hasGithub
-    ? [{ provider: "github", owner, repo, releaseType: "release" }]
+    ? [{ provider: "github", owner, repo, channel: updateChannel, releaseType: updateChannel === "latest" ? "release" : "prerelease" }]
     : undefined,
 }

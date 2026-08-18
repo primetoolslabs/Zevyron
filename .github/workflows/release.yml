@@ -60,7 +60,7 @@ jobs:
           $assets = Get-ChildItem -Path dist -File | Where-Object {
             $_.Name -like "*.exe" -or
             $_.Name -like "*.zip" -or
-            $_.Name -eq "latest.yml" -or
+            $_.Name -like "*.yml" -or
             $_.Name -like "*.blockmap"
           }
 
@@ -78,7 +78,7 @@ jobs:
           $assets = Get-ChildItem -Path dist -File | Where-Object {
             $_.Name -like "*.exe" -or
             $_.Name -like "*.zip" -or
-            $_.Name -eq "latest.yml" -or
+            $_.Name -like "*.yml" -or
             $_.Name -like "*.blockmap"
           } | Select-Object -ExpandProperty FullName
 
@@ -94,11 +94,23 @@ jobs:
           }
           else {
             Write-Host "Criando novo Release..."
-            gh release create $tag @assets `
-              --repo "${{ github.repository }}" `
-              --title "Zevyron $tag" `
-              --generate-notes `
-              --verify-tag
+            $isPrerelease = $tag -match "-(beta|alpha|preview|rc)"
+            if ($isPrerelease) {
+              Write-Host "Publicando como Pre-release..."
+              gh release create $tag @assets `
+                --repo "${{ github.repository }}" `
+                --title "Zevyron $tag" `
+                --generate-notes `
+                --verify-tag `
+                --prerelease
+            }
+            else {
+              gh release create $tag @assets `
+                --repo "${{ github.repository }}" `
+                --title "Zevyron $tag" `
+                --generate-notes `
+                --verify-tag
+            }
           }
 
           if ($LASTEXITCODE -ne 0) {
