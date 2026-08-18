@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "productVersion": "3.0.0-beta.1",
+  "coreFlow": [
+    "analyze",
+    "explain",
+    "recommend",
+    "protect",
+    "execute",
+    "measure",
+    "undo"
+  ],
+  "truthfulMetricsOnly": true,
+  "localByDefault": true,
+  "automaticAdvancedTweaks": false,
+  "rollbackRequiresPreviousState": true
+}
