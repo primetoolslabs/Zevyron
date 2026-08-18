@@ -318,7 +318,7 @@ $result | ConvertTo-Json -Compress
   const result = await executePowerShell(null, { script, name: "safety-list-restore-points" })
   if (!result?.success) return []
 
-  const raw = String(result?.output ?? result?.stdout ?? "").trim()
+  const raw = String(result?.output ?? "").trim()
   if (!raw) return []
   try {
     const parsed = JSON.parse(raw)

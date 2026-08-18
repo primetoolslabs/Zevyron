@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.10 — Report Center + Profile Backup
+# Zevyron 3.0.0-beta.11 — Report Center + Profile Backup
 
 ## Report Center
 - Nova aba Relatórios.

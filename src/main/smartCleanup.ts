@@ -13,6 +13,27 @@ type CleanupDefinition = {
   clean: string
 }
 
+type CleanupAnalysisResult = {
+  id: string
+  title: string
+  description: string
+  risk: CleanupRisk
+  recommended: boolean
+  bytes: number
+  files: number
+  error?: string
+}
+
+type CleanupRunResult = {
+  id: string
+  title: string
+  risk: CleanupRisk
+  bytes: number
+  files: number
+  error?: string
+  success: boolean
+}
+
 const definitions: CleanupDefinition[] = [
   {
     id: "user-temp",
@@ -141,7 +162,7 @@ async function runJson(script: string, name: string): Promise<{ bytes: number; f
 }
 
 async function analyze() {
-  const results = []
+  const results: CleanupAnalysisResult[] = []
   for (const def of definitions) {
     const data = await runJson(def.analyze, `smart-clean-analyze-${def.id}`)
     results.push({
@@ -164,7 +185,7 @@ async function analyze() {
 async function clean(ids: unknown) {
   if (!Array.isArray(ids)) return { success: false, error: "Lista inválida." }
   const unique = [...new Set(ids.filter((id): id is string => typeof id === "string"))].slice(0, 20)
-  const results = []
+  const results: CleanupRunResult[] = []
   for (const id of unique) {
     const def = definitions.find((item) => item.id === id)
     if (!def) continue

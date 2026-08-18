@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.10 — Intelligent Core
+# Zevyron 3.0.0-beta.11 — Intelligent Core
 
 Foundation release based on 2.29.5 Stable.
 

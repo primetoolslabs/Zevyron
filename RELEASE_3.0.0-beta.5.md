@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.10 — Network Center + Hardware Monitor
+# Zevyron 3.0.0-beta.11 — Network Center + Hardware Monitor
 
 ## Network Center
 - Nova aba de diagnóstico de rede.

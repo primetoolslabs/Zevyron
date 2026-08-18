@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.10 — Safety Engine 2.0 + Recovery Center
+# Zevyron 3.0.0-beta.11 — Safety Engine 2.0 + Recovery Center
 
 ## Novo
 - Nova aba **Recuperação**.

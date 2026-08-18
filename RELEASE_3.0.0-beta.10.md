@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.10 — Stability & Release Audit
+# Zevyron 3.0.0-beta.11 — Stability & Release Audit
 
 This beta intentionally adds no large user-facing module.
 

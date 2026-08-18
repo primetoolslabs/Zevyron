@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.10 Stable
+# Zevyron 3.0.0-beta.11 Stable
 
 ## Nova aba Sobre o Zevyron
 
