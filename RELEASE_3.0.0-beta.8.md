@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.20 — Expert Mode + Repair + Accessibility
+# Zevyron 3.0.0-beta.21 — Expert Mode + Repair + Accessibility
 
 ## Expert Mode
 - Tweaks Avançados ficam ocultos por padrão.

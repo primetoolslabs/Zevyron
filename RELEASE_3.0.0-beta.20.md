@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.20 — Duplicate Defender Tweak Fix
+# Zevyron 3.0.0-beta.21 — Duplicate Defender Tweak Fix
 
 O diagnóstico da beta.19 identificou uma segunda cópia legada em:
 `scripts/tweaks/disable-defender-rtp/apply.ps1`

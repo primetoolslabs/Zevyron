@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.20 Stable
+# Zevyron 3.0.0-beta.21 Stable
 
 Correção do build da nova página **Sobre o Zevyron**.
 

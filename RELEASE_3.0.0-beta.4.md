@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.20 — Startup Manager + Smart Cleanup
+# Zevyron 3.0.0-beta.21 — Startup Manager + Smart Cleanup
 
 ## Startup Manager
 - Analisa entradas de inicialização em HKCU/HKLM e pastas Startup.

@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.20 — Safety Audit Fix
+# Zevyron 3.0.0-beta.21 — Safety Audit Fix
 
 Correção do bloqueio encontrado na Auditoria de Estabilidade.
 
