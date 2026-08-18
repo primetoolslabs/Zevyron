@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.11 Stable
+# Zevyron 3.0.0-beta.12 Stable
 
 Reorganização do Debloat Windows sem remover funcionalidades.
 

@@ -524,6 +524,7 @@ function Tweaks() {
 
   if (isLoading) {
     return (
+    <>
       <Modal open={Boolean(helpTweak)} onClose={() => setHelpTweak(null)}>
         {helpTweak && (
           <div className="bg-zevyron-card border border-zevyron-border rounded-2xl p-5 shadow-xl max-w-2xl w-[min(92vw,720px)] mx-4">
@@ -1074,6 +1075,7 @@ function Tweaks() {
           </div>
         </div>
       </RootDiv>
+    </>
     </>
   )
 }
