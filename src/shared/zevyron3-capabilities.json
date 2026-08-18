@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "productVersion": "3.0.0-beta.1",
+  "productVersion": "3.0.0-beta.2",
   "coreFlow": [
     "analyze",
     "explain",
@@ -13,5 +13,11 @@
   "truthfulMetricsOnly": true,
   "localByDefault": true,
   "automaticAdvancedTweaks": false,
-  "rollbackRequiresPreviousState": true
+  "rollbackRequiresPreviousState": true,
+  "modules": {
+    "pcHealth": "implemented-beta",
+    "diagnostics": "implemented-beta",
+    "explainedRecommendations": "implemented-beta",
+    "sessionRollback": "implemented-beta"
+  }
 }

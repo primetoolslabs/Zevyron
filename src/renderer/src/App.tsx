@@ -25,6 +25,7 @@ import Debloat from "./pages/Debloat"
 import NoAdmin from "./components/noAdmin"
 import GameMode from "./pages/GameMode"
 import About from "./pages/About"
+import Health from "./pages/Health"
 
 function App() {
   const [showBrandSplash, setShowBrandSplash] = useState(true)
@@ -189,6 +190,7 @@ function App() {
         >
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/health" element={<Health />} />
             <Route path="/game-mode" element={<GameMode />} />
             <Route path="/tweaks" element={<Tweaks />} />
             <Route path="/debloat" element={<Debloat />} />

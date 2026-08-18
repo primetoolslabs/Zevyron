@@ -14,6 +14,8 @@ import Store from "electron-store"
 import { is, getResourcePath } from "@main/utils"
 import { startDiscordRPC } from "@main/rpc"
 import { setupGameModeHandlers, startGameDetection, writeGameModeDiagnostic } from "@main/gameMode"
+import { setupPCHealthHandlers } from "@main/pcHealth"
+import { loadTweaks } from "@main/tweakHandler"
 
 console.log = log.log
 console.error = log.error
@@ -160,6 +162,7 @@ app
     setupBackupHandlers()
     setupDebloatHandlers()
     setupGameModeHandlers()
+    setupPCHealthHandlers(loadTweaks)
     startGameDetection()
     writeGameModeDiagnostic()
     if (store.get("rpcEnabled") !== false) {
