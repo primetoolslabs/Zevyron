@@ -129,7 +129,13 @@ ok(firstRun.includes("Nenhuma otimização será aplicada automaticamente"), "Fi
 
 const notifications = read("src/renderer/src/lib/notifications.ts")
 ok(notifications.includes("localStorage"), "Notification history is local")
-warn(!code.includes("posthog"), "No PostHog telemetry references detected")
+
+const packageText = read("package.json")
+const activePosthogUsage =
+  /from\s+["']posthog-js["']/i.test(code) ||
+  /require\(\s*["']posthog-js["']\s*\)/i.test(code) ||
+  /["']posthog-js["']\s*:/i.test(packageText)
+warn(!activePosthogUsage, "No active PostHog telemetry package/import detected")
 
 const updaterBuilder = read("electron-builder.config.cjs")
 ok(updaterBuilder.includes("channel: updateChannel"), "Builder uses explicit update channel")

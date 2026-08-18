@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.16 — Tweaks Syntax Fix
+# Zevyron 3.0.0-beta.17 — Tweaks Syntax Fix
 
 Correção dos erros TS1381 e TS1005 encontrados na beta.12.
 

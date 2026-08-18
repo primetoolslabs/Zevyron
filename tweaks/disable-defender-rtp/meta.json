@@ -6,9 +6,9 @@
     "Performance",
     "General"
   ],
-  "description": "This legacy tweak is hidden from the public UI because disabling Windows Defender real-time protection conflicts with Zevyron safety policy.",
-  "deepDescription": "This legacy tweak is hidden from the public UI because disabling Windows Defender real-time protection conflicts with Zevyron safety policy.",
+  "description": "Legacy tweak blocked by Zevyron Safety Policy. Windows Defender real-time protection will not be disabled.",
+  "deepDescription": "This legacy entry is retained only for compatibility/history. Zevyron blocks its execution because disabling Windows Defender real-time protection conflicts with the Safety Engine policy.",
   "hidden": true,
   "recommended": false,
-  "modal": "This legacy tweak is hidden from the public UI because disabling Windows Defender real-time protection conflicts with Zevyron safety policy."
+  "modal": "Blocked by Safety Engine policy. This tweak cannot disable Windows Defender."
 }

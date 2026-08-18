@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.16 — PC Health & Diagnostic Core
+# Zevyron 3.0.0-beta.17 — PC Health & Diagnostic Core
 
 Primeira implementação funcional do Intelligent Core.
 
