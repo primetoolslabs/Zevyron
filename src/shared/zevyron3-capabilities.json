@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "productVersion": "3.0.0-beta.15",
+  "productVersion": "3.0.0-beta.16",
   "coreFlow": [
     "analyze",
     "explain",

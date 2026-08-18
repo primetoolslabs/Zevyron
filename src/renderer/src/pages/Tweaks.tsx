@@ -588,7 +588,7 @@ function Tweaks() {
               </div>
             </div>
 
-            {helpTweak.safety?.reasons?.length > 0 && (
+            {(helpTweak.safety?.reasons?.length ?? 0) > 0 && (
               <div className="rounded-xl border border-zevyron-border p-3 mt-3">
                 <div className="text-[10px] uppercase text-zevyron-text-secondary">Por que recebeu esta classificação</div>
                 <ul className="text-xs text-zevyron-text-secondary mt-2 space-y-1 list-disc pl-4">
