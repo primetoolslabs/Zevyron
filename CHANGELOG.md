@@ -1,3 +1,10 @@
+## 2.30.0-beta.1 — Smart Optimization Beta
+
+- Smart Optimization Engine
+- Perfis automáticos
+- Antes × Depois
+- Central de Segurança
+
 # Changelog
 
 ## 2.28.0 — Auditoria de Confiabilidade

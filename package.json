@@ -1,7 +1,7 @@
 {
   "name": "zevyron",
-  "version": "2.29.4",
-  "description": "Zevyron - Advanced System Performance | Developed by PrimeTools Lab | Stable | Free and Open Source",
+  "version": "2.30.0-beta.1",
+  "description": "Zevyron - Smart Optimization Beta | Developed by PrimeTools Lab | Free and Open Source",
   "main": "./out/main/index.js",
   "author": "PrimeTools Lab",
   "scripts": {

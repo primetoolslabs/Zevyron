@@ -13,6 +13,8 @@ import {
   Settings,
   Info,
   Wrench,
+  Sparkles,
+  ShieldCheck,
   WifiOff,
 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
@@ -29,6 +31,8 @@ import { useI18n } from "@/i18n"
 const tabIcons = {
   home: <Home size={20} />,
   gameMode: <Gamepad2 size={20} />,
+  smart: <Sparkles size={20} />,
+  safety: <ShieldCheck size={20} />,
   tweaks: <Wrench size={20} />,
   clean: <Icon iconNode={broom} size={20} />,
   backup: <Folder size={20} />,
@@ -44,6 +48,8 @@ function Nav({ collapsed }) {
   const tabs = {
     home: { label: t("nav.dashboard"), path: "/" },
     gameMode: { label: t("nav.gameMode", "Game Mode"), path: "/game-mode" },
+    smart: { label: t("nav.smart", "Smart Optimization"), path: "/smart" },
+    safety: { label: t("nav.safety", "Central de Segurança"), path: "/safety" },
     tweaks: { label: t("nav.tweaks"), path: "/tweaks" },
     utilities: { label: t("nav.utilities"), path: "/utilities" },
     clean: { label: t("nav.cleaner"), path: "/clean" },
@@ -242,10 +248,10 @@ function Nav({ collapsed }) {
         <div className="mx-3 mb-3 p-3 rounded-xl border border-[#075c96] bg-[radial-gradient(circle_at_20%_0%,rgba(0,130,255,.16),transparent_55%),#071321] shadow-[0_0_18px_rgba(0,90,255,.08)]">
           <div className="flex items-center gap-2 text-[#14b8ff] font-semibold text-sm"><span className="text-2xl">ϟ</span>ZEVYRON BOOST</div>
           <p className="text-[10px] text-zevyron-text-secondary mt-1 mb-3">Prepare seu PC para o máximo desempenho</p>
-          <button onClick={() => navigate('/tweaks')} className="w-full py-2 rounded-lg border border-[#008cff] bg-[#006dff20] text-[#16b6ff] text-xs hover:bg-[#006dff33]">ϟ ANALISAR AGORA</button>
+          <button onClick={() => navigate('/smart')} className="w-full py-2 rounded-lg border border-[#008cff] bg-[#006dff20] text-[#16b6ff] text-xs hover:bg-[#006dff33]">ϟ ANALISAR AGORA</button>
         </div>
       )}
-      <p className="text-zevyron-primary text-center text-xs mb-2">v{info.version} · Stable</p>
+      <p className="text-zevyron-primary text-center text-xs mb-2">v{info.version} · Beta</p>
     </nav>
   )
 }
