@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.21 — i18n Required Keys Fix
+# Zevyron 3.0.0 — i18n Required Keys Fix
 
 Corrige as chaves obrigatórias ausentes encontradas pela Auditoria Multilíngue.
 

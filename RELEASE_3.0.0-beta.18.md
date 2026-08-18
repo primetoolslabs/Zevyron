@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.21 — Audit Self-Scan Fix
+# Zevyron 3.0.0 — Audit Self-Scan Fix
 
 Correção do falso positivo restante na Auditoria de Estabilidade.
 

@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.21 — Audit Diagnostics
+# Zevyron 3.0.0 — Audit Diagnostics
 
 ## Motivo
 A beta.18 passa na auditoria local, mas o GitHub continuou apresentando o mesmo bloqueio.
