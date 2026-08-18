@@ -1,4 +1,4 @@
-# Zevyron 2.30.0-beta.3 — Update Channels Fix
+# Zevyron 2.30.0-beta.4 — Update Channels Fix
 
 Correção completa dos canais de atualização.
 

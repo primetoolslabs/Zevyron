@@ -1,4 +1,4 @@
-## 2.30.0-beta.3 — Smart Optimization Beta
+## 2.30.0-beta.4 — Smart Optimization Beta
 
 - Smart Optimization Engine
 - Perfis automáticos
