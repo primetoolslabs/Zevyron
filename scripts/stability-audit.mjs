@@ -121,10 +121,58 @@ function walk(dir) {
 walk(root)
 
 const code = allCodeFiles.map((file) => fs.readFileSync(file, "utf8")).join("\n")
-ok(!/Invoke-Expression\s*\(\s*\(?\s*Invoke-WebRequest/mi.test(code), "No remote PowerShell pipe-to-execute pattern")
-ok(!/iex\s*\(\s*iwr/mi.test(code), "No abbreviated remote PowerShell execution pattern")
-ok(!/Set-MpPreference\s+-DisableRealtimeMonitoring\s+\$true/i.test(code), "No Defender realtime protection disable command")
-ok(!/Set-NetFirewallProfile.+-Enabled\s+False/i.test(code), "No blanket Windows Firewall disable command")
+
+function findPatternInFiles(pattern) {
+  const matches = []
+  for (const file of allCodeFiles) {
+    const content = fs.readFileSync(file, "utf8")
+    const lines = content.split(/\r?\n/)
+    lines.forEach((line, index) => {
+      if (pattern.test(line)) {
+        matches.push({
+          file: path.relative(root, file).replaceAll("\\", "/"),
+          line: index + 1,
+          text: line.trim().slice(0, 220),
+        })
+      }
+      pattern.lastIndex = 0
+    })
+  }
+  return matches
+}
+
+function safePatternCheck(pattern, message) {
+  const matches = findPatternInFiles(pattern)
+  if (matches.length === 0) {
+    ok(true, message)
+    return
+  }
+
+  console.error(`❌ ${message}`)
+  console.error("   Offending file(s):")
+  for (const match of matches) {
+    console.error(`   - ${match.file}:${match.line}`)
+    console.error(`     ${match.text}`)
+  }
+  failures.push(message)
+}
+
+safePatternCheck(
+  /Invoke-Expression\s*\(\s*\(?\s*Invoke-WebRequest/mi,
+  "No remote PowerShell pipe-to-execute pattern",
+)
+safePatternCheck(
+  /iex\s*\(\s*iwr/mi,
+  "No abbreviated remote PowerShell execution pattern",
+)
+safePatternCheck(
+  /Set-MpPreference\s+-DisableRealtimeMonitoring\s+\$true/i,
+  "No Defender realtime protection disable command",
+)
+safePatternCheck(
+  /Set-NetFirewallProfile.+-Enabled\s+False/i,
+  "No blanket Windows Firewall disable command",
+)
 
 const tweaksText = read("src/renderer/src/pages/Tweaks.tsx")
 ok(tweaksText.includes('tweak.safety?.level !== "advanced"'), "Advanced tweaks are gated by Expert Mode")

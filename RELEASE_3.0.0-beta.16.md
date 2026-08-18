@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.18 — Optional Safety Fix
+# Zevyron 3.0.0-beta.19 — Optional Safety Fix
 
 Correção pontual do erro TypeScript restante em `Tweaks.tsx`.
 

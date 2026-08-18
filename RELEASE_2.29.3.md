@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.18 Stable
+# Zevyron 3.0.0-beta.19 Stable
 
 Atualização visual sem alteração das funcionalidades.
 
