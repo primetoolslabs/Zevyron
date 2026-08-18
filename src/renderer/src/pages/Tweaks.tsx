@@ -562,7 +562,7 @@ function Tweaks() {
                       : "text-emerald-400"
                 }`}>
                   {helpTweak.safety
-                    ? `${helpTweak.safety.level === "advanced" ? "Avançado" : helpTweak.safety.level === "moderate" ? "Moderado" : "Seguro"} · ${helpTweak.safety.score}/100`
+                    ? `${helpTweak.safety?.level === "advanced" ? "Avançado" : helpTweak.safety?.level === "moderate" ? "Moderado" : "Seguro"} · ${helpTweak.safety.score}/100`
                     : helpTweak.risk === "risky" ? "Arriscado" : helpTweak.risk === "caution" ? "Cautela" : "Não classificado"}
                 </div>
               </div>
@@ -592,7 +592,7 @@ function Tweaks() {
               <div className="rounded-xl border border-zevyron-border p-3 mt-3">
                 <div className="text-[10px] uppercase text-zevyron-text-secondary">Por que recebeu esta classificação</div>
                 <ul className="text-xs text-zevyron-text-secondary mt-2 space-y-1 list-disc pl-4">
-                  {helpTweak.safety.reasons.map((reason, index) => (
+                  {helpTweak.safety?.reasons?.map((reason, index) => (
                     <li key={`${reason}-${index}`}>{tx(reason)}</li>
                   ))}
                 </ul>

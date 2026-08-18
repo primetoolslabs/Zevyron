@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.13 — Update Center 2.0 + History + Recovery
+# Zevyron 3.0.0-beta.14 — Update Center 2.0 + History + Recovery
 
 ## Update Center 2.0
 - Mantém Stable / Beta / Preview.
