@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.14 — First Run Wizard + Notifications + Integrated Help
+# Zevyron 3.0.0-beta.15 — First Run Wizard + Notifications + Integrated Help
 
 ## First Run Wizard
 - Substitui a antiga pergunta única por um assistente em quatro etapas.

@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.14 — TypeScript Build Fix
+# Zevyron 3.0.0-beta.15 — TypeScript Build Fix
 
 Correção dos erros encontrados no Windows Release da beta.10.
 

@@ -20,7 +20,7 @@ import {
   Settings,
   Info,
   Wrench,
-  WifiOff,,
+  WifiOff,
   Accessibility
 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
