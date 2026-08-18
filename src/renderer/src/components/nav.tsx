@@ -14,7 +14,6 @@ import {
   Info,
   Wrench,
   WifiOff,
-  Bubbles,
 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -31,7 +30,6 @@ const tabIcons = {
   home: <Home size={20} />,
   gameMode: <Gamepad2 size={20} />,
   tweaks: <Wrench size={20} />,
-  debloat: <Bubbles size={20} />,
   clean: <Icon iconNode={broom} size={20} />,
   backup: <Folder size={20} />,
   utilities: <Box size={20} />,
@@ -47,7 +45,6 @@ function Nav({ collapsed }) {
     home: { label: t("nav.dashboard"), path: "/" },
     gameMode: { label: t("nav.gameMode", "Game Mode"), path: "/game-mode" },
     tweaks: { label: t("nav.tweaks"), path: "/tweaks" },
-    debloat: { label: t("nav.debloat"), path: "/debloat" },
     utilities: { label: t("nav.utilities"), path: "/utilities" },
     clean: { label: t("nav.cleaner"), path: "/clean" },
     backup: { label: t("nav.restore"), path: "/backup" },

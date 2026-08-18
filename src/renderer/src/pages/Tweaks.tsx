@@ -36,9 +36,11 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Tweak } from "@/types/index"
 import { useI18n } from "@/i18n"
+import { useNavigate } from "react-router-dom"
 
 function Tweaks() {
   const { language, tx } = useI18n()
+  const navigate = useNavigate()
   const [tweaks, setTweaks] = useState<Tweak[]>([])
   const [toggleStates, setToggleStates] = useState({})
   const [isLoading, setIsLoading] = useState(true)
@@ -529,8 +531,7 @@ function Tweaks() {
           <div className="text-zevyron-text-secondary text-sm leading-6 whitespace-pre-wrap max-h-64 overflow-y-auto custom-scrollbar mb-6">
             Select the tweaks you want to apply. Advanced items are not selected automatically by the Safety Engine:
             <p className="text-xs text-orange-500 ">
-              Debloating windows is highly recommended. you can do it after you apply the recomended
-              tweaks. its not here because it has a UI
+              O Debloat Windows está disponível nesta mesma tela de Otimizações. Após aplicar os ajustes recomendados, abra o card Debloat Windows para revisar e remover os aplicativos desejados.
             </p>
             <ul className="mt-3 space-y-3">
               {recommendedTweaksToApply.map((tweak) => (
@@ -868,42 +869,57 @@ function Tweaks() {
                           <ExternalLink className="w-3 h-3" /> Docs
                         </Button>
 
-                        {(() => {
-                          const compatibility = isTweakCompatible(tweak)
-                          return (
-                            <>
-                              {!compatibility.compatible && (
-                                <Tooltip content={compatibility.reason} delay={0.3} side="right">
-                                  <div className="p-1.5 bg-orange-500/50 rounded-lg hover:bg-orange-500/80 transition-colors">
-                                    <Monitor className="w-4 h-4 text-orange-300" />
-                                  </div>
-                                </Tooltip>
-                              )}
-                              {tweak.reversible == null || tweak.reversible == true ? (
-                                <Tooltip
-                                  content={!compatibility.compatible ? compatibility.reason : null}
-                                >
-                                  <Toggle
-                                    checked={toggleStates[tweak.name] || false}
-                                    onChange={() => handleToggle(originalIndex)}
-                                    disabled={!compatibility.compatible}
-                                  />
-                                </Tooltip>
-                              ) : (
-                                <Tooltip
-                                  content={!compatibility.compatible ? compatibility.reason : null}
-                                >
-                                  <Button
-                                    onClick={() => handleButtonClick(originalIndex)}
-                                    disabled={!compatibility.compatible}
+                        {tweak.name === "debloat-windows" ? (
+                          <Button
+                            variant="primary"
+                            className="px-3! py-1.5! text-xs flex items-center gap-1"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              navigate("/debloat")
+                            }}
+                          >
+                            <Wrench className="w-3.5 h-3.5" />
+                            Debloat Windows
+                          </Button>
+                        ) : (
+                          (() => {
+                            const compatibility = isTweakCompatible(tweak)
+                            return (
+                              <>
+                                {!compatibility.compatible && (
+                                  <Tooltip content={compatibility.reason} delay={0.3} side="right">
+                                    <div className="p-1.5 bg-orange-500/50 rounded-lg hover:bg-orange-500/80 transition-colors">
+                                      <Monitor className="w-4 h-4 text-orange-300" />
+                                    </div>
+                                  </Tooltip>
+                                )}
+                                {tweak.reversible == null || tweak.reversible == true ? (
+                                  <Tooltip
+                                    content={!compatibility.compatible ? compatibility.reason : null}
                                   >
-                                    Apply
-                                  </Button>
-                                </Tooltip>
-                              )}
-                            </>
-                          )
-                        })()}
+                                    <Toggle
+                                      checked={toggleStates[tweak.name] || false}
+                                      onChange={() => handleToggle(originalIndex)}
+                                      disabled={!compatibility.compatible}
+                                    />
+                                  </Tooltip>
+                                ) : (
+                                  <Tooltip
+                                    content={!compatibility.compatible ? compatibility.reason : null}
+                                  >
+                                    <Button
+                                      onClick={() => handleButtonClick(originalIndex)}
+                                      disabled={!compatibility.compatible}
+                                    >
+                                      Apply
+                                    </Button>
+                                  </Tooltip>
+                                )}
+                              </>
+                            )
+                          })()
+                        )}
                       </div>
                     </div>
                     <div className="flex items-start mb-3">
