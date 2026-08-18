@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.19 — TypeScript Fix
+# Zevyron 3.0.0-beta.20 — TypeScript Fix
 
 Correções direcionadas às anotações do Windows Release da beta.13.
 

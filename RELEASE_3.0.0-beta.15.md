@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.19 — Nav Syntax Fix
+# Zevyron 3.0.0-beta.20 — Nav Syntax Fix
 
 Correção pontual do erro `Identifier expected` em `nav.tsx`.
 
