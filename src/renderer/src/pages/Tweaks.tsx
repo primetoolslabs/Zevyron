@@ -617,6 +617,7 @@ function Tweaks() {
           <div className="text-slate-400">Loading tweaks...</div>
         </div>
       </RootDiv>
+    </>
     )
   }
 
@@ -1075,7 +1076,6 @@ function Tweaks() {
           </div>
         </div>
       </RootDiv>
-    </>
     </>
   )
 }
