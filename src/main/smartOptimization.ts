@@ -3,6 +3,8 @@ import si from "systeminformation"
 import fs from "fs/promises"
 import path from "path"
 import { app } from "electron"
+import { execFile } from "node:child_process"
+import { promisify } from "node:util"
 import { loadTweaks } from "@main/tweakHandler"
 
 export type SmartProfile = "daily" | "gaming" | "low-end" | "laptop" | "performance"
@@ -29,6 +31,30 @@ type Snapshot = {
 
 const statePath = path.join(app.getPath("userData"), "smart-optimization.json")
 
+const execFileAsync = promisify(execFile)
+
+async function getStartupAppsCount(): Promise<number> {
+  if (process.platform !== "win32") return 0
+  try {
+    const { stdout } = await execFileAsync(
+      "powershell.exe",
+      [
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "(Get-CimInstance Win32_StartupCommand -ErrorAction SilentlyContinue | Measure-Object).Count",
+      ],
+      { windowsHide: true, timeout: 8000 }
+    )
+    const count = Number(String(stdout).trim())
+    return Number.isFinite(count) && count >= 0 ? Math.round(count) : 0
+  } catch {
+    return 0
+  }
+}
+
 async function readActiveTweaks(): Promise<Set<string>> {
   try {
     const raw = await fs.readFile(path.join(app.getPath("userData"), "tweakStates.json"), "utf8")
@@ -45,7 +71,7 @@ async function captureSnapshot(): Promise<Snapshot> {
     si.mem().catch(() => null),
     si.fsSize().catch(() => []),
     si.processes().catch(() => null),
-    si.startupApps().catch(() => []),
+    getStartupAppsCount(),
     si.graphics().catch(() => null),
     si.cpuTemperature().catch(() => null),
     si.battery().catch(() => null),
@@ -72,7 +98,7 @@ async function captureSnapshot(): Promise<Snapshot> {
     diskTotal,
     diskPercent: diskTotal > 0 ? Math.round((diskUsed / diskTotal) * 100) : 0,
     processes: Number(processes?.all || 0),
-    startupApps: Array.isArray(startup) ? startup.length : 0,
+    startupApps: Number(startup || 0),
     cpuTemp: Number(temperatures?.main) > 0 ? Math.round(Number(temperatures?.main)) : null,
     gpuLoad: gpuLoads.length ? Math.round(Math.max(...gpuLoads)) : null,
     gpuTemp: gpuTemps.length ? Math.round(Math.max(...gpuTemps)) : null,

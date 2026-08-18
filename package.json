@@ -1,6 +1,6 @@
 {
   "name": "zevyron",
-  "version": "2.30.0-beta.1",
+  "version": "2.30.0-beta.2",
   "description": "Zevyron - Smart Optimization Beta | Developed by PrimeTools Lab | Free and Open Source",
   "main": "./out/main/index.js",
   "author": "PrimeTools Lab",
