@@ -9,7 +9,7 @@ import {
   Network,
   Zap,
   Paintbrush,
-  ExternalLink,
+  CircleHelp,
   ShieldCheck,
   LockKeyhole,
   History,
@@ -49,6 +49,7 @@ function Tweaks() {
   const [modalContent, setModalContent] = useState<string | boolean | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedTweak, setSelectedTweak] = useState<Tweak | null>(null)
+  const [helpTweak, setHelpTweak] = useState<Tweak | null>(null)
   const [isRecommendedModalOpen, setIsRecommendedModalOpen] = useState(false)
   const [recommendedTweaksToApply, setRecommendedTweaksToApply] = useState<Tweak[]>([])
   const [selectedRecommendedTweaks, setSelectedRecommendedTweaks] = useState<Set<string>>(new Set())
@@ -56,6 +57,7 @@ function Tweaks() {
   const [isAltHeld, setIsAltHeld] = useState(false)
   const [safetyAudit, setSafetyAudit] = useState<any>(null)
   const [safetyHistory, setSafetyHistory] = useState<any[]>([])
+  const [expertMode, setExpertMode] = useState(localStorage.getItem("zevyron:expertMode") === "true")
 
   const { setNeedsRestart } = useRestartStore()
   const systemInfo = useSystemStore((state) => state.systemInfo)
@@ -84,6 +86,12 @@ function Tweaks() {
     loadTweaks()
     loadToggleStates()
     loadSafetyAudit()
+  }, [])
+
+  useEffect(() => {
+    const syncExpertMode = () => setExpertMode(localStorage.getItem("zevyron:expertMode") === "true")
+    window.addEventListener("zevyron:expert-mode-changed", syncExpertMode)
+    return () => window.removeEventListener("zevyron:expert-mode-changed", syncExpertMode)
   }, [])
 
   useEffect(() => {
@@ -470,9 +478,10 @@ function Tweaks() {
         (Array.isArray(tweak.category) && tweak.category.includes(activeCategory)) ||
         tweak.category === activeCategory
 
-      return matchesSearch && matchesCategory
+      const visibleForMode = expertMode || tweak.safety?.level !== "advanced"
+      return matchesSearch && matchesCategory && visibleForMode
     })
-  }, [tweaks, searchTerm, activeCategory])
+  }, [tweaks, searchTerm, activeCategory, expertMode])
 
   // sort this so recommended tweaks are at the top
   const sortedTweaks = useMemo(() => {
@@ -515,6 +524,93 @@ function Tweaks() {
 
   if (isLoading) {
     return (
+      <Modal open={Boolean(helpTweak)} onClose={() => setHelpTweak(null)}>
+        {helpTweak && (
+          <div className="bg-zevyron-card border border-zevyron-border rounded-2xl p-5 shadow-xl max-w-2xl w-[min(92vw,720px)] mx-4">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-xl bg-[#159cff]/10 border border-[#159cff]/20">
+                <CircleHelp className="w-5 h-5 text-[#20b8ff]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs uppercase tracking-[.14em] text-[#20b8ff]">Ajuda integrada</div>
+                <h3 className="text-xl font-semibold text-zevyron-text mt-1">{helpTweak.title}</h3>
+                <p className="text-sm text-zevyron-text-secondary mt-1">{helpTweak.description}</p>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-3 mt-5 text-sm">
+              <div className="rounded-xl border border-zevyron-border p-3">
+                <div className="text-[10px] uppercase text-zevyron-text-secondary">O que faz</div>
+                <div className="text-xs mt-1 text-zevyron-text">
+                  {helpTweak.deepDescription || helpTweak.modalDescription || helpTweak.description}
+                </div>
+              </div>
+              <div className="rounded-xl border border-zevyron-border p-3">
+                <div className="text-[10px] uppercase text-zevyron-text-secondary">Categoria</div>
+                <div className="text-xs mt-1 text-zevyron-text">
+                  {(Array.isArray(helpTweak.category) ? helpTweak.category : [helpTweak.category]).join(" · ")}
+                </div>
+              </div>
+              <div className="rounded-xl border border-zevyron-border p-3">
+                <div className="text-[10px] uppercase text-zevyron-text-secondary">Risco / Safety Engine</div>
+                <div className={`text-xs mt-1 ${
+                  helpTweak.safety?.level === "advanced"
+                    ? "text-red-400"
+                    : helpTweak.safety?.level === "moderate"
+                      ? "text-amber-400"
+                      : "text-emerald-400"
+                }`}>
+                  {helpTweak.safety
+                    ? `${helpTweak.safety.level === "advanced" ? "Avançado" : helpTweak.safety.level === "moderate" ? "Moderado" : "Seguro"} · ${helpTweak.safety.score}/100`
+                    : helpTweak.risk === "risky" ? "Arriscado" : helpTweak.risk === "caution" ? "Cautela" : "Não classificado"}
+                </div>
+              </div>
+              <div className="rounded-xl border border-zevyron-border p-3">
+                <div className="text-[10px] uppercase text-zevyron-text-secondary">Reversão</div>
+                <div className="text-xs mt-1">
+                  {helpTweak.reversible === false || helpTweak.safety?.reversible === false
+                    ? "Sem reversão automática conhecida"
+                    : "Pode ser desfeito pelo Zevyron quando o mecanismo de reversão estiver disponível"}
+                </div>
+              </div>
+              <div className="rounded-xl border border-zevyron-border p-3">
+                <div className="text-[10px] uppercase text-zevyron-text-secondary">Reinicialização</div>
+                <div className="text-xs mt-1">{helpTweak.restart ? "Pode exigir reinicialização" : "Normalmente não exige reinicialização"}</div>
+              </div>
+              <div className="rounded-xl border border-zevyron-border p-3">
+                <div className="text-[10px] uppercase text-zevyron-text-secondary">Compatibilidade</div>
+                <div className="text-xs mt-1">
+                  {isTweakCompatible(helpTweak).compatible
+                    ? "Compatível com o hardware detectado"
+                    : isTweakCompatible(helpTweak).reason || "Não recomendado para este hardware"}
+                </div>
+              </div>
+            </div>
+
+            {helpTweak.safety?.reasons?.length > 0 && (
+              <div className="rounded-xl border border-zevyron-border p-3 mt-3">
+                <div className="text-[10px] uppercase text-zevyron-text-secondary">Por que recebeu esta classificação</div>
+                <ul className="text-xs text-zevyron-text-secondary mt-2 space-y-1 list-disc pl-4">
+                  {helpTweak.safety.reasons.map((reason, index) => (
+                    <li key={`${reason}-${index}`}>{tx(reason)}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {helpTweak.warning && (
+              <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 mt-3">
+                <div className="text-xs text-amber-400 font-medium">Atenção</div>
+                <div className="text-xs text-zevyron-text-secondary mt-1">{helpTweak.warning}</div>
+              </div>
+            )}
+
+            <div className="flex justify-end mt-5">
+              <Button onClick={() => setHelpTweak(null)}>Fechar</Button>
+            </div>
+          </div>
+        )}
+      </Modal>
       <RootDiv>
         <div className="flex items-center justify-center h-64">
           <div className="text-slate-400">Loading tweaks...</div>
@@ -859,14 +955,14 @@ function Tweaks() {
                         <Button
                           variant="secondary"
                           className="px-2! py-1! text-xs flex items-center gap-1"
-                          title="Zevyron Docs"
+                          title="Ajuda sobre esta otimização"
                           onClick={(e) => {
                             e.preventDefault()
                             e.stopPropagation()
-                            toast.info("Zevyron documentation will be available here soon.")
+                            setHelpTweak(tweak)
                           }}
                         >
-                          <ExternalLink className="w-3 h-3" /> Docs
+                          <CircleHelp className="w-3 h-3" /> Ajuda
                         </Button>
 
                         {tweak.name === "debloat-windows" ? (

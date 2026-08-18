@@ -3,6 +3,7 @@ import { autoUpdater, UpdateInfo } from "electron-updater"
 import Store from "electron-store"
 import { existsSync } from "node:fs"
 import { join } from "node:path"
+import { recordUpdateHistory } from "@main/updateHistory"
 
 export type UpdateChannel = "stable" | "beta" | "preview"
 
@@ -107,6 +108,7 @@ export function initAutoUpdater(getMainWindow: () => BrowserWindow | null): void
   })
 
   autoUpdater.on("update-available", (info: UpdateInfo) => {
+    void recordUpdateHistory({ status: "detected", targetVersion: info.version, channel: state.channel, releaseName: String(info.releaseName || ""), releaseNotes: info.releaseNotes })
     state.checking = false
     state.availableVersion = info.version
     state.downloadedVersion = null
@@ -120,6 +122,7 @@ export function initAutoUpdater(getMainWindow: () => BrowserWindow | null): void
   })
 
   autoUpdater.on("update-not-available", () => {
+    void recordUpdateHistory({ status: "not-available", targetVersion: null, channel: state.channel, message: "No update available." })
     state.checking = false
     state.availableVersion = null
     state.downloadedVersion = null
@@ -128,6 +131,7 @@ export function initAutoUpdater(getMainWindow: () => BrowserWindow | null): void
   })
 
   autoUpdater.on("error", (err: Error) => {
+    void recordUpdateHistory({ status: "error", targetVersion: state.availableVersion, channel: state.channel, message: err.message || String(err) })
     state.checking = false
     state.error = err.message || String(err)
     send(getMainWindow, "updater:error", { ...publicState(), message: state.error })
@@ -145,6 +149,7 @@ export function initAutoUpdater(getMainWindow: () => BrowserWindow | null): void
   })
 
   autoUpdater.on("update-downloaded", (info: UpdateInfo) => {
+    void recordUpdateHistory({ status: "downloaded", targetVersion: info.version, channel: state.channel, releaseName: String(info.releaseName || ""), releaseNotes: info.releaseNotes })
     state.progress = 100
     state.downloadedVersion = info.version
     send(getMainWindow, "updater:downloaded", { ...publicState(), version: info.version })
@@ -179,6 +184,7 @@ export function initAutoUpdater(getMainWindow: () => BrowserWindow | null): void
   ipcMain.handle("updater:download", async () => {
     if (!state.configured) return { ok: false, code: "NOT_CONFIGURED" }
     try {
+      void recordUpdateHistory({ status: "download-started", targetVersion: state.availableVersion, channel: state.channel })
       await autoUpdater.downloadUpdate()
       return { ok: true }
     } catch (error: any) {
@@ -189,6 +195,7 @@ export function initAutoUpdater(getMainWindow: () => BrowserWindow | null): void
   ipcMain.handle("updater:install", () => {
     if (!state.downloadedVersion) return { ok: false, code: "NOT_DOWNLOADED" }
     try {
+      void recordUpdateHistory({ status: "install-requested", targetVersion: state.downloadedVersion, channel: state.channel })
       setImmediate(() => autoUpdater.quitAndInstall(false, true))
       return { ok: true }
     } catch (error: any) {

@@ -1,429 +1,178 @@
-import Button from "@/components/ui/button"
-import Toggle from "@/components/ui/Toggle"
-import { useState, useEffect } from "react"
-import { invoke } from "@/lib/electron"
-import RootDiv from "@/components/rootdiv"
-import {
-  Icon,
-  FileX,
-  Gauge,
-  Trash2,
-  Download,
-  Image,
-  Bug,
-  LoaderCircle,
-} from "lucide-react"
-import { broom } from "@lucide/lab"
+import { useEffect, useMemo, useState } from "react"
+import { AlertTriangle, CheckCircle2, RefreshCw, Sparkles, Trash2 } from "lucide-react"
 import { toast } from "react-toastify"
-import log from "electron-log/renderer"
-import Card from "@/components/ui/Card"
+import RootDiv from "@/components/rootdiv"
+import Button from "@/components/ui/button"
+import { invoke } from "@/lib/electron"
 
-const cleanups = [
-  {
-    id: "temp",
-    label: "Clean Temporary Files",
-    path: "C:\\Windows\\Temp",
-    description: "Remove system and user temporary files.",
-    icon: <FileX className="w-5 h-5" />,
-    script: `
-      $systemTemp = "$env:SystemRoot\\Temp"
-      $userTemp = [System.IO.Path]::GetTempPath()
-      $foldersToClean = @($systemTemp, $userTemp)
-      $totalSizeBefore = 0
-      
-      foreach ($folder in $foldersToClean) {
-          if (Test-Path $folder) {
-              $folderSize = (Get-ChildItem -Path $folder -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-              $totalSizeBefore += if ($folderSize) { $folderSize } else { 0 }
-              Get-ChildItem -Path $folder -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-          }
-      }
-      
-      Write-Output $totalSizeBefore
-    `,
-    sizeScript: `
-      $systemTemp = "$env:SystemRoot\\Temp"
-      $userTemp = [System.IO.Path]::GetTempPath()
-      $foldersToClean = @($systemTemp, $userTemp)
-      $totalSize = 0
-      foreach ($folder in $foldersToClean) {
-          if (Test-Path $folder) {
-              $folderSize = (Get-ChildItem -Path $folder -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-              $totalSize += if ($folderSize) { $folderSize } else { 0 }
-          }
-      }
-      Write-Output $totalSize
-    `,
-  },
-  {
-    id: "prefetch",
-    label: "Clean Prefetch Files",
-    path: "C:\\Windows\\Prefetch",
-    description: "Delete files from the Windows Prefetch folder.",
-    icon: <Gauge className="w-5 h-5" />,
-    script: `
-      $prefetch = "$env:SystemRoot\\Prefetch"
-      $totalSizeBefore = 0
-      if (Test-Path $prefetch) {
-          $totalSizeBefore = (Get-ChildItem -Path "$prefetch\\*" -Force -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-          Remove-Item "$prefetch\\*" -Force -Recurse -ErrorAction SilentlyContinue
-      }
-      Write-Output $totalSizeBefore
-    `,
-    sizeScript: `
-      $prefetch = "$env:SystemRoot\\Prefetch"
-      $totalSize = 0
-      if (Test-Path $prefetch) {
-          $totalSize = (Get-ChildItem -Path "$prefetch\\*" -Force -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-      }
-      Write-Output $totalSize
-    `,
-  },
-  {
-    id: "recyclebin",
-    label: "Empty Recycle Bin",
-    path: "Recycle Bin",
-    description: "Permanently remove files from the Recycle Bin.",
-    icon: <Trash2 className="w-5 h-5" />,
-    script: `
-      $recycleBinSize = 0
-      $shell = New-Object -ComObject Shell.Application
-      $recycleBin = $shell.Namespace(0xA)
-      $recycleBinSize = ($recycleBin.Items() | Measure-Object -Property Size -Sum).Sum
-      if ($null -eq $recycleBinSize) { $recycleBinSize = 0 }
-      Clear-RecycleBin -Force -ErrorAction SilentlyContinue
-      Write-Output $recycleBinSize
-    `,
-    sizeScript: `
-      $recycleBinSize = 0
-      $shell = New-Object -ComObject Shell.Application
-      $recycleBin = $shell.Namespace(0xA)
-      $recycleBinSize = ($recycleBin.Items() | Measure-Object -Property Size -Sum).Sum
-      if ($null -eq $recycleBinSize) { $recycleBinSize = 0 }
-      Write-Output $recycleBinSize
-    `,
-  },
-  {
-    id: "windows-update",
-    label: "Clean Windows Update Cache",
-    path: "C:\\Windows\\SoftwareDistribution\\Download",
-    description: "Remove Windows Update downloaded installation files.",
-    icon: <Download className="w-5 h-5" />,
-    script: `
-      $windowsUpdateDownload = "$env:SystemRoot\\SoftwareDistribution\\Download"
-      $totalSizeBefore = 0
-      if (Test-Path $windowsUpdateDownload) {
-          $totalSizeBefore = (Get-ChildItem -Path "$windowsUpdateDownload\\*" -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-          Remove-Item "$windowsUpdateDownload\\*" -Force -Recurse -ErrorAction SilentlyContinue
-      }
-      Write-Output $totalSizeBefore
-    `,
-    sizeScript: `
-      $windowsUpdateDownload = "$env:SystemRoot\\SoftwareDistribution\\Download"
-      $totalSize = 0
-      if (Test-Path $windowsUpdateDownload) {
-          $totalSize = (Get-ChildItem -Path "$windowsUpdateDownload\\*" -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-      }
-      Write-Output $totalSize
-    `,
-  },
-  {
-    id: "thumbnails",
-    label: "Clear Thumbnail Cache",
-    path: "C:\\Users\\<User>\\AppData\\Local\\Microsoft\\Windows\\Explorer",
-    description: "Remove cached thumbnail images used by File Explorer.",
-    icon: <Image className="w-5 h-5" />,
-    script: `
-      $thumbCache = "$env:LOCALAPPDATA\\Microsoft\\Windows\\Explorer"
-      $totalSizeBefore = 0
-      $thumbFiles = Get-ChildItem "$thumbCache\\thumbcache_*.db" -ErrorAction SilentlyContinue
-      if ($thumbFiles) {
-          $totalSizeBefore = ($thumbFiles | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-          Remove-Item "$thumbCache\\thumbcache_*.db" -Force -ErrorAction SilentlyContinue
-      }
-      Write-Output $totalSizeBefore
-    `,
-    sizeScript: `
-      $thumbCache = "$env:LOCALAPPDATA\\Microsoft\\Windows\\Explorer"
-      $totalSize = 0
-      $thumbFiles = Get-ChildItem "$thumbCache\\thumbcache_*.db" -ErrorAction SilentlyContinue
-      if ($thumbFiles) {
-          $totalSize = ($thumbFiles | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-      }
-      Write-Output $totalSize
-    `,
-  },
-  {
-    id: "errorreports",
-    label: "Clear Error Reports",
-    path: "C:\\Users\\<User>\\AppData\\Local\\CrashDumps",
-    description: "Remove error report and crash dump files.",
-    icon: <Bug className="w-5 h-5" />,
-    script: `
-      $crashDumps = "$env:LOCALAPPDATA\\CrashDumps"
-      $totalSizeBefore = 0
-      if (Test-Path $crashDumps) {
-          $totalSizeBefore = (Get-ChildItem -Path "$crashDumps\\*" -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-          Remove-Item "$crashDumps\\*" -Force -Recurse -ErrorAction SilentlyContinue
-      }
-      Write-Output $totalSizeBefore
-    `,
-    sizeScript: `
-      $crashDumps = "$env:LOCALAPPDATA\\CrashDumps"
-      $totalSize = 0
-      if (Test-Path $crashDumps) {
-          $totalSize = (Get-ChildItem -Path "$crashDumps\\*" -Recurse -Force -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-      }
-      Write-Output $totalSize
-    `,
-  },
-]
+type CleanupItem = {
+  id: string
+  title: string
+  description: string
+  risk: "safe" | "moderate"
+  recommended: boolean
+  bytes: number
+  files: number
+  error?: string
+}
 
-function Clean() {
-  const [selected, setSelected] = useState<string[]>([])
-  const [loadingQueue, setLoadingQueue] = useState<string[]>([])
-  const [lastClean, setLastClean] = useState(
-    localStorage.getItem("last-clean") || "Not cleaned yet.",
-  )
-  const [isCleaning, setIsCleaning] = useState(false)
-  const [cleanupResults, setCleanupResults] = useState({})
-  const [currentSizes, setCurrentSizes] = useState<Record<string, number>>({})
-  const [loadingSizes, setLoadingSizes] = useState(false)
+function formatBytes(bytes: number) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return "0 B"
+  const units = ["B", "KB", "MB", "GB", "TB"]
+  const index = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)))
+  return `${(bytes / 1024 ** index).toFixed(index >= 3 ? 2 : 1)} ${units[index]}`
+}
 
-  const toggleCleanup = (id: string) => {
-    setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+export default function Clean() {
+  const [items, setItems] = useState<CleanupItem[]>([])
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [busy, setBusy] = useState(false)
+  const [lastFreed, setLastFreed] = useState<number | null>(null)
+
+  const analyze = async () => {
+    setBusy(true)
+    try {
+      const result = await invoke({ channel: "smart-clean:analyze" })
+      const next = Array.isArray(result?.items) ? result.items : []
+      setItems(next)
+      setSelected(new Set(next.filter((item: CleanupItem) => item.recommended).map((item: CleanupItem) => item.id)))
+    } catch (error: any) {
+      toast.error(error?.message || "Não foi possível analisar os arquivos temporários.")
+    } finally {
+      setBusy(false)
+    }
   }
 
-  const formatBytes = (bytes) => {
-    if (bytes === 0 || !bytes) return "0 B"
-    const sizes = ["B", "KB", "MB", "GB", "TB"]
-    const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`
-  }
+  useEffect(() => { void analyze() }, [])
 
-  async function fetchSizes(silent = false) {
-    if (!silent) setLoadingSizes(true)
-
-    await Promise.all(
-      cleanups
-        .filter((cleanup) => cleanup.sizeScript)
-        .map(async (cleanup) => {
-          try {
-            const result = await invoke({
-              channel: "run-powershell",
-              payload: { script: cleanup.sizeScript, name: `size-${cleanup.id}` },
-            })
-            const resultStr = result?.output || "0"
-            setCurrentSizes((prev) => ({
-              ...prev,
-              [cleanup.id]: parseInt(resultStr.trim(), 10) || 0,
-            }))
-          } catch (err) {
-            log.error(`Failed to fetch size for ${cleanup.id}: ${err}`)
-            setCurrentSizes((prev) => ({ ...prev, [cleanup.id]: 0 }))
-          }
-        }),
-    )
-
-    if (!silent) setLoadingSizes(false)
-  }
-
-  useEffect(() => {
-    fetchSizes()
-  }, [])
-
-  const totalSize = Object.values(currentSizes).reduce((sum, size) => sum + (size || 0), 0)
-  const totalFreed = Object.values(cleanupResults as Record<string, number>).reduce(
-    (sum: number, size) => sum + (size || 0),
-    0,
+  const selectedBytes = useMemo(
+    () => items.filter((item) => selected.has(item.id)).reduce((sum, item) => sum + item.bytes, 0),
+    [items, selected],
   )
 
-  async function runSelectedCleanups() {
-    toast.dismiss()
-    setIsCleaning(true)
-    setLoadingQueue([])
-    setCleanupResults({})
-    let anySuccess = false
-    let newResults = {}
-
-    for (const cleanup of cleanups) {
-      if (!selected.includes(cleanup.id)) continue
-      setLoadingQueue((q) => [...q, cleanup.id])
-      const toastId = toast.loading(`Running ${cleanup.label}...`)
-      try {
-        const result = await invoke({
-          channel: "run-powershell",
-          payload: { script: cleanup.script, name: `cleanup-${cleanup.id}` },
-        })
-
-        const resultStr = result?.output || "0"
-        const freedSpace = parseInt(resultStr.trim(), 10) || 0
-        newResults[cleanup.id] = freedSpace
-
-        toast.update(toastId, {
-          render: `${cleanup.label} completed! ${formatBytes(freedSpace)} cleared.`,
-          type: "success",
-          isLoading: false,
-          autoClose: 3000,
-        })
-        anySuccess = true
-      } catch (err: any) {
-        toast.update(toastId, {
-          render: `Failed: ${err.message || err}`,
-          type: "error",
-          isLoading: false,
-          autoClose: 4000,
-        })
-        log.error(`Failed to run ${cleanup.id} cleanup: ${err.message || err}`)
-      }
+  const run = async () => {
+    if (!selected.size) return
+    const moderate = items.filter((item) => selected.has(item.id) && item.risk === "moderate")
+    if (moderate.length) {
+      const confirmed = window.confirm(
+        `Você selecionou ${moderate.length} categoria(s) moderada(s): ${moderate.map((i) => i.title).join(", ")}. Continuar?`
+      )
+      if (!confirmed) return
     }
-
-    if (anySuccess) {
-      const now = new Date().toLocaleString()
-      setLastClean(now)
-      localStorage.setItem("last-clean", now)
-      setCleanupResults(newResults)
-      fetchSizes(true)
+    setBusy(true)
+    try {
+      const result = await invoke({ channel: "smart-clean:run", payload: [...selected] })
+      setLastFreed(Number(result?.bytesFreed || 0))
+      if (result?.failed) toast.warning("A limpeza foi concluída parcialmente.")
+      else toast.success(`${formatBytes(Number(result?.bytesFreed || 0))} processados pela limpeza.`)
+      await analyze()
+    } catch (error: any) {
+      toast.error(error?.message || "Falha na limpeza inteligente.")
+      setBusy(false)
     }
-
-    setLoadingQueue([])
-    setIsCleaning(false)
   }
 
   return (
     <RootDiv>
-      <div className="flex flex-col gap-6">
-        <Card className="flex items-center gap-4 p-4">
-          <div className="flex items-center justify-center p-3 rounded-xl bg-teal-500/10">
-            <Icon iconNode={broom} className="text-teal-500" size={28} />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-zevyron-text mb-1">System Cleaner</h2>
-            <p className="text-sm text-zevyron-text-secondary">
-              Last cleaned: <span className="font-medium">{lastClean}</span>
-            </p>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
-              <p className="text-sm text-zevyron-text-secondary">
-                {loadingSizes ? (
-                  "Calculating total size..."
-                ) : (
-                  <>
-                    Total size:{" "}
-                    <span className="font-medium text-teal-500">{formatBytes(totalSize)}</span>
-                  </>
-                )}
-              </p>
-              {totalFreed > 0 && (
-                <p className="text-sm text-green-500">
-                  Total freed: <span className="font-medium">{formatBytes(totalFreed)}</span>
-                </p>
-              )}
+      <div className="max-w-[1450px] mx-auto pb-8 space-y-4">
+        <div className="flex flex-wrap justify-between gap-3">
+          <div>
+            <div className="text-xs uppercase tracking-[.16em] text-[#20b8ff] font-semibold flex items-center gap-2">
+              <Sparkles size={15} /> Limpeza inteligente
             </div>
+            <h1 className="text-2xl font-semibold mt-1">Smart Cleanup</h1>
+            <p className="text-sm text-zevyron-text-secondary mt-1">
+              O Zevyron analisa antes, recomenda apenas categorias de baixo risco e mostra o espaço encontrado.
+            </p>
           </div>
-          <div className="flex items-center">
-            {selected.length > 0 ? (
-              <Button onClick={() => setSelected([])} variant="secondary" className="mr-2">
-                Unselect All
-              </Button>
-            ) : (
-              <Button
-                onClick={() => setSelected(cleanups.map((c) => c.id))}
-                variant="secondary"
-                className="mr-2"
-              >
-                Select All
-              </Button>
-            )}
-            <Button
-              onClick={runSelectedCleanups}
-              disabled={isCleaning || selected.length === 0}
-              size="md"
-              variant="primary"
-              className="min-w-45 flex items-center justify-center gap-2 text-base font-semibold"
-            >
-              {isCleaning ? (
-                <>
-                  <LoaderCircle className="animate-spin" size={18} />
-                  <span>Cleaning...</span>
-                </>
-              ) : (
-                <>
-                  <Icon iconNode={broom} size={18} />
-                  <span>Clean Selected</span>
-                </>
-              )}
-            </Button>
+          <Button onClick={analyze} disabled={busy}>
+            <RefreshCw size={15} className={`mr-2 ${busy ? "animate-spin" : ""}`} /> Analisar novamente
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="rounded-xl border border-zevyron-border bg-[#071221]/95 p-4">
+            <div className="text-[11px] text-zevyron-text-secondary">Encontrado</div>
+            <div className="text-2xl font-semibold mt-1">{formatBytes(items.reduce((s, i) => s + i.bytes, 0))}</div>
           </div>
-        </Card>
-        <Card className="flex flex-col divide-y divide-zevyron-border p-0 mb-10">
-          {cleanups.map(({ id, label, description, path, icon }, idx) => {
-            const isSelected = selected.includes(id)
-            const currentSize = currentSizes[id]
-            const freedSpace = cleanupResults[id]
+          <div className="rounded-xl border border-zevyron-border bg-[#071221]/95 p-4">
+            <div className="text-[11px] text-zevyron-text-secondary">Selecionado</div>
+            <div className="text-2xl font-semibold mt-1">{formatBytes(selectedBytes)}</div>
+          </div>
+          <div className="rounded-xl border border-zevyron-border bg-[#071221]/95 p-4">
+            <div className="text-[11px] text-zevyron-text-secondary">Categorias</div>
+            <div className="text-2xl font-semibold mt-1">{items.length}</div>
+          </div>
+          <div className="rounded-xl border border-zevyron-border bg-[#071221]/95 p-4">
+            <div className="text-[11px] text-zevyron-text-secondary">Última limpeza</div>
+            <div className="text-2xl font-semibold mt-1">{lastFreed == null ? "—" : formatBytes(lastFreed)}</div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-zevyron-border bg-[#071221]/95 p-4 space-y-2">
+          {items.map((item) => {
+            const checked = selected.has(item.id)
             return (
-              <div
-                key={id}
-                className={`relative flex items-center justify-between px-6 py-5 ${idx === 0 ? "rounded-t-xl" : ""} ${idx === cleanups.length - 1 ? "rounded-b-xl" : ""} group hover:bg-zevyron-card/50 transition-colors`}
-              >
-                <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-zevyron-border/50 text-zevyron-text-secondary">
-                    {icon}
-                  </div>
-                  <div className="flex flex-col flex-1 min-w-0">
-                    <div className="flex items-center gap-3">
-                      <span className="text-base font-semibold text-zevyron-text truncate">
-                        {label}
+              <label key={item.id} className="flex gap-3 rounded-lg border border-zevyron-border p-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => setSelected((current) => {
+                    const next = new Set(current)
+                    if (next.has(item.id)) next.delete(item.id)
+                    else next.add(item.id)
+                    return next
+                  })}
+                  className="mt-1 accent-[#159cff]"
+                />
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-medium text-sm">{item.title}</span>
+                    <span className={`text-[9px] px-1.5 py-.5 rounded border ${
+                      item.risk === "safe"
+                        ? "border-emerald-500/30 text-emerald-400"
+                        : "border-amber-500/30 text-amber-400"
+                    }`}>
+                      {item.risk === "safe" ? "SEGURO" : "MODERADO"}
+                    </span>
+                    {item.recommended && (
+                      <span className="text-[9px] px-1.5 py-.5 rounded border border-[#159cff]/30 text-[#20b8ff]">
+                        RECOMENDADO
                       </span>
-                      {freedSpace ? (
-                        <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-500">
-                          {formatBytes(freedSpace)} freed
-                        </span>
-                      ) : null}
-                    </div>
-                    <span className="text-sm text-zevyron-text-secondary mt-1">{description}</span>
-                    <div className="flex items-center gap-4 mt-2">
-                      <span className="text-xs text-zevyron-text-muted flex items-center gap-1">
-                        <span className="font-medium">Size:</span>
-                        {loadingSizes ? (
-                          <span className="text-zevyron-text-secondary">Calculating...</span>
-                        ) : currentSize !== undefined ? (
-                          <span className="text-teal-500 font-medium">
-                            {formatBytes(currentSize)}
-                          </span>
-                        ) : (
-                          <span className="text-zevyron-text-secondary">Unknown</span>
-                        )}
-                      </span>
-                      {path && path !== "Recycle Bin" && (
-                        <span className="text-xs text-zevyron-text-muted truncate max-w-xs">
-                          {path}
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
-                </div>
-                <div className="ml-4 flex items-center">
-                  <Toggle
-                    checked={isSelected}
-                    onChange={() => toggleCleanup(id)}
-                    disabled={isCleaning}
-                  />
-                </div>
-                {loadingQueue.includes(id) && (
-                  <div className="absolute inset-0 flex items-center justify-center z-10 rounded-xl">
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zevyron-border border border-zevyron-border-secondary">
-                      <LoaderCircle className="animate-spin text-teal-500" size={18} />
-                      <span className="text-sm font-medium text-teal-600">Cleaning...</span>
-                    </div>
+                  <div className="text-[11px] text-zevyron-text-secondary mt-1">{item.description}</div>
+                  <div className="text-[11px] mt-2">
+                    <strong>{formatBytes(item.bytes)}</strong> · {item.files} arquivo(s)
                   </div>
-                )}
-              </div>
+                  {item.error && <div className="text-[10px] text-red-400 mt-1">{item.error}</div>}
+                </div>
+              </label>
             )
           })}
-        </Card>
+        </div>
+
+        <div className="flex flex-wrap gap-2 justify-end">
+          <Button
+            variant="secondary"
+            onClick={() => setSelected(new Set(items.filter((item) => item.recommended).map((item) => item.id)))}
+            disabled={busy}
+          >
+            <CheckCircle2 size={15} className="mr-2" /> Selecionar recomendados
+          </Button>
+          <Button onClick={run} disabled={busy || selected.size === 0}>
+            <Trash2 size={15} className="mr-2" /> Limpar selecionados ({selected.size})
+          </Button>
+        </div>
+
+        <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 flex gap-2">
+          <AlertTriangle size={17} className="text-amber-400 shrink-0 mt-.5" />
+          <div className="text-[11px] text-zevyron-text-secondary">
+            O Smart Cleanup não recomenda apagar Prefetch nem cache do Windows Update. A Lixeira e o cache de miniaturas
+            exigem seleção manual. Arquivos bloqueados ou em uso são preservados.
+          </div>
+        </div>
       </div>
     </RootDiv>
   )
 }
-
-export default Clean

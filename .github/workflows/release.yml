@@ -45,6 +45,12 @@ jobs:
       - name: Auditoria de release
         run: pnpm run audit:release
 
+      - name: Auditoria de estabilidade 3.0
+        run: pnpm run audit:stability
+
+      - name: Auditoria multilíngue
+        run: pnpm run audit:i18n
+
       - name: Gerar instalador e arquivos de atualização
         run: pnpm run release:win
         env:

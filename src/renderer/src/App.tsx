@@ -26,6 +26,16 @@ import NoAdmin from "./components/noAdmin"
 import GameMode from "./pages/GameMode"
 import About from "./pages/About"
 import Health from "./pages/Health"
+import Recovery from "./pages/Recovery"
+import Startup from "./pages/Startup"
+import NetworkCenter from "./pages/NetworkCenter"
+import HardwareMonitor from "./pages/HardwareMonitor"
+import Notifications from "./pages/Notifications"
+import Reports from "./pages/Reports"
+import ExpertMode from "./pages/ExpertMode"
+import Repair from "./pages/Repair"
+import Accessibility from "./pages/Accessibility"
+import { addNotification } from "./lib/notifications"
 
 function App() {
   const [showBrandSplash, setShowBrandSplash] = useState(true)
@@ -45,16 +55,56 @@ function App() {
       "install-complete": () => {
         clearApps()
         toast.success("Operation completed successfully!")
+        addNotification({
+          type: "success",
+          title: "Operação de aplicativos concluída",
+          message: "A instalação ou remoção solicitada foi concluída.",
+          actionPath: "/apps",
+        })
       },
       "install-error": () => {
         clearApps()
         toast.error("There was an error during the operation. Please try again.")
+        addNotification({
+          type: "error",
+          title: "Falha em operação de aplicativos",
+          message: "Uma instalação ou remoção apresentou erro. Verifique os detalhes antes de tentar novamente.",
+          actionPath: "/apps",
+        })
       },
       "game-mode:detected": (_event: unknown, game: { name?: string }) => {
         toast.info(`🎮 ${game?.name || "Game"} detectado — Game Mode pronto.`)
+        addNotification({
+          type: "game",
+          title: "Jogo detectado",
+          message: `${game?.name || "Jogo"} foi detectado. O Game Mode está pronto para ser revisado.`,
+          actionPath: "/game-mode",
+        })
       },
       "game-mode:auto-activated": (_event: unknown, game: { name?: string }) => {
         toast.success(`🎮 Game Mode ativado automaticamente: ${game?.name || "Game"}`)
+        addNotification({
+          type: "game",
+          title: "Game Mode ativado",
+          message: `${game?.name || "Jogo"} iniciou uma sessão automática do Game Mode.`,
+          actionPath: "/game-mode",
+        })
+      },
+      "updater:available": (_event: unknown, update: { version?: string }) => {
+        addNotification({
+          type: "update",
+          title: "Atualização disponível",
+          message: `A versão ${update?.version || "mais recente"} está disponível. O download continua sob sua escolha.`,
+          actionPath: "/settings",
+        })
+      },
+      "updater:downloaded": (_event: unknown, update: { version?: string }) => {
+        addNotification({
+          type: "update",
+          title: "Atualização pronta para instalar",
+          message: `A versão ${update?.version || "baixada"} está pronta. Reinicie pelo Update Center quando quiser instalar.`,
+          actionPath: "/settings",
+        })
       },
     }
 
@@ -191,6 +241,15 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/health" element={<Health />} />
+            <Route path="/recovery" element={<Recovery />} />
+            <Route path="/startup" element={<Startup />} />
+            <Route path="/network" element={<NetworkCenter />} />
+            <Route path="/hardware" element={<HardwareMonitor />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/expert" element={<ExpertMode />} />
+            <Route path="/repair" element={<Repair />} />
+            <Route path="/accessibility" element={<Accessibility />} />
             <Route path="/game-mode" element={<GameMode />} />
             <Route path="/tweaks" element={<Tweaks />} />
             <Route path="/debloat" element={<Debloat />} />

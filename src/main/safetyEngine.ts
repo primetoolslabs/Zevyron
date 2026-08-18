@@ -260,6 +260,109 @@ export async function executeWithSafety(
   }
 }
 
+
+export interface SafetyRestorePoint {
+  sequenceNumber: number
+  description: string
+  creationTime: string
+  restorePointType?: number
+}
+
+async function undoSafetyRecord(
+  recordId: string,
+  loadTweaks: () => Promise<SafetyTweak[]>,
+): Promise<any> {
+  const history = await readHistory()
+  const record = history.find((item) => item.id === recordId)
+  if (!record) return { success: false, recordId, error: "Safety record not found." }
+  if (!record.success || record.action !== "apply" || !record.reversible) {
+    return { success: false, recordId, tweakName: record.tweakName, error: "This change cannot be undone automatically." }
+  }
+
+  const tweaks = await loadTweaks()
+  const tweak = tweaks.find((item) => item.name === record.tweakName)
+  if (!tweak?.psunapply?.trim()) {
+    return { success: false, recordId, tweakName: record.tweakName, error: "Rollback script not found." }
+  }
+
+  const result = await executeWithSafety(
+    tweak,
+    "unapply",
+    () => executePowerShell(null, { script: tweak.psunapply!, name: `${tweak.name}-safety-undo` }),
+    true,
+  )
+
+  return {
+    ...result,
+    recordId,
+    tweakName: record.tweakName,
+    originalRecordId: record.id,
+  }
+}
+
+async function listRestorePoints(): Promise<SafetyRestorePoint[]> {
+  if (process.platform !== "win32") return []
+  const script = `
+$ErrorActionPreference = 'SilentlyContinue'
+$items = Get-ComputerRestorePoint | Sort-Object SequenceNumber -Descending | Select-Object -First 30
+$result = @($items | ForEach-Object {
+  [PSCustomObject]@{
+    sequenceNumber = [int]$_.SequenceNumber
+    description = [string]$_.Description
+    creationTime = [string]$_.CreationTime
+    restorePointType = [int]$_.RestorePointType
+  }
+})
+$result | ConvertTo-Json -Compress
+`
+  const result = await executePowerShell(null, { script, name: "safety-list-restore-points" })
+  if (!result?.success) return []
+
+  const raw = String(result?.output ?? result?.stdout ?? "").trim()
+  if (!raw) return []
+  try {
+    const parsed = JSON.parse(raw)
+    return (Array.isArray(parsed) ? parsed : [parsed])
+      .filter((item) => item && Number.isFinite(Number(item.sequenceNumber)))
+      .map((item) => ({
+        sequenceNumber: Number(item.sequenceNumber),
+        description: String(item.description || "Windows Restore Point"),
+        creationTime: String(item.creationTime || ""),
+        restorePointType: Number.isFinite(Number(item.restorePointType)) ? Number(item.restorePointType) : undefined,
+      }))
+  } catch {
+    return []
+  }
+}
+
+async function createManualRestorePoint(description = "Zevyron Recovery Center"): Promise<boolean> {
+  const safeDescription = description.replace(/[^a-zA-Z0-9À-ÿ ._()\-]/g, " ").slice(0, 80)
+  const script = `
+$ErrorActionPreference = 'Stop'
+try {
+  Enable-ComputerRestore -Drive "$env:SystemDrive\\" -ErrorAction SilentlyContinue | Out-Null
+} catch {}
+Checkpoint-Computer -Description "${safeDescription.replace(/"/g, '""')}" -RestorePointType "MODIFY_SETTINGS"
+`
+  const result = await executePowerShell(null, { script, name: "safety-manual-restore-point" })
+  return Boolean(result?.success)
+}
+
+function buildSafetySummary(history: SafetyHistoryEntry[]) {
+  const successfulApplies = history.filter((item) => item.success && item.action === "apply")
+  return {
+    totalRecords: history.length,
+    successful: history.filter((item) => item.success).length,
+    failed: history.filter((item) => !item.success).length,
+    reversibleApplies: successfulApplies.filter((item) => item.reversible).length,
+    advanced: history.filter((item) => item.level === "advanced").length,
+    moderate: history.filter((item) => item.level === "moderate").length,
+    safe: history.filter((item) => item.level === "safe").length,
+    restorePointsCreated: history.filter((item) => item.restorePointCreated).length,
+    latestAt: history[0]?.finishedAt || null,
+  }
+}
+
 export function setupSafetyEngineHandlers(loadTweaks: () => Promise<SafetyTweak[]>): void {
   ipcMain.handle("safety:audit", async () => {
     const tweaks = await loadTweaks()
@@ -281,27 +384,46 @@ export function setupSafetyEngineHandlers(loadTweaks: () => Promise<SafetyTweak[
   })
 
   ipcMain.handle("safety:history", async () => readHistory())
+  ipcMain.handle("safety:summary", async () => buildSafetySummary(await readHistory()))
+
   ipcMain.handle("safety:undo", async (_event, recordId: string) => {
-    const history = await readHistory()
-    const record = history.find((item) => item.id === recordId)
-    if (!record) return { success: false, error: "Safety record not found." }
-    if (!record.success || record.action !== "apply" || !record.reversible) {
-      return { success: false, error: "This change cannot be undone automatically." }
+    if (typeof recordId !== "string" || recordId.length > 100) {
+      return { success: false, error: "Invalid safety record id." }
     }
-
-    const tweaks = await loadTweaks()
-    const tweak = tweaks.find((item) => item.name === record.tweakName)
-    if (!tweak?.psunapply?.trim()) {
-      return { success: false, error: "Rollback script not found." }
-    }
-
-    return executeWithSafety(
-      tweak,
-      "unapply",
-      () => executePowerShell(null, { script: tweak.psunapply, name: `${tweak.name}-safety-undo` }),
-      true,
-    )
+    return undoSafetyRecord(recordId, loadTweaks)
   })
+
+  ipcMain.handle("safety:undo-many", async (_event, recordIds: unknown) => {
+    if (!Array.isArray(recordIds)) return { success: false, error: "Invalid rollback list." }
+    const ids = recordIds
+      .filter((item): item is string => typeof item === "string" && item.length > 0 && item.length <= 100)
+      .slice(0, 100)
+
+    const results: any[] = []
+    // Reverse order is important: rollback should unwind the most recent change first.
+    for (const recordId of [...ids].reverse()) {
+      results.push(await undoSafetyRecord(recordId, loadTweaks))
+    }
+
+    const undoneTweaks = results.filter((item) => item?.success).map((item) => item.tweakName)
+    return {
+      success: results.every((item) => item?.success),
+      partialSuccess: results.some((item) => item?.success),
+      undone: undoneTweaks.length,
+      failed: results.filter((item) => !item?.success).length,
+      undoneTweaks,
+      results,
+    }
+  })
+
+  ipcMain.handle("safety:restore-points", async () => listRestorePoints())
+  ipcMain.handle("safety:create-restore-point", async (_event, description?: string) => {
+    const created = await createManualRestorePoint(
+      typeof description === "string" && description.trim() ? description.trim() : "Zevyron Recovery Center",
+    )
+    return { success: created }
+  })
+
   ipcMain.handle("safety:open-folder", async () => {
     await ensureSafetyDirectories()
     const { shell } = await import("electron")

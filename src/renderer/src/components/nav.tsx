@@ -2,8 +2,12 @@ import { invoke } from "@/lib/electron"
 import { broom } from "@lucide/lab"
 import { clsx } from "clsx"
 import {
+  Bell,
+  BrainCircuit,
   Box,
+  Cpu,
   EthernetPort,
+  FileText,
   Folder,
   Home,
   HeartPulse,
@@ -11,6 +15,8 @@ import {
   Icon,
   LayoutGrid,
   RotateCw,
+  Rocket,
+  ShieldCheck,
   Settings,
   Info,
   Wrench,
@@ -26,10 +32,20 @@ import useOnlineStore from "../store/online"
 import zevyronIcon from "../../../../resources/zevyron-icon.png"
 import zevyronBrand from "../../../../resources/zevyron-brand-vertical.png"
 import { useI18n } from "@/i18n"
+import { unreadNotificationCount } from "@/lib/notifications"
 
 const tabIcons = {
   home: <Home size={20} />,
   health: <HeartPulse size={20} />,
+  recovery: <ShieldCheck size={20} />,
+  startup: <Rocket size={20} />,
+  network: <EthernetPort size={20} />,
+  hardware: <Cpu size={20} />,
+  notifications: <Bell size={20} />,
+  reports: <FileText size={20} />,
+  expert: <BrainCircuit size={20} />,
+  repair: <Wrench size={20} />,
+  accessibility: <Accessibility size={20} />,
   gameMode: <Gamepad2 size={20} />,
   tweaks: <Wrench size={20} />,
   clean: <Icon iconNode={broom} size={20} />,
@@ -46,6 +62,15 @@ function Nav({ collapsed }) {
   const tabs = {
     home: { label: t("nav.dashboard"), path: "/" },
     health: { label: t("nav.health", "Saúde do PC"), path: "/health" },
+    recovery: { label: t("nav.recovery", "Recuperação"), path: "/recovery" },
+    startup: { label: t("nav.startup", "Inicialização"), path: "/startup" },
+    network: { label: t("nav.networkCenter", "Network Center"), path: "/network" },
+    hardware: { label: t("nav.hardwareMonitor", "Hardware"), path: "/hardware" },
+    notifications: { label: t("nav.notifications", "Notificações"), path: "/notifications" },
+    reports: { label: t("nav.reports", "Relatórios"), path: "/reports" },
+    expert: { label: t("nav.expert", "Modo Especialista"), path: "/expert" },
+    repair: { label: t("nav.repair", "Reparar Zevyron"), path: "/repair" },
+    accessibility: { label: t("nav.accessibility", "Acessibilidade"), path: "/accessibility" },
     gameMode: { label: t("nav.gameMode", "Game Mode"), path: "/game-mode" },
     tweaks: { label: t("nav.tweaks"), path: "/tweaks" },
     utilities: { label: t("nav.utilities"), path: "/utilities" },
@@ -65,6 +90,7 @@ function Nav({ collapsed }) {
   const [indicatorStyle, setIndicatorStyle] = useState({ top: 0, height: 0 })
   const [showRestartModal, setShowRestartModal] = useState(false)
   const [showOfflineModal, setShowOfflineModal] = useState(false)
+  const [notificationCount, setNotificationCount] = useState(() => unreadNotificationCount())
   const [hasShownOfflineModal, setHasShownOfflineModal] = useState(false)
   const { online, checkOnline } = useOnlineStore()
 
@@ -75,6 +101,13 @@ function Nav({ collapsed }) {
     const interval = setInterval(checkOnline, 5000)
     return () => clearInterval(interval)
   }, [checkOnline])
+
+  useEffect(() => {
+    const refreshNotifications = () => setNotificationCount(unreadNotificationCount())
+    window.addEventListener("zevyron:notifications-changed", refreshNotifications)
+    refreshNotifications()
+    return () => window.removeEventListener("zevyron:notifications-changed", refreshNotifications)
+  }, [])
 
   useEffect(() => {
     if (!online && !hasShownOfflineModal) {
@@ -123,7 +156,7 @@ function Nav({ collapsed }) {
           className={collapsed ? "w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(0,174,255,0.35)]" : "w-full max-w-[194px] h-36 object-contain drop-shadow-[0_0_16px_rgba(0,174,255,0.28)]"}
         />
       </div>
-      <div className="flex-1 flex flex-col gap-2 px-3 relative" ref={containerRef}>
+      <div className="flex-1 min-h-0 flex flex-col gap-2 px-3 relative overflow-y-auto overflow-x-hidden" ref={containerRef}>
         <div
           className="absolute left-0 w-1 bg-zevyron-primary rounded-sm transition-all duration-300"
           style={{
@@ -156,7 +189,14 @@ function Nav({ collapsed }) {
                     : "text-zevyron-text-secondary hover:bg-zevyron-border-secondary hover:text-zevyron-text border-transparent",
               )}
             >
-              <div>{tabIcons[id]}</div>
+              <div className="relative">
+                {tabIcons[id]}
+                {id === "notifications" && notificationCount > 0 && (
+                  <span className="absolute -top-2 -right-2 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center">
+                    {notificationCount > 99 ? "99+" : notificationCount}
+                  </span>
+                )}
+              </div>
               {!collapsed && (
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{label}</span>

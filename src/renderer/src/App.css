@@ -232,3 +232,21 @@ body {
   from { width: 0%; }
   to { width: 100%; }
 }
+
+
+/* Zevyron 3 accessibility */
+.zevyron-reduced-motion *,
+.zevyron-reduced-motion *::before,
+.zevyron-reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+.zevyron-high-contrast {
+  --color-zevyron-text-secondary: #b8d6ee;
+  --color-zevyron-text-muted: #85a9c7;
+  --color-zevyron-border: #2a6594;
+  --color-zevyron-border-secondary: #347cb3;
+}

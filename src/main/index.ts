@@ -16,6 +16,13 @@ import { startDiscordRPC } from "@main/rpc"
 import { setupGameModeHandlers, startGameDetection, writeGameModeDiagnostic } from "@main/gameMode"
 import { setupPCHealthHandlers } from "@main/pcHealth"
 import { loadTweaks } from "@main/tweakHandler"
+import { setupStartupManagerHandlers } from "@main/startupManager"
+import { setupSmartCleanupHandlers } from "@main/smartCleanup"
+import { setupNetworkCenterHandlers } from "@main/networkCenter"
+import { setupHardwareMonitorHandlers } from "@main/hardwareMonitor"
+import { setupReportCenterHandlers } from "@main/reportCenter"
+import { setupRepairZevyronHandlers } from "@main/repairZevyron"
+import { setupUpdateHistoryHandlers } from "@main/updateHistory"
 
 console.log = log.log
 console.error = log.error
@@ -163,6 +170,13 @@ app
     setupDebloatHandlers()
     setupGameModeHandlers()
     setupPCHealthHandlers(loadTweaks)
+    setupStartupManagerHandlers()
+    setupSmartCleanupHandlers()
+    setupNetworkCenterHandlers()
+    setupHardwareMonitorHandlers()
+    setupReportCenterHandlers()
+    setupRepairZevyronHandlers()
+    setupUpdateHistoryHandlers()
     startGameDetection()
     writeGameModeDiagnostic()
     if (store.get("rpcEnabled") !== false) {

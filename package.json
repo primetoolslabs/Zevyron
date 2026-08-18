@@ -1,6 +1,6 @@
 {
   "name": "zevyron",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0-beta.10",
   "description": "Zevyron - Advanced System Performance | Developed by PrimeTools Lab | Stable | Free and Open Source",
   "main": "./out/main/index.js",
   "author": "PrimeTools Lab",
@@ -26,7 +26,10 @@
     "release:github": "pnpm run build:vite && electron-builder --config electron-builder.config.cjs --win --publish always",
     "github:configure": "node scripts/configure-github.mjs",
     "audit:release": "node scripts/release-audit.mjs",
-    "check:version-sync": "node scripts/version-sync-check.mjs"
+    "check:version-sync": "node scripts/version-sync-check.mjs",
+    "audit:stability": "node scripts/stability-audit.mjs",
+    "audit:i18n": "node scripts/i18n-audit.mjs",
+    "verify:stable-readiness": "pnpm run typecheck && pnpm run test && pnpm run audit:release && pnpm run audit:stability && pnpm run audit:i18n"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
