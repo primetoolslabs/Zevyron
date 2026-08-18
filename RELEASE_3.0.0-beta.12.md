@@ -1,4 +1,4 @@
-# Zevyron 3.0.0-beta.17 — Tweaks JSX Fix
+# Zevyron 3.0.0-beta.18 — Tweaks JSX Fix
 
 Correção pontual do erro TS2657 encontrado no Windows Release da beta.11.
 

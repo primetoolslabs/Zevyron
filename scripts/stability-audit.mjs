@@ -3,7 +3,8 @@ import path from "node:path"
 import process from "node:process"
 import { fileURLToPath } from "node:url"
 
-const here = path.dirname(fileURLToPath(import.meta.url))
+const __filename = fileURLToPath(import.meta.url)
+const here = path.dirname(__filename)
 const root = path.resolve(here, "..")
 const failures = []
 const warnings = []
@@ -108,6 +109,11 @@ function walk(dir) {
   for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
     if (["node_modules", ".git", "dist", "out"].includes(item.name)) continue
     const full = path.join(dir, item.name)
+
+    // Do not scan the stability audit itself; it necessarily contains the
+    // forbidden patterns as regex literals used to detect unsafe code.
+    if (path.resolve(full) === path.resolve(__filename)) continue
+
     if (item.isDirectory()) walk(full)
     else if (/\.(ts|tsx|js|mjs|cjs|ps1|nsh)$/i.test(item.name)) allCodeFiles.push(full)
   }
