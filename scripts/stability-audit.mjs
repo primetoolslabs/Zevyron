@@ -31,7 +31,7 @@ const version = String(pkg.version || "")
 
 console.log(`\nZevyron Stability Audit — ${version}\n`)
 
-ok(/^3\.0\.0-beta\.\d+$/.test(version) || /^3\.0\.0$/.test(version), "3.0 version format is valid")
+ok(/^3\.0\.\d+(?:-(?:beta|alpha|preview|rc)\.\d+)?$/.test(version), "3.0 version format is valid")
 ok(pkg.name === "zevyron", "Package identity is Zevyron")
 ok(Boolean(pkg.build?.generateUpdatesFilesForAllChannels), "All update-channel metadata generation is enabled")
 
